@@ -1,4 +1,4 @@
-http://spacesquad.googlecode.com/svn/trunk/promoimages/Advantages.png
+||http://spacesquad.googlecode.com/svn/trunk/promoimages/Advantages.png||The squad customisation screen allows you to choose which upgrades you want to outfit your squad with.  Be careful though, each advantage increases the cost of your ships meaning you can afford less spare replacements (extra lives).  The Ships count shows how many you can afford including the 4 you start each level with.||
 
 ==1. Enhanced Fire Power==
 Gives your two lead ships rapid fire (red) and two dual fire(yellow).  Rapid fire is cumulative with all alternative weapons except laser.
