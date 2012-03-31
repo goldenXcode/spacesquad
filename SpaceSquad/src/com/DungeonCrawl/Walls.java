@@ -63,6 +63,9 @@ public class Walls {
 		block.i_animationFrameSizeWidth = i_blockSize;
 		block.i_animationFrameSizeHeight = i_blockSize;
 		
+		block.f_forceScaleX = 1 + (GameRenderer.f_pixelAdjustX-GameRenderer.dpiTextureCoordinatesAdjust);
+		block.f_forceScaleY = 1 + (GameRenderer.f_pixelAdjustY-GameRenderer.dpiTextureCoordinatesAdjust);
+		
 		
 		block.i_animationFrame = in_row;
 		block.i_animationFrameRow = in_column;
@@ -375,6 +378,9 @@ public class Walls {
 		ship.v.setMaxForce(2.0f);
 		ship.v.setMaxVel(2.0f);
 		
+		ship.f_forceScaleX = 1 + (GameRenderer.f_pixelAdjustX-GameRenderer.dpiTextureCoordinatesAdjust);
+		ship.f_forceScaleY = 1 + (GameRenderer.f_pixelAdjustY-GameRenderer.dpiTextureCoordinatesAdjust);
+		
 		
 		//set y
 		ship.v.setY(LogicEngine.SCREEN_HEIGHT+(i_blockSize/2));
@@ -415,6 +421,9 @@ public class Walls {
 		
 		ship.v.setMaxForce(2.0f);
 		ship.v.setMaxVel(2.0f);
+		
+		ship.f_forceScaleX = 1 + (GameRenderer.f_pixelAdjustX-GameRenderer.dpiTextureCoordinatesAdjust);
+		ship.f_forceScaleY = 1 + (GameRenderer.f_pixelAdjustY-GameRenderer.dpiTextureCoordinatesAdjust);
 		
 		
 		//set y

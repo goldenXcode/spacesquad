@@ -292,9 +292,10 @@ public static void DisplaySystemMessage(String str_toDisplay, SpriteBatch in_bat
 
 public static void drawRect(TextureRegion in_texr , Rect in_rect, SpriteBatch batch)
 {
-	batch.draw(in_texr, (float)in_rect.getp1().getX() *GameRenderer.f_pixelAdjustX,(float)in_rect.getp1().getY()*GameRenderer.f_pixelAdjustY,
-			(float)in_rect.getWidth()*GameRenderer.f_pixelAdjustX,
-			(float)in_rect.getHeight()*GameRenderer.f_pixelAdjustY);
+	batch.draw(in_texr, (float)in_rect.getp1().getX() *GameRenderer.dpiTextureCoordinatesAdjust,(float)in_rect.getp1().getY()*GameRenderer.dpiTextureCoordinatesAdjust,
+			(float)in_rect.getWidth()*GameRenderer.dpiTextureCoordinatesAdjust,
+			(float)in_rect.getHeight()*GameRenderer.dpiTextureCoordinatesAdjust);
+
 }
 
 public static GameObject getClosestEnemy(LogicEngine in_theLogicEngine,

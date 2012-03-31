@@ -144,6 +144,8 @@ public class LogicEngine implements Runnable
 		GameRenderer.f_pixelAdjustX = (float)Gdx.graphics.getWidth()/320f;
 		GameRenderer.f_pixelAdjustY = (float)Gdx.graphics.getHeight()/480f;
 		
+		GameRenderer.f_pixelAdjustAbsoluteX = GameRenderer.f_pixelAdjustX;
+		GameRenderer.f_pixelAdjustAbsoluteY = GameRenderer.f_pixelAdjustY;
 		
 		GameRenderer.f_pixelAdjustX = Math.min(GameRenderer.f_pixelAdjustX, GameRenderer.f_pixelAdjustY);
 		GameRenderer.f_pixelAdjustY = Math.min(GameRenderer.f_pixelAdjustX, GameRenderer.f_pixelAdjustY);

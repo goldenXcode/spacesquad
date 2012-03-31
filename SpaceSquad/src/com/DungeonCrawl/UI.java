@@ -125,7 +125,7 @@ public class UI
 		int i_shipCost = calculateAndUpdateShipCost();
 		
 		
-		txt_ships = new TextDisplaying("" + (i_budget / i_shipCost), (f_screenCentreX*GameRenderer.f_pixelAdjustX) + (105*GameRenderer.dpiTextureCoordinatesAdjust), (f_screenCentreY*GameRenderer.f_pixelAdjustY) +(70*GameRenderer.dpiTextureCoordinatesAdjust), false);
+		txt_ships = new TextDisplaying("" + (i_budget / i_shipCost), f_screenCentreX + 105, f_screenCentreY + 70, false);
 		
 		LifeCounter.i_numberOfShipsAvailable = (i_budget / i_shipCost);
 		
@@ -183,7 +183,6 @@ public class UI
 		d_newUI.i_animationFrameSizeWidth = 290;
 		d_newUI.i_animationFrameSizeHeight = 290;
 		
-		
 
 		f_holoCentreX = 150;
 		f_holoCentreY = 300;
@@ -207,7 +206,6 @@ public class UI
 			
 			go_ships[i].stepHandlers.add(new CustomBehaviourStep(followPathBehaviours[i]));
 			
-			
 			go_ships[i].shotHandler = new StraightLineShot("data/"+GameRenderer.dpiFolder+"/bullet.png",7.0f,new Vector2d(0,9));
 			go_ships[i].stepHandlers.add(new AnimateRollStep());
 			go_ships[i].str_name = "player";
@@ -219,7 +217,7 @@ public class UI
 			go_ships[i].v.setX(f_holoCentreX);
 			go_ships[i].v.setY(f_holoCentreY);
 			
-			go_ships[i].v.addWaypoint(new Point2d(f_holoCentreX + Formation.getXOffsetForShip(i),f_holoCentreY + Formation.getYOffsetForShip(i)));
+			go_ships[i].v.addWaypoint(new Point2d(f_holoCentreX-10 + Formation.getXOffsetForShip(i),f_holoCentreY + Formation.getYOffsetForShip(i)));
 		}
 		///////////END UI Control Panel//////////////
 		
@@ -287,6 +285,10 @@ public class UI
 	
 	public void onClick(int in_x, int in_y)
 	{
+		//scale back to absolute coordinates
+		in_x = (int) (in_x / GameRenderer.dpiTextureCoordinatesAdjust);
+		in_y = (int) (in_y / GameRenderer.dpiTextureCoordinatesAdjust);
+		
 		System.out.println(" in_x:"+ in_x + " in_y:"+ in_y);
 		
 		if(myDialog != null)
@@ -331,7 +333,7 @@ public class UI
 				for(int j=0;j<go_ships.length;j++)
 				{	
 					go_ships[j].v.clearWaypoints();
-					go_ships[j].v.addWaypoint(new Point2d(f_holoCentreX + Formation.getXOffsetForShip(j),f_holoCentreY + Formation.getYOffsetForShip(j)));
+					go_ships[j].v.addWaypoint(new Point2d((f_holoCentreX -10)+ Formation.getXOffsetForShip(j),f_holoCentreY + Formation.getYOffsetForShip(j)));
 					followPathBehaviours[j].i_waypointCounter=0;
 				}
 			}
@@ -466,8 +468,7 @@ public class UI
 		Utils.drawRect(texr_exit,btn_exit,batch);
 		
 		
-		
-		in_render.drawDrawable(d_newUI,f_screenCentreX ,f_screenCentreY  );
+		in_render.drawAbsoluteDrawable(d_newUI,f_screenCentreX - (d_newUI.i_animationFrameSizeWidth/2) ,f_screenCentreY - (d_newUI.i_animationFrameSizeHeight/2)   );
 	
 		//draw "selected" texture on top row
 		for(int i=0;i<Advantage.b_advantages.length;i++)
@@ -479,10 +480,11 @@ public class UI
 		
 			
 		for(int i=0;i<go_ships.length;i++)
-			in_render.drawObject(go_ships[i]);
+			in_render.drawAbsoluteDrawable((Drawable)go_ships[i],(float)go_ships[i].v.getX(),(float)go_ships[i].v.getY());
 		
 		for(int i=0;i<go_otherStuff.size();i++)
-			in_render.drawObject(go_otherStuff.get(i));
+			in_render.drawAbsoluteDrawable((Drawable)go_otherStuff.get(i),(float)go_otherStuff.get(i).v.getX(),(float)go_otherStuff.get(i).v.getY());
+			
 		
 		//draw padlocks
 		for(int i=0;i<3;i++)
@@ -490,39 +492,11 @@ public class UI
 				Utils.drawRect(textr_padlock, rects_advantages2.get(i), batch);
 		
 		//draw ship costs
-		this.txt_cost.display(batch);
+		this.txt_cost.displayAbsolute(batch);
 		this.txt_ships.displayAbsolute(batch);
 		
-		/*
-		for(int i=0 ; i< rects_advantages.size();i++)
-			if(i != i_selectedAdvantage)
-				Utils.drawRect(textrs_advantages.get(i),rects_advantages.get(i),batch);
-			else
-			{
-				//draw button selected
-				Utils.drawRect(textrs_advantages.get(i),rects_advantages.get(i),batch);
-				Utils.drawRect(textrs_advantagesSelected.get(i),rects_advantages.get(i),batch);			
-			}
-
-		//draw advantages 2
-		for(int i=0 ; i< rects_advantages2.size();i++)
-			if(5+i != i_selectedAdvantage)
-			{
-
-				Utils.drawRect(textrs_advantages2.get(i),rects_advantages2.get(i),batch);
-
-				//draw padlock
-				if(!isAdvantageUnlocked(5+i))
-					Utils.drawRect(textr_padlock, rects_advantages2.get(i), batch);
-			}
-			else
-			{
-				Utils.drawRect(textrs_advantages2.get(i),rects_advantages2.get(i),batch);
-				Utils.drawRect(textrs_advantagesSelected2.get(i),rects_advantages2.get(i),batch);
-			}
-		*/
-		txt_chooseFormation.display(batch);
-		txt_chooseAdvantage.display(batch);
+		txt_chooseFormation.displayAbsolute(batch);
+		txt_chooseAdvantage.displayAbsolute(batch);
 		
 		if(myDialog != null)
 			myDialog.drawUI(in_render, batch);

@@ -138,7 +138,7 @@ public class UI_LevelSelect {
 	public void drawUI(GameRenderer in_render, SpriteBatch batch) {
 		// load interface texture
 		tex_interface = in_render.loadTexture("data/"+GameRenderer.dpiFolder+"/interface.png");
-		txt_connecting.display(batch);
+		txt_connecting.displayAbsolute(batch);
 		
 		
 		
@@ -221,8 +221,8 @@ public class UI_LevelSelect {
 						rects_difficulties.get(i), batch);
 			}
 
-		txt_difficulty.display(batch);
-		txt_alternatively.display(batch);
+		txt_difficulty.displayAbsolute(batch);
+		txt_alternatively.displayAbsolute(batch);
 
 		//draw levels
 		for (int i = 0; i < textrs_levels.size(); i++)
