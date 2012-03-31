@@ -113,14 +113,14 @@ public class TextDisplaying
 	public void displayAbsolute(SpriteBatch in_batch) {
 		if(b_isHeader)
 			if(b_isMultiLine)
-				bf_lettersHeaders.drawMultiLine(in_batch, toDisplay, x, y);
+				bf_lettersHeaders.drawMultiLine(in_batch, toDisplay, x*GameRenderer.dpiTextureCoordinatesAdjust, y*GameRenderer.dpiTextureCoordinatesAdjust);
 			else
-				bf_lettersHeaders.draw(in_batch, toDisplay, x, y);
+				bf_lettersHeaders.draw(in_batch, toDisplay, x*GameRenderer.dpiTextureCoordinatesAdjust, y*GameRenderer.dpiTextureCoordinatesAdjust);
 		else
 			if(b_isMultiLine)
-				bf_letters.drawMultiLine(in_batch, toDisplay, x, y);
+				bf_letters.drawMultiLine(in_batch, toDisplay, x*GameRenderer.dpiTextureCoordinatesAdjust, y*GameRenderer.dpiTextureCoordinatesAdjust);
 			else
-				bf_letters.draw(in_batch, toDisplay, x, y);
+				bf_letters.draw(in_batch, toDisplay, x*GameRenderer.dpiTextureCoordinatesAdjust, y*GameRenderer.dpiTextureCoordinatesAdjust);
 		
 	}
 

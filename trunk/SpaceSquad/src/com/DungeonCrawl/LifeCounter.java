@@ -30,6 +30,7 @@ public class LifeCounter {
 		d_healthBar.i_animationFrameSizeHeight = 34;
 		d_healthBar.i_animationFrameSizeWidth = 100;
 		
+		
 		d_healthPipGreen.str_spritename = "data/"+GameRenderer.dpiFolder+"/newui.png";
 		d_healthPipGreen.i_animationFrameSizeHeight= 6;
 		d_healthPipGreen.i_animationFrameSizeWidth= 6;

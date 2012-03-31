@@ -155,7 +155,7 @@ public class MyInput implements InputProcessor{
 		//if paused give it to the UI instead
 		if(myLogicEngine.b_paused)
 		{
-			myUI.onClick((int)(x/GameRenderer.f_pixelAdjustX), (int) ((int)(Gdx.graphics.getHeight() - y)/GameRenderer.f_pixelAdjustY));
+			myUI.onClick((int)x, (int) (Gdx.graphics.getHeight() - y));
  			return false;
 		}
 		

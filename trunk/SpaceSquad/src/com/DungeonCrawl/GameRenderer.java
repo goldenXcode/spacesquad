@@ -34,8 +34,11 @@ public class GameRenderer {
        public static float f_pixelAdjustX;
        public static float f_pixelAdjustY;
        
+       
        public static String dpiFolder;
        public static float dpiTextureCoordinatesAdjust;
+       public static float f_pixelAdjustAbsoluteX;
+       public static float f_pixelAdjustAbsoluteY;
 	
        
        public GameRenderer(LogicEngine in_LogicEngine )
@@ -141,7 +144,6 @@ public class GameRenderer {
     	   for(int i=0;i<toDraw.visibleBuffs.size();i++)
     		   drawDrawable(toDraw.visibleBuffs.get(i),(float)toDraw.v.getX(),(float)toDraw.v.getY());
     	   
-    	   
        }
        
        public void drawDrawable(Drawable toDraw, float in_x, float in_y)
@@ -170,55 +172,38 @@ public class GameRenderer {
     	   
 		   s.draw(batch);
     	   
-    	   /*		   
-		   //if it is animated 
-    	   if(toDraw.i_animationFrameSizeWidth !=0)
-    	   {
-    		   //see if it is in dictionary
-    		  
-    		   
-    		   //if we are forcing a specific rotation
-    		   if(toDraw.f_forceRotation != 0|| toDraw.f_forceScaleX !=0 || toDraw.f_forceScaleY !=0)
-    		   {
-    			   
-			   		
-    			   s.setPosition(in_x- (toDraw.i_animationFrameSizeWidth/2),in_y- (toDraw.i_animationFrameSizeHeight/2));
-    			   
-    			   if(toDraw.f_forceRotation != 0 )
-    				   s.setRotation(85+toDraw.f_forceRotation);
-    			   if(toDraw.f_forceScaleX !=0 || toDraw.f_forceScaleY !=0)
-    				   s.setScale(toDraw.f_forceScaleX,toDraw.f_forceScaleY);
-    			   
-    			   s.draw(batch);
-    		   }
-    		   else
-    		   //draw the texture
-    		   batch.draw(tr,in_x- (toDraw.i_animationFrameSizeWidth/2),in_y- (toDraw.i_animationFrameSizeHeight/2));
-    	   }
-    	   else   //it is a static image
-    	   {
-    		   //if we are forcing a specific rotation
-    		   if(toDraw.f_forceRotation != 0 || toDraw.f_forceScaleX !=0 || toDraw.f_forceScaleY !=0)
-    		   {
-    			   Sprite s = new Sprite(toDrawTex);
-			   		
-    			   s.setPosition(in_x-toDraw.i_animationFrameSizeWidth/2, in_x-toDraw.i_animationFrameSizeHeight/2);
-    			   
-    			   if(toDraw.f_forceRotation != 0 )
-    				   s.setRotation(85+toDraw.f_forceRotation);
-    			   if( toDraw.f_forceScaleX !=0 || toDraw.f_forceScaleY !=0)
-    				   s.setScale(toDraw.f_forceScaleX,toDraw.f_forceScaleY);
-    			   
-    			   
-    			   s.draw(batch);
-    		   }
-    		   else
-    			   //draw 
-    			   batch.draw(toDrawTex,in_x,in_y);
-    	   }*/
-    	   
+    	    	   
        }
        
+   	public void drawAbsoluteDrawable(Drawable toDraw, float in_x,
+			float in_y) {
+   	  //TODO Fix PENDING
+ 	   Texture toDrawTex = loadTexture(toDraw.str_spritename);
+		   
+ 	   TextureRegion tr = loadTextureRegion(toDraw.str_spritename, toDrawTex, toDraw.i_animationFrameRow, toDraw.i_animationFrame, toDraw.i_animationFrameSizeWidth, toDraw.i_animationFrameSizeHeight);
+ 	   
+ 	   Sprite s = new Sprite(tr);
+ 	       	   
+ 	   if(toDraw.i_animationFrameSizeWidth !=0)   
+			   s = new Sprite(tr);
+		   else
+			   s = new Sprite(toDrawTex);
+		   
+ 	   
+		   
+		   if(toDraw.f_forceRotation != 0 )
+			   s.setRotation(85+toDraw.f_forceRotation); //TODO this is a hack hmn
+		   		   
+		   if(toDraw.f_forceScaleX !=0 || toDraw.f_forceScaleY !=0)
+			   s.setScale(toDraw.f_forceScaleX,toDraw.f_forceScaleY);
+
+		   s.setPosition(in_x * GameRenderer.dpiTextureCoordinatesAdjust, in_y* GameRenderer.dpiTextureCoordinatesAdjust);
+		   
+ 	   
+		   s.draw(batch);
+ 	   
+		
+	}
     int i_frameRate=0;
     long l_frameRateLastReportedMillis=0;
     
@@ -375,13 +360,18 @@ public class GameRenderer {
 		Sprite s = new Sprite(tr);
    		s.setColor(areaEffect.c_Color);
    		
-	   s.setPosition(((float)areaEffect.area.getp1().getX() + ((float)areaEffect.area.getWidth()/2)-(areaEffect.i_animationFrameSizeWidth/2))*f_pixelAdjustX,((float)areaEffect.area.getp1().getY()+((float)areaEffect.area.getHeight()/2)-(float)(areaEffect.i_animationFrameSizeHeight/2f))*f_pixelAdjustY);
+   		s.setPosition(
+   				((float)areaEffect.area.getp1().getX() + ((float)areaEffect.area.getWidth()/2)-(areaEffect.i_animationFrameSizeWidth/2))*f_pixelAdjustX,
+   				((float)areaEffect.area.getp1().getY()+((float)areaEffect.area.getHeight()/2)-(float)(areaEffect.i_animationFrameSizeHeight/2f))*f_pixelAdjustY);
 	   
-	   s.setScale(((float)areaEffect.area.getWidth()/areaEffect.i_animationFrameSizeWidth), ((float)areaEffect.area.getHeight()/areaEffect.i_animationFrameSizeHeight));
+   		s.setScale(
+   				((float)areaEffect.area.getWidth()/areaEffect.i_animationFrameSizeWidth),
+   				((float)areaEffect.area.getHeight()/areaEffect.i_animationFrameSizeHeight));
 	   
-	   s.draw(batch);
+   		s.draw(batch);
 		 
 			//batch.draw(druidTexture, 200, 100, 32, 32, 64, 64, 1f, 2.0f, 45f, 0, 0, 64, 64, false, false);
 		
 	}
+
 }
