@@ -1,3 +1,5 @@
+http://code.google.com/p/spacesquad/source/browse/trunk/promoimages/Advantages.png
+
 ==Advanced Fire Power==
 
 ==Squad Shields==
