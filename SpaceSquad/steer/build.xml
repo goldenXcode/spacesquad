@@ -1,0 +1,70 @@
+<project name="steeringbehaviors" default="dist" basedir=".">
+    <description>
+        steering behaviors build file
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="lib" location="lib"/>
+  <property name="build" location="build"/>
+  <property name="dist"  location="dist"/>
+  
+  <path id="steering.classpath">
+      <pathelement location="${lib}/xerces.jar"/>
+      <pathelement location="${src}"/>
+  </path>
+   
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="run_creator" depends="compile">
+      <java fork="true" classname="de.steeringbehaviors.creator.SteeringCreator">
+        
+         <classpath>
+           <pathelement location="${build}"/>
+           <pathelement path="${lib}/xerces.jar"/>
+         </classpath> 
+       </java>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source files " >
+        
+    <javac srcdir="${src}" destdir="${build}">
+          <classpath refid="steering.classpath"/>
+    </javac>
+    
+    <!-- copy resources -->
+    <copy todir="${build}/de/steeringbehaviors/creator/config/">
+      <fileset dir="${src}/de/steeringbehaviors/creator/config/">
+      </fileset>
+    </copy>
+    
+    <copy todir="${build}/de/steeringbehaviors/creator/resources/">
+      <fileset dir="${src}/de/steeringbehaviors/creator/resources/">
+      </fileset>
+    </copy>
+    
+        
+   
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/steeringbehaviors-${DSTAMP}.jar" basedir="${build}"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>

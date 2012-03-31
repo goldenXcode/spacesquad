@@ -1,0 +1,139 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.tree.*;
+import java.lang.*;
+
+import org.apache.xerces.parsers.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
+
+public class SteeringTree
+extends JFrame
+{
+	
+	TreeWalker	m_treeWalker;
+	Node		m_node;
+	XMLReader	m_xmlReader;
+	
+
+   	public SteeringTree()
+   	{
+      		super("JTree 1");
+      		addWindowListener(new WindowClosingAdapter());
+      		createTree();
+    	}
+
+    	public void createTree()
+    	{
+    	
+		try
+	    	{
+	    		m_xmlReader=new XMLReader();
+	    		m_xmlReader.readXMLFile("scene1.xml");
+	    		m_treeWalker=m_xmlReader.getTreeWalker();
+	    		
+			m_node=m_treeWalker.getCurrentNode();		  		
+	        	
+	        	DefaultMutableTreeNode treeroot=new DefaultMutableTreeNode("XML");
+	        	
+	        	// build the tree from the root ----------------
+	        	buildTree(treeroot);
+                
+      			// create a JTree -------------------------------
+      			JTree tree= new JTree(treeroot);
+      			
+      			// set a custum cell-renderer -------------------
+      			tree.setCellRenderer(new SteeringCellRenderer());
+      			tree.setRootVisible(true);
+      			
+      			Container cp = getContentPane();
+      			cp.add(new JScrollPane(tree), "Center"); 
+	
+		} //try
+		catch (Exception e)
+		{ 
+			System.out.println("Error: "+e.getMessage());
+		}
+	
+	
+    	}  // createTree()
+    
+    	public static void main(String[] args)
+    	{
+      		SteeringTree frame = new SteeringTree();
+      		frame.setLocation(100,100);
+      		frame.setSize(250,200);
+      		frame.setVisible(true);
+    	} // main()
+
+
+	void buildTree(DefaultMutableTreeNode root)
+	{		
+		DefaultMutableTreeNode child;
+        	
+        	// get the first child of the node -------------------      	
+      		if (m_treeWalker.firstChild()!=null)
+      		{
+      			do
+      			{       m_node=m_treeWalker.getCurrentNode();
+         			//if (m_node.getNodeType()==Node.ELEMENT_NODE)
+         			if (true)
+           			{
+         			
+         				String nodecaption=new String();
+         			
+         				// create a nodemap to store the attributes --------------
+         				NamedNodeMap attr=m_node.getAttributes();
+         				if (attr!=null)
+         				{
+         					Node item;
+         					
+         					// get the name of the item to show it in the tree --------
+         					item=attr.getNamedItem("name");
+         					
+         					// store the nodename if no name-attribute is available ----------
+         					if (item!=null) nodecaption=item.getNodeValue(); 
+         					else nodecaption=new String(m_node.getNodeName());
+         				}
+         			
+         				//child = new DefaultMutableTreeNode("Name:"+m_node.getNodeName()+"  Type:"+m_node.getNodeType()+" Value:"+m_node.getNodeValue()+" Attrname:"+ nodecaption);
+         				
+         				// create a SteeringTreeNode-instance ------
+         				SteeringTreeNode stn=new SteeringTreeNode();
+         				stn.setType(m_node.getNodeName());
+         				stn.setCaption(nodecaption);
+         			
+         				// create a new child which contains the new SteeringTreeNode -----------
+         				child = new DefaultMutableTreeNode(stn);
+         
+         				// add attributes into the tree ------------------------
+         				for (int i=0;i<=attr.getLength();i++)
+         				{
+	         				Node item;
+        	 				item=attr.item(i);
+         					if (item!=null)
+         					{
+         						// add the attribute of this element into the tree -----------------
+         						child.add(new DefaultMutableTreeNode(item.getNodeName()+": "+item.getNodeValue()));
+         						//child.add(new DefaultMutableTreeNode(new SteeringTreeNode(item.getNodeValue(),item.getNodeName() ) ));
+         					}
+         				}
+         			
+         				// add child and build the subtree ------------------------
+         				root.add(child);
+         				
+         				// build the subtree of this node - (it's a recursive call) -------
+         				buildTree(child);
+         				// m_treeWalker.setCurrentNode(m_node);
+	         		}
+       			}
+       			while(m_treeWalker.nextSibling()!=null);
+	       	    	
+	       	    	// go back to the parent -----------------
+	       	    	m_treeWalker.parentNode();
+       		}
+       	
+	} // buildTree()
+
+ } // class SteeringTree
