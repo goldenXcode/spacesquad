@@ -37,10 +37,12 @@ public class UI_LevelSelect {
 	TextDisplaying txt_difficulty;
 	LogicEngine myLogicEngine = null;
 
+	TextureRegion tr_selected = null;
+	
 	int i_selectedDifficulty = 0;
 
 	ArrayList<Rect> rects_difficulties = new ArrayList<Rect>();
-	ArrayList<TextureRegion> textrs_difficultiesSelected = new ArrayList<TextureRegion>();
+	
 	ArrayList<TextureRegion> textrs_difficulties = new ArrayList<TextureRegion>();
 	
 	ArrayList<TextureRegion> textrs_completedDifficulties = new ArrayList<TextureRegion>();
@@ -179,6 +181,10 @@ public class UI_LevelSelect {
 
 			textr_padlock = in_render.loadTextureRegion("data/"+GameRenderer.dpiFolder+"/interface.png", tex_interface, 9, 0, 50, 50);
 			
+			//load selected texture
+			tr_selected = in_render.loadTextureRegion(
+					"data/"+GameRenderer.dpiFolder+"/interface.png", tex_interface, 0, 3,
+					50, 50);
 			// load rectangles
 			for (int i = 0; i < 3; i++) {
 				int i_StartingX = 25;
@@ -192,9 +198,7 @@ public class UI_LevelSelect {
 				rects_difficulties.add(rect_Button);
 				textrs_difficulties.add(textr_Button);
 
-				textr_Button = in_render.loadTextureRegion(
-						"data/"+GameRenderer.dpiFolder+"/interface.png", tex_interface, i + 5, 5, 50, 50);
-				textrs_difficultiesSelected.add(textr_Button);
+			
 			}
 		}
 
@@ -213,7 +217,7 @@ public class UI_LevelSelect {
 			{
 				Utils.drawRect(textrs_difficulties.get(i), rects_difficulties.get(i),
 						batch);
-				Utils.drawRect(textrs_difficultiesSelected.get(i),
+				Utils.drawRect(tr_selected,
 						rects_difficulties.get(i), batch);
 			}
 
