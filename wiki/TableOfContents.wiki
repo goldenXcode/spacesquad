@@ -1,2 +1,3 @@
     * [Main Main]
     * [Advantages Advantages]
+    * [NewUI New UI]
