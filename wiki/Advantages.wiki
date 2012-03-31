@@ -1,4 +1,4 @@
-||http://spacesquad.googlecode.com/svn/trunk/promoimages/Advantages.png||The squad customisation screen allows you to choose which upgrades you want to outfit your squad with.  Be careful though, each advantage increases the cost of your ships meaning you can afford less spare replacements (extra lives).  The Ships count shows how many you can afford including the 4 you start each level with.||
+||http://spacesquad.googlecode.com/svn/trunk/promoimages/Advantages.png||The squad customization screen allows you to choose which upgrades you want to outfit your squad with.  Be careful though, each advantage increases the cost of your ships meaning you can afford less spare replacements (extra lives).  The Ships count shows how many you can afford including the 4 you start each level with.||
 
 ==1. Enhanced Fire Power==
 Gives your two lead ships rapid fire (red) and two dual fire(yellow).  Rapid fire is cumulative with all alternative weapons except laser.
@@ -10,10 +10,10 @@ Your initial squad and all replacement ships warp in with shields which prevent 
 Upgrades your two lead ships with a powerful cluster projectile which detonates when in near proximity of an enemy craft releasing 3 deadly fragments.
 
 ==4. Gravitation Device==
-Upgrades your two lead ships with a graviton field which pushes incomming ships back.  Ships travelling at speed and bosses will be affected less by this field.
+Upgrades your two lead ships with a graviton field which pushes incoming ships back.  Ships travelling at speed and bosses will be affected less by this field.
 
 ==5. Stealth==
-Your ships will periodically fade into the shadows becomming immune to bullets and collisions with enemy craft.  Stealthed ships are still vulnerable to beam weapons.
+Your ships will periodically fade into the shadows becoming immune to bullets and collisions with enemy craft.  Stealthed ships are still vulnerable to beam weapons.
 
 ==6. Side Cannons==
 Your squad will begin with two additional smaller ships armed with the same standard cannon as normal ships.  These cannons can be destroyed but are replaced each time you loose a ship and a replacement has to be warped in.
