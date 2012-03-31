@@ -41,7 +41,7 @@ public class Level8 extends BasicLevel{
 	{
 		i_levelNumber = 8;
 		
-		i_stepCounter = BOSS_STEP-110;
+		i_stepCounter = 0;
 		myWalls.setColour(new Color(0,0,1,1));
 	}
 	
