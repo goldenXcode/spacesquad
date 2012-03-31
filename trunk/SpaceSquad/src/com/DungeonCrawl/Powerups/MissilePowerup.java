@@ -4,6 +4,7 @@ import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
+import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.Utils;
 import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
 import com.DungeonCrawl.Shooting.StraightLineShot;
@@ -24,6 +25,7 @@ public class MissilePowerup implements Powerup {
 	
 	 LaunchShipsStep leftLaunch;
 	 LaunchShipsStep rightLaunch;
+	private boolean b_havePlayedSound=false;
 	
 	public MissilePowerup()
 	{
@@ -119,7 +121,11 @@ public class MissilePowerup implements Powerup {
 
 	@Override
 	public void collected() {
-
+		if(!b_havePlayedSound)
+		{
+			SoundEffects.getInstance().missiles.play(SoundEffects.SPEECH_VOLUME);
+			b_havePlayedSound=true;
+		}
 		
 	}
 
