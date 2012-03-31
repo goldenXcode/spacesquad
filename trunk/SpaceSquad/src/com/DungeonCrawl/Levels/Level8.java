@@ -25,7 +25,9 @@ import com.DungeonCrawl.Steps.TimedLifeStep;
 import com.DungeonCrawl.Steps.WanderStep;
 import com.badlogic.gdx.graphics.Color;
 
+import de.steeringbehaviors.simulation.behaviors.Arrive;
 import de.steeringbehaviors.simulation.behaviors.Wander;
+import de.steeringbehaviors.simulation.renderer.Point2d;
 import de.steeringbehaviors.simulation.renderer.Vector2d;
 
 public class Level8 extends BasicLevel{
@@ -39,7 +41,7 @@ public class Level8 extends BasicLevel{
 	{
 		i_levelNumber = 8;
 		
-		i_stepCounter = 0;
+		i_stepCounter = BOSS_STEP-110;
 		myWalls.setColour(new Color(0,0,1,1));
 	}
 	
@@ -242,6 +244,8 @@ public class Level8 extends BasicLevel{
 	int i_stepBoss=0;
 	int i_bossBubbleEvery=150;
 	
+	Arrive boss_arrive = new Arrive();
+	
 	private GameObject spawnBoss(LogicEngine in_logicEngine)
 	{
 		//75 x 93 - redcube.png - row 1 column 0
@@ -257,7 +261,10 @@ public class Level8 extends BasicLevel{
 		boss.v.setMaxForce(1);
 		boss.v.setMaxVel(5);
 		boss.stepHandlers.add( new BounceOfScreenEdgesStep());
-		boss.stepHandlers.add( new WanderStep());
+		
+		
+		boss_arrive.setAttribute("arrivedistance", "50", null);
+		boss.stepHandlers.add( new CustomBehaviourStep(boss_arrive));
 		boss.isBoss = true;
 		
 		
@@ -343,7 +350,12 @@ public class Level8 extends BasicLevel{
 		if(i_stepBoss == i_bossBubbleEvery)
 			boss.visibleBuffs.add(d_eye);
 		
-		
+		//every 50 set a new target
+		if(i_stepBoss%50 == 0)
+		{
+			
+			boss_arrive.setTargetXY(r.nextFloat()*LogicEngine.SCREEN_WIDTH,r.nextFloat()*LogicEngine.SCREEN_HEIGHT);
+		}
 		
 		if(i_stepBoss == i_bossBubbleEvery)
 			i_stepBoss =0;
