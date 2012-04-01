@@ -137,10 +137,10 @@ public class UI
 	{
 		switch(in_advantage)
 		{
-			case 5 : return "Side Cannons\nThis advantage is currently locked, to unlock it:\n\n Complete Level 1 on Hard";
+			case 5 : return "Side Cannons\nThis advantage is currently locked, to unlock it:\n\n Complete Level 1 on Hard (you can set difficulties on the launch page)";
 			case 6 : return "Beam Laser\nThis advantage is currently locked, to unlock it:\n\n Complete Level 5";
 			case 7 : return "Homing\nThis advantage is currently locked, to unlock it:\n\n Complete Level 3 on Hard";
-			case 8 : return "Got an idea for an advantage? email me it at tnind@computing.dundee.ac.uk";
+			case 8 : return "Got an idea for an advantage? email me it at: \n\ntnind@computing.dundee.ac.uk";
 			case 9 : return "Got an idea for an advantage? email me it at tnind@computing.dundee.ac.uk";
 		}
 		
@@ -157,9 +157,9 @@ public class UI
 			case 8 : return Difficulty.ia_completedLevels.get(4)!= Difficulty.DIFFICULTY.NONE;
 			case 9 : return Difficulty.ia_completedLevels.get(7)!= Difficulty.DIFFICULTY.NONE;
 		}
-		
 		return false;
 	}
+	
 	SimplePathfollowing[] followPathBehaviours;
 	
 	public UI(LogicEngine in_LogicEngine)
@@ -276,7 +276,7 @@ public class UI
 		//if game has just loaded and they hit back then exit
 		if(!b_cameFromGame)
 			//exit
-			System.exit(1);
+			Gdx.app.exit();
 		else
         // Do your optional back button handling (show pause menu?)
     	myLogicEngine.b_paused=false;
@@ -311,7 +311,7 @@ public class UI
 		
 		//see what button they clicked on
 		if(btn_exit.inRect(p_clicked))
-				System.exit(1);
+			Gdx.app.exit();
 		
 		if(btn_launch.inRect(p_clicked))
 		{
@@ -354,14 +354,14 @@ public class UI
 				
 				//refresh the advantages
 				Advantage.clearSimulatedAdvantages(go_ships,go_otherStuff);
-				Advantage.simulateAdvantages(go_ships,go_otherStuff,new Point2d(this.f_holoCentreX,this.f_holoCentreY));
+				Advantage.simulateAdvantages(go_ships,go_otherStuff,new Point2d(this.f_holoCentreX-10,this.f_holoCentreY));
 				calculateAndUpdateNumberOfShips();
 			}
 		
 		for(int i=0 ; i< rects_advantages2.size();i++)
 			if(rects_advantages2.get(i).inRect(p_clicked))
 			{
-				if(isAdvantageUnlocked(5+i))
+				if(isAdvantageUnlocked(5+i) && i<3)
 				{
 					Advantage.b_advantages[5+i]=!Advantage.b_advantages[5+i];
 					
@@ -388,7 +388,7 @@ public class UI
 				
 				//refresh the advantages
 				Advantage.clearSimulatedAdvantages(go_ships,go_otherStuff);
-				Advantage.simulateAdvantages(go_ships,go_otherStuff,new Point2d(this.f_holoCentreX,this.f_holoCentreY));
+				Advantage.simulateAdvantages(go_ships,go_otherStuff,new Point2d(this.f_holoCentreX-10,this.f_holoCentreY));
 				calculateAndUpdateNumberOfShips();
 			}
 	}
@@ -469,6 +469,9 @@ public class UI
 		
 		
 		in_render.drawAbsoluteDrawable(d_newUI,f_screenCentreX - (d_newUI.i_animationFrameSizeWidth/2) ,f_screenCentreY - (d_newUI.i_animationFrameSizeHeight/2)   );
+		
+		
+		
 	
 		//draw "selected" texture on top row
 		for(int i=0;i<Advantage.b_advantages.length;i++)
@@ -480,8 +483,12 @@ public class UI
 		
 			
 		for(int i=0;i<go_ships.length;i++)
+		{
 			in_render.drawAbsoluteDrawable((Drawable)go_ships[i],(float)go_ships[i].v.getX(),(float)go_ships[i].v.getY());
-		
+			//draw buffs
+			for(int j=0;j<go_ships[i].visibleBuffs.size();j++)
+				in_render.drawAbsoluteDrawable((Drawable)go_ships[i].visibleBuffs.get(j),(float)go_ships[i].v.getX(),(float)go_ships[i].v.getY());
+		}
 		for(int i=0;i<go_otherStuff.size();i++)
 			in_render.drawAbsoluteDrawable((Drawable)go_otherStuff.get(i),(float)go_otherStuff.get(i).v.getX(),(float)go_otherStuff.get(i).v.getY());
 			

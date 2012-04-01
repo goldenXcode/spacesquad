@@ -47,12 +47,12 @@ public class MyInput implements InputProcessor{
 	@Override
 	public boolean keyDown(int keycode) {
 		
-		        if(keycode == Keys.KEYCODE_BACK || keycode == Keys.KEYCODE_ESCAPE){
+		        if(keycode == Keys.BACK || keycode == Keys.ESCAPE){
 		        	myUI.backPressed();
 		        }
 		        
 		        
-		        if(keycode == Keys.KEYCODE_DPAD_LEFT ){
+		        if(keycode == Keys.BACK ){
 
 		        	System.out.println("left");
 		        	
@@ -77,12 +77,12 @@ public class MyInput implements InputProcessor{
 
 	@Override
 	public boolean keyUp(int keycode) {
-		 if(keycode == Keys.KEYCODE_DPAD_LEFT ){
+		 if(keycode == Keys.DPAD_LEFT ){
 	        	
 	        //	targetsActive[1] = false;
 	        }
 		 
-		 if(keycode == Keys.KEYCODE_DPAD_LEFT ){
+		 if(keycode == Keys.DPAD_LEFT ){
 	        
 	      //  	targetsActive[1] = false;
 	        }
@@ -128,7 +128,11 @@ public class MyInput implements InputProcessor{
 		if(pointer == 0 && b_sticky2)
 			targetsActive[1] = false;
 		
+		y = Math.min(y, Gdx.graphics.getHeight());
+		y = Math.max(y,0);
 		
+		x = Math.min(x, Gdx.graphics.getWidth());
+		x = Math.max(x,0);
 		
 		//set where they clicked
 		Targets[pointer].x = x / GameRenderer.f_pixelAdjustX;
