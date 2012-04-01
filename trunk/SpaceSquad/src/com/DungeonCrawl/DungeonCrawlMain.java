@@ -33,14 +33,14 @@ public class DungeonCrawlMain implements ApplicationListener{
 	@Override
 	public void dispose() {
 		//close all threads
-		System.exit(0);
+		Gdx.app.exit();
 	}
 
 	@Override
 	public void pause() {
 
     	System.out.println("closing");
-    	System.exit(0);
+    	Gdx.app.exit();
 	}
 
 	@Override
