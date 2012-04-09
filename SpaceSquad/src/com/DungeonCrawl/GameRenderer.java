@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 
 
+import com.DungeonCrawl.AreaEffects.AreaEffect;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -278,6 +280,11 @@ public class GameRenderer {
 	           //draw area effects
 	           for(int i=0 ; i<theLogicEngine.currentAreaEffects.size();i++)
 	        	   drawArea(theLogicEngine.currentAreaEffects.get(i));
+	           	   
+
+	           //draw player area effects
+	           for(int i=0 ; i<theLogicEngine.currentAreaEffectsPlayers.size();i++)
+	        	   drawArea(theLogicEngine.currentAreaEffectsPlayers.get(i));
 	           	   
 	           
 	           //draw targets

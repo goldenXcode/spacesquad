@@ -28,38 +28,35 @@ import com.badlogic.gdx.graphics.Color;
 
 import de.steeringbehaviors.simulation.renderer.Vector2d;
 
-public class Level1 implements Level {
+public class Level1 extends BasicLevel {
 	//DEBUG
-	public int i_stepCounter=0;
-	public final int BOSS_STEP =2000;
-	boolean b_bossSpawned=false;
-	int i_levelEndCountdown=100;
+
 	
-	TextDisplaying level1Text;
 	ShotHandler BossWeapon1 = new SplitShot("data/"+GameRenderer.dpiFolder+"/redbullets.png",-3);
 	ShotHandler BossWeapon2 = new StraightLineShot("data/"+GameRenderer.dpiFolder+"/redbullets.png",6.0f,new Vector2d(0,-10));
 	StepHandler BossChasePlayer = new SeekNearestPlayerStep(500);
 	StepHandler BossWander = new WanderStep();
-	GameObject boss=null;
+	
 	Drawable d_eye ;
 	
 	Walls myWalls = new Walls();
+
+	public Level1()
+	{
+		i_levelNumber=1;
+		BOSS_STEP =2000;
+		i_stepCounter = 500;
+	}
 	
+	@Override
 	public boolean stepLevel(LevelManager in_manager, LogicEngine in_logicEngine)
 	{
-		if(i_stepCounter==0)
-		{
-			in_logicEngine.background.setBackground(0);
-			
-			SoundEffects.getInstance().levels[1].play(SoundEffects.SPEECH_VOLUME);
-			in_manager.spawnDifficultyIcon(in_logicEngine);
-			level1Text = new TextDisplaying("Level 1",(float)LogicEngine.rect_Screen.getWidth()/2,(float)LogicEngine.rect_Screen.getHeight()/2,true);
-			
-			in_logicEngine.currentTextBeingDisplayed.add(level1Text);
-		}
+	
+	
+		if(i_stepCounter ==0)
+			myWalls.setBlockSpeed(in_logicEngine, 4, i_stepCounter);
 		
-		if(i_stepCounter==100)
-			in_logicEngine.currentTextBeingDisplayed.remove(level1Text);
+		
 		
 		if(i_stepCounter==BOSS_STEP-100)
 			SoundEffects.getInstance().warningThreatApproaching.play(SoundEffects.SPEECH_VOLUME);
@@ -156,10 +153,11 @@ public class Level1 implements Level {
 					boss.stepHandlers.add(BossWander);
 				}
 		}
+		
+		
 		if(i_stepCounter > 800 && i_stepCounter < 1100)
 		{
-			myWalls.i_tunnelSpeed = 4;
-			
+			myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
 			
 			if(i_stepCounter == 832)
 			{
@@ -210,7 +208,7 @@ public class Level1 implements Level {
 				myWalls.openTunnel();
 			}
 			
-			myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
+			
 		}
 		
 		if(i_stepCounter < 800 &&i_stepCounter > 200)
@@ -257,7 +255,8 @@ public class Level1 implements Level {
 			
 			if(i_stepCounter > 1500 && i_stepCounter < 1700 )
 			{
-				myWalls.i_tunnelSpeed = 4;
+				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
+				
 				
 				if(i_stepCounter == 1504)
 				{
@@ -290,19 +289,11 @@ public class Level1 implements Level {
 					myWalls.openTunnel();
 				}
 				
-				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
+				
 			}
 		}
-		i_stepCounter++;
 		
-		if(b_bossSpawned && in_logicEngine.objectsEnemies.indexOf(boss)==-1)
-		{
-			i_levelEndCountdown--;
-		}
-		if(i_levelEndCountdown==0)
-			return true;
-		
-		return false;
+		return 	super.stepLevel(in_manager, in_logicEngine);
 	}
 	
 	

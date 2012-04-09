@@ -96,4 +96,12 @@ public class Credits implements Level {
 
 
 
+		@Override
+		public void gameOver(LogicEngine in_logicEngine) {
+
+			
+		}
+
+
+
 }

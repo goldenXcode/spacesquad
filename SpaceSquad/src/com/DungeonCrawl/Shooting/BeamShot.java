@@ -1,11 +1,11 @@
 package com.DungeonCrawl.Shooting;
 
-import com.DungeonCrawl.AreaEffect;
 import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.Utils;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.openal.Ogg.Music;
@@ -16,7 +16,7 @@ import de.steeringbehaviors.simulation.renderer.Rect;
 
 public class BeamShot  implements ShotHandler{
 
-	public AreaEffect ae_beam;
+	public SimpleAreaEffect ae_beam;
 	
 	public boolean b_flare = true;
 	public Utils.Direction b_direction=Utils.Direction.SOUTH;
@@ -56,7 +56,7 @@ public class BeamShot  implements ShotHandler{
 		d.i_animationFrameSizeHeight=32;
 		d.i_animationFrameSizeWidth=32;
 		
-		ae_beam = new AreaEffect(r,AreaEffect.Effect.KILL_EVERYTHING,d);
+		ae_beam = new SimpleAreaEffect(r,SimpleAreaEffect.Effect.KILL_EVERYTHING,d);
 		 
 		
 		

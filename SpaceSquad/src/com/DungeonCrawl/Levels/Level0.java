@@ -201,7 +201,7 @@ public class Level0 implements Level {
 				explosion.stepHandlers.add(new StaticAnimationStep(3,7, 0));
 				in_logicEngine.objectsOverlay.add(explosion);
 				//TODO play Big explosion!
-				SoundEffects.getInstance().explosion.play();
+				SoundEffects.getInstance().explosion.play(0.5f);
 			}
 			
 			in_logicEngine.objectsEnemies.clear();
@@ -223,5 +223,9 @@ public class Level0 implements Level {
 		//not end of level yet
 		return false;
 	}
+	@Override
+	public void gameOver(LogicEngine in_logicEngine) {
 
+		
+	}
 }

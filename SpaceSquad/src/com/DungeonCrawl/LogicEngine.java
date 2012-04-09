@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.DungeonCrawl.AreaEffects.AreaEffect;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Collisions.PowerupCollision;
@@ -64,6 +66,7 @@ public class LogicEngine implements Runnable
 	public ArrayList<GameObject> objectsPowerups;
 	public ArrayList<GameObject> objectsOverlay;
 	public ArrayList<AreaEffect> currentAreaEffects;
+	public ArrayList<AreaEffect> currentAreaEffectsPlayers;
 	
 	public ArrayList<TextDisplaying> currentTextBeingDisplayed;
 	
@@ -197,6 +200,7 @@ public class LogicEngine implements Runnable
 		objectsPowerups = new ArrayList<GameObject>();
 		objectsOverlay = new ArrayList<GameObject>();
 		currentAreaEffects= new ArrayList<AreaEffect>();
+		currentAreaEffectsPlayers = new ArrayList<AreaEffect>();
 		
 		currentTextBeingDisplayed = new ArrayList<TextDisplaying>();
 		
@@ -219,6 +223,7 @@ public class LogicEngine implements Runnable
 				theUI.stepUI(this);
 			return;
 		}
+		
 		//or if game is over
 		if(MyLifeCounter.isGameOver(this))
 			return;
@@ -351,6 +356,9 @@ public class LogicEngine implements Runnable
 		
 		for(int i=0;i<currentAreaEffects.size();i++)
 			currentAreaEffects.get(i).stepEffect(this);
+		
+		for(int i=0;i<currentAreaEffectsPlayers.size();i++)
+			currentAreaEffectsPlayers.get(i).stepEffect(this);
 		
 		l_collisionDurationLast = System.currentTimeMillis();
 		if(l_collisionDurationCounter > 20)

@@ -4,6 +4,7 @@ import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.SoundEffects;
+import com.DungeonCrawl.Utils;
 import com.DungeonCrawl.Powerups.Powerup;
 import com.DungeonCrawl.Steps.StaticAnimationStep;
 import com.DungeonCrawl.Steps.StepHandler;
@@ -33,7 +34,7 @@ public class PowerupCollision implements CollisionHandler {
 	public boolean handleCollision(GameObject collidingWith, LogicEngine toRunIn) {
 
 		//if collected by player and NOT a player bullet
-		if(collidingWith.allegiance == GameObject.ALLEGIANCES.PLAYER && toRunIn.objectsPlayers.indexOf(collidingWith)!=-1)
+		if(collidingWith.allegiance == GameObject.ALLEGIANCES.PLAYER && Utils.isPlayer(collidingWith))
 		{
 			forPowerup.collected();
 			
@@ -66,7 +67,7 @@ public class PowerupCollision implements CollisionHandler {
 				explosion.i_animationFrameSizeHeight =16;
 				explosion.stepHandlers.add(new StaticAnimationStep(3,7, 0));
 				toRunIn.objectsOverlay.add(explosion);
-				SoundEffects.getInstance().explosion.play();
+				SoundEffects.getInstance().explosion.play(0.5f);
 				
 				return true;
 			}
@@ -114,7 +115,7 @@ public class PowerupCollision implements CollisionHandler {
 			explosion.i_animationFrameSizeHeight =16;
 			explosion.stepHandlers.add(new StaticAnimationStep(3,7, 0));
 			toRunIn.objectsOverlay.add(explosion);
-			SoundEffects.getInstance().explosion.play();
+			SoundEffects.getInstance().explosion.play(0.5f);
 		}
 		return true;
 	}

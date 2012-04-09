@@ -62,7 +62,7 @@ public class DoNothingCollision implements CollisionHandler{
 		explosion.v.setY(forShip.v.getY());
 		toRunIn.objectsOverlay.add(explosion);
 		
-		SoundEffects.getInstance().explosion.play();
+		SoundEffects.getInstance().explosion.play(0.5f);
 		
 		return true;
 	}

@@ -303,6 +303,10 @@ public class Level2 implements Level{
 	}
 	
 
+	@Override
+	public void gameOver(LogicEngine in_logicEngine) {
 
+		
+	}
 
 }

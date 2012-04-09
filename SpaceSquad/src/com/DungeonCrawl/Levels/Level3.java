@@ -2,7 +2,6 @@ package com.DungeonCrawl.Levels;
 
 import java.util.Random;
 
-import com.DungeonCrawl.AreaEffect;
 import com.DungeonCrawl.Difficulty;
 import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
@@ -11,6 +10,7 @@ import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.TextDisplaying;
 import com.DungeonCrawl.Utils;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Shooting.BeamShot;
@@ -305,10 +305,10 @@ public class Level3 implements Level{
 		
 		
 	}
-	AreaEffect ae_areaFullLeft;
-	AreaEffect ae_areaFullRight;
-	AreaEffect ae_areaPartialLeft;
-	AreaEffect ae_areaPartialRight;
+	SimpleAreaEffect ae_areaFullLeft;
+	SimpleAreaEffect ae_areaFullRight;
+	SimpleAreaEffect ae_areaPartialLeft;
+	SimpleAreaEffect ae_areaPartialRight;
 	
 	
 	private void spawnBoss(LogicEngine in_logicEngine) {
@@ -380,19 +380,22 @@ public class Level3 implements Level{
 		d.i_animationFrameSizeHeight=32;
 		d.i_animationFrameSizeWidth=32;
 				
-		ae_areaFullLeft = new AreaEffect(r,AreaEffect.Effect.KILL_EVERYTHING,d);
+		ae_areaFullLeft = new SimpleAreaEffect(r,SimpleAreaEffect.Effect.KILL_EVERYTHING,d);
 		 
 		r = new Rect(LogicEngine.SCREEN_WIDTH/2,0,LogicEngine.SCREEN_WIDTH , LogicEngine.SCREEN_HEIGHT);
-		ae_areaFullRight = new AreaEffect(r,AreaEffect.Effect.KILL_EVERYTHING,d);
+		ae_areaFullRight = new SimpleAreaEffect(r,SimpleAreaEffect.Effect.KILL_EVERYTHING,d);
 	
 		r = new Rect(0,0,(LogicEngine.SCREEN_WIDTH/2) -30 , LogicEngine.SCREEN_HEIGHT);
-		ae_areaPartialLeft= new AreaEffect(r,AreaEffect.Effect.KILL_EVERYTHING,d);
+		ae_areaPartialLeft= new SimpleAreaEffect(r,SimpleAreaEffect.Effect.KILL_EVERYTHING,d);
 		
 		r = new Rect((LogicEngine.SCREEN_WIDTH/2) +30 ,0,LogicEngine.SCREEN_WIDTH , LogicEngine.SCREEN_HEIGHT);		
-		ae_areaPartialRight= new AreaEffect(r,AreaEffect.Effect.KILL_EVERYTHING,d);
+		ae_areaPartialRight= new SimpleAreaEffect(r,SimpleAreaEffect.Effect.KILL_EVERYTHING,d);
 	}
-	
-	
+	@Override
+	public void gameOver(LogicEngine in_logicEngine) {
+
+		
+	}
 	
 
 }

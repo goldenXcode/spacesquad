@@ -32,6 +32,10 @@ public class UI_LevelSelect {
 	Rect btn_bosses;
 	TextureRegion texr_bosses;
 
+	Rect btn_survival;
+	TextureRegion texr_survival;
+
+	
 	TextDisplaying txt_connecting;
 	
 	TextDisplaying txt_difficulty;
@@ -54,10 +58,13 @@ public class UI_LevelSelect {
 	public UI_LevelSelect(LogicEngine in_LogicEngine) {
 		txt_connecting = new TextDisplaying("Select Level:", 0, LogicEngine.SCREEN_HEIGHT - 100, false);
 		
+		
 		myLogicEngine = in_LogicEngine;
-		btn_bosses = new Rect(LogicEngine.SCREEN_WIDTH / 2 - 50, 25,
-				LogicEngine.SCREEN_WIDTH / 2 - 15 + 50, 75);
-
+		btn_bosses = new Rect(LogicEngine.SCREEN_WIDTH / 4 - 50, 25,
+				LogicEngine.SCREEN_WIDTH / 4 + 50, 75);
+		btn_survival = new Rect((LogicEngine.SCREEN_WIDTH*3) / 4 - 50, 25,
+				(LogicEngine.SCREEN_WIDTH*3) / 4 + 50, 75);
+		
 		txt_difficulty = new TextDisplaying("Difficulty:", 0,
 				LogicEngine.SCREEN_HEIGHT ,false);
 		txt_alternatively = new TextDisplaying("Alternative modes:", 25, 100,false);
@@ -85,7 +92,18 @@ public class UI_LevelSelect {
 			b_visible = false;
 
 			in_from.b_cameFromGame = true;
+		}
+		
+		// if survival mission
+		if (btn_survival.inRect(p_clicked)) {
+			myLogicEngine.MyLevelManager.newSurvivalGame(myLogicEngine);
+			myLogicEngine.b_paused = false;
 
+			// this screen is not visible anymore because they just launched a
+			// game
+			b_visible = false;
+
+			in_from.b_cameFromGame = true;
 		}
 
 		// clicking difficulties
@@ -128,7 +146,6 @@ public class UI_LevelSelect {
 
 				in_from.b_cameFromGame = true;
 			}
-
 	}
 	
 	public static int i_maxLevel = 9;
@@ -204,9 +221,13 @@ public class UI_LevelSelect {
 
 		texr_bosses = in_render.loadTextureRegion("data/"+GameRenderer.dpiFolder+"/interface.png",
 				tex_interface, 4, 0, 100, 50);
+		
+		texr_survival = in_render.loadTextureRegion("data/"+GameRenderer.dpiFolder+"/interface.png",
+				tex_interface, 1, 0, 100, 50);
 
 		// draw title screen
 		Utils.drawRect(texr_bosses, btn_bosses, batch);
+		Utils.drawRect(texr_survival, btn_survival, batch);
 
 		// draw difficulties
 		for (int i = 0; i < rects_difficulties.size(); i++)

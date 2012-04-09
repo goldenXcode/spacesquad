@@ -92,12 +92,22 @@ public class LifeCounter {
 		
 	}
 
+	boolean areAllDead = false;
+	
 	public boolean isGameOver(LogicEngine in_logicEngine) {
 		
 		//if there are no ships remaining and all the ones on the playing field also dead
 		if(i_livesRemaining ==0 && in_logicEngine.areAllPlayersDead())
+		{
+			//if they were not dead last step call gameover
+			if(areAllDead ==false)
+				in_logicEngine.MyLevelManager.getCurrentLevel().gameOver(in_logicEngine);
+			
+			areAllDead = true;
 			return true;
+		}
 		
+		areAllDead = false;
 		return false;
 	}
 

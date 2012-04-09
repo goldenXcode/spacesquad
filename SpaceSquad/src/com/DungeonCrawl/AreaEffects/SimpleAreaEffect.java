@@ -1,7 +1,12 @@
-package com.DungeonCrawl;
+package com.DungeonCrawl.AreaEffects;
 
 import java.util.ArrayList;
 
+import com.DungeonCrawl.Drawable;
+import com.DungeonCrawl.GameObject;
+import com.DungeonCrawl.GameRenderer;
+import com.DungeonCrawl.LogicEngine;
+import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Steps.PlayerStep;
 import com.DungeonCrawl.Steps.StaticAnimationStep;
@@ -11,15 +16,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.steeringbehaviors.simulation.renderer.Rect;
 
-public class AreaEffect extends Drawable{
+public class SimpleAreaEffect extends AreaEffect{
 
 	
-	public Color c_Color = Color.RED;
-	public Rect area;
-	Effect effect;
-	private int i_duration;
-	private boolean b_hasDuration=false;
-	
+
 	public void setDuration(int in_duration)
 	{
 		i_duration=in_duration;
@@ -28,32 +28,33 @@ public class AreaEffect extends Drawable{
 	public enum Effect
 	{
 		KILL_PLAYERS,
-		KILL_EVERYTHING, KILL_NON_OBSTACLES, DAMAGE_EVERYTHING
-		
+		KILL_EVERYTHING, 
+		KILL_NON_OBSTACLES, 
+		DAMAGE_EVERYTHING, 
+		NONE,
+		SLOW_BULLETS, SLOW_ENEMY_BULLETS
 	}
 	
-	public AreaEffect(Rect in_area, Effect in_e ,Drawable in_d)
+	public SimpleAreaEffect(Rect in_area, Effect in_e ,Drawable in_d)
 	{
-		area = in_area;
+		super(in_area, in_d);
+		
 		effect = in_e;
-		this.i_animationFrame = in_d.i_animationFrame;
-		this.i_animationFrameRow = in_d.i_animationFrameRow;
-		this.i_animationFrameSizeHeight = in_d.i_animationFrameSizeHeight;
-		this.i_animationFrameSizeWidth = in_d.i_animationFrameSizeWidth;
-		this.str_spritename = in_d.str_spritename;
 	}
 	
+	@Override
 	public void stepEffect(LogicEngine in_logicEngine)
 	{
-		//if it expires after x steps
-		if(b_hasDuration)
-			if(i_duration-- ==0)
+		super.stepEffect(in_logicEngine);
+		
+		if(effect == Effect.SLOW_ENEMY_BULLETS )
+		{
+			for(int i=0;i<in_logicEngine.objectsPlayers.size();i++)
 			{
-				in_logicEngine.currentAreaEffects.remove(this);
-				return;
+				
+				
 			}
-		
-		
+		}
 		
 		if(effect == Effect.KILL_PLAYERS || effect ==  Effect.DAMAGE_EVERYTHING || effect == Effect.KILL_EVERYTHING || effect == Effect.KILL_NON_OBSTACLES) 
 		{
@@ -84,7 +85,7 @@ public class AreaEffect extends Drawable{
 						explosion.i_animationFrameSizeHeight=16;
 						explosion.stepHandlers.add(new StaticAnimationStep(3,7, 0));
 						in_logicEngine.objectsOverlay.add(explosion);
-						SoundEffects.getInstance().explosion.play();
+						SoundEffects.getInstance().explosion.play(0.5f);
 						
 						in_logicEngine.objectsPlayers.remove(in_logicEngine.objectsPlayers.get(i));
 					}
@@ -134,7 +135,7 @@ public class AreaEffect extends Drawable{
 				explosion.i_animationFrameSizeHeight=16;
 				explosion.stepHandlers.add(new StaticAnimationStep(3,7, 0));
 				in_logicEngine.objectsOverlay.add(explosion);
-				SoundEffects.getInstance().explosion.play();
+				SoundEffects.getInstance().explosion.play(0.5f);
 				
 				in_list.remove(in_list.get(i));
 			}
