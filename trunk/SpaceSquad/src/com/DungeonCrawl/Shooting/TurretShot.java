@@ -54,6 +54,8 @@ public class TurretShot implements ShotHandler {
 		bullet.i_animationFrameSizeWidth=8;
 		bullet.i_animationFrameSizeHeight=8;
 		
+		bullet.v.setMaxVel(f_bulletSpeed);
+		
 		if(bullet.allegiance==GameObject.ALLEGIANCES.ENEMIES)
 			toRunIn.objectsEnemyBullets.add(bullet);
 		else

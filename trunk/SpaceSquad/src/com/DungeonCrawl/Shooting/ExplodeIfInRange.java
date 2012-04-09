@@ -35,12 +35,11 @@ public class ExplodeIfInRange implements ShotHandler{
 		//if within range
 		if(Utils.getDistanceToClosestEnemyShip(in_theLogicEngine, in_objectFiring.v.getPos()) < f_explodeDistance)
 		{
-
-				
 			//create bullets
 			for(int i=0;i<8;i++)
 			{
 				GameObject bullet = new GameObject(str_bullet,(float)in_objectFiring.v.getX() + (float)(in_objectFiring.v.getBoundingBox().getWidth()/2.0),(float)in_objectFiring.v.getY(),0);
+				bullet.v.setMaxVel(f_bulletSpeed);
 				
 				if(!b_upOnly || (i==0 || i==1 ||  i==7 ))
 				{
@@ -108,13 +107,14 @@ public class ExplodeIfInRange implements ShotHandler{
 					explosion.i_animationFrameSizeHeight =16;
 					explosion.stepHandlers.add(new StaticAnimationStep(3,7, 0));
 					in_theLogicEngine.objectsOverlay.add(explosion);
-					SoundEffects.getInstance().explosion.play();
+					SoundEffects.getInstance().explosion.play(0.5f);
 				}
 				
 				//create bullets
 				for(int i=0;i<8;i++)
 				{
 					GameObject bullet = new GameObject(str_bullet,(float)in_objectFiring.v.getX() + (float)(in_objectFiring.v.getBoundingBox().getWidth()/2.0),(float)in_objectFiring.v.getY(),0);
+					bullet.v.setMaxVel(f_bulletSpeed);
 					
 					//shoot left or right
 					if(i==0)

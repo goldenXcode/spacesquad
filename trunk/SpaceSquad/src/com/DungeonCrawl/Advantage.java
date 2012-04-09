@@ -3,18 +3,26 @@ package com.DungeonCrawl;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.DungeonCrawl.AreaEffect.Effect;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect.Effect;
 import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
+import com.DungeonCrawl.Collisions.PowerupCollision;
 import com.DungeonCrawl.Powerups.DualFirePowerup;
 import com.DungeonCrawl.Powerups.MissilePowerup;
+import com.DungeonCrawl.Powerups.MovementPowerup;
 import com.DungeonCrawl.Powerups.RapidFirePowerup;
 import com.DungeonCrawl.Powerups.ShieldPowerup;
 import com.DungeonCrawl.Powerups.SideCannonsPowerup;
+import com.DungeonCrawl.Powerups.SlowFieldPowerup;
 import com.DungeonCrawl.Shooting.BeamShot;
+import com.DungeonCrawl.Shooting.ExplodeIfInRange;
 import com.DungeonCrawl.Shooting.FragmentationProjectile;
 import com.DungeonCrawl.Shooting.StraightLineShot;
+import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.GravitonDevice;
+import com.DungeonCrawl.Steps.LaunchShipsStep;
+import com.DungeonCrawl.Steps.LoopingAnimationStep;
 import com.DungeonCrawl.Steps.SeekInputTarget;
+import com.DungeonCrawl.Steps.SeekNearestPlayerStep;
 import com.DungeonCrawl.Steps.StealthStep;
 import com.DungeonCrawl.Steps.StepHandler;
 import com.badlogic.gdx.graphics.Color;
@@ -25,7 +33,7 @@ import de.steeringbehaviors.simulation.renderer.Vector2d;
 
 public class Advantage {
 
-	private static int i_numberOfAdvantages=8; 
+	private static int i_numberOfAdvantages=10; 
 	
 	//array showing which advantages are currently active
 	public static boolean[] b_advantages = new boolean[8];
@@ -34,6 +42,7 @@ public class Advantage {
 	public static BeamShot beamShot = new BeamShot(50);
 	
 	private static SideCannonsPowerup sideCannonsPowerup = new SideCannonsPowerup();
+	
 	
 	
 	public static void applyAdvantageToShip(int in_advantage,GameObject in_ship, int in_position, LogicEngine in_logicEngine)
@@ -62,11 +71,16 @@ public class Advantage {
 		case 2:
 			if(in_position == 0  || in_position == 2)
 			{
-				//big shot gun
-				in_ship.i_animationFrameRow = 4;
-				in_ship.shotHandler = bigShot;
-				in_ship.shootEverySteps*=2f;
-				in_ship.b_ignorePowerupFrameChanges=true;
+				//only apply once
+				if(in_ship.shotHandler != bigShot)
+				{
+					//big shot gun
+					in_ship.i_animationFrameRow = 4;
+					in_ship.shootEverySteps *= 2; 
+					in_ship.shotHandler = bigShot;
+					//in_ship.shootEverySteps*=2f; //does not work!
+					in_ship.b_ignorePowerupFrameChanges=true;
+				}
 			}
 			break;
 
@@ -120,40 +134,19 @@ public class Advantage {
 				((StraightLineShot)in_ship.shotHandler).b_homing=true;
 			
 			break;
+		case 8:
+			if(in_position == 3)
+			{
+				
+			}
+		break;
 		case 9:
-			//elite squad
-			//beam
-			if(in_position == 0 )
-			{
-				in_ship.shootEverySteps = 1;
-				
-				beamShot.ae_beam.c_Color = Color.BLUE;
-				beamShot.b_direction=Utils.Direction.NORTH;
-				beamShot.b_flare = false;
-				beamShot.i_beamDuration = 20;
-				beamShot.ae_beam.effect = Effect.DAMAGE_EVERYTHING;
-				
-				in_ship.shotHandler = beamShot;
+			if(in_position == 1)
+			{	
+				//PENDING this is a hack
+				SlowFieldPowerup p = new SlowFieldPowerup();
+				p.applyPowerup(in_ship, in_logicEngine);
 			}
-			//cluster missiles
-			if(in_position == 1 || in_position == 3 )
-			{
-				//big shot gun
-				in_ship.i_animationFrame = 3;
-				in_ship.shotHandler = bigShot;
-				in_ship.shootEverySteps = 40;
-				in_ship.b_ignorePowerupFrameChanges=true;
-			}
-			//side shots
-			if(in_position == 2)
-			{
-				RapidFirePowerup rapid = new RapidFirePowerup();
-				rapid.applyPowerup(in_ship,in_logicEngine);
-				rapid.applyPowerup(in_ship,in_logicEngine);
-				DualFirePowerup dual = new DualFirePowerup();
-				dual.applyPowerup(in_ship,in_logicEngine);				
-			}
-			
 			break;
 		}
 	}
@@ -180,6 +173,8 @@ public class Advantage {
 			break;
 		}
 	}
+	
+	
 
 	public static void clearSimulatedAdvantages( GameObject[] go_ships,
 			ArrayList<GameObject> go_otherStuff) {

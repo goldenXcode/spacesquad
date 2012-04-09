@@ -96,7 +96,7 @@ public class PlayerCollision implements CollisionHandler
 		explosion.i_animationFrameSizeHeight =16;
 		explosion.stepHandlers.add( new StaticAnimationStep(3,7, 0));
 		toRunIn.objectsOverlay.add(explosion);
-		SoundEffects.getInstance().explosion.play();
+		SoundEffects.getInstance().explosion.play(0.5f);
 		
 		explosion.stepHandlers.add(new FlyStraightStep(playerShip.v.getVel()));
 		

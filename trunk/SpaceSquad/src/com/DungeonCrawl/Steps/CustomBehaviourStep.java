@@ -25,9 +25,10 @@ public class CustomBehaviourStep implements StepHandler{
 		
 		o_runningOn.v.addForce(vector);
 		
-		//if offscreen add to offscreen counter
 		if(LogicEngine.rect_Screen.inRect(o_runningOn.v.getPos())==false)
 			o_runningOn.i_offScreenCounter++;
+		else
+			o_runningOn.i_offScreenCounter=0;
 		
 		return false;
 	}

@@ -56,6 +56,8 @@ public class SplitShot implements ShotHandler {
 			//bullet inherits the allegiance of whoever fired it
 			bullet.allegiance = in_objectFiring.allegiance;
 			
+			bullet.v.setMaxVel(7.0f);
+			
 			//if its enemy shots just add it to enemy list
 			if(bullet.allegiance==GameObject.ALLEGIANCES.ENEMIES)
 				toRunIn.objectsEnemyBullets.add(bullet);

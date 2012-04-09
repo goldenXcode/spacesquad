@@ -45,7 +45,11 @@ public class Level11 implements Level{
 		
 		return false;
 	}
-	
+	@Override
+	public void gameOver(LogicEngine in_logicEngine) {
+
+		
+	}
 
 
 }

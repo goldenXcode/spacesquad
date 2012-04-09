@@ -204,7 +204,7 @@ public class PlayerStep implements StepHandler{
 		
 		
 		killPlayer();
-		SoundEffects.getInstance().explosion.play();
+		SoundEffects.getInstance().explosion.play(0.5f);
 		
 	}
 	@Override

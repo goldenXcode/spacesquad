@@ -43,6 +43,7 @@ public class Level8 extends BasicLevel{
 		
 		i_stepCounter = 0;
 		myWalls.setColour(new Color(0,0,1,1));
+		
 	}
 	
 	@Override
@@ -54,18 +55,62 @@ public class Level8 extends BasicLevel{
 			in_manager.spawnDifficultyIcon(in_logicEngine);
 		}
 		
-		if(i_stepCounter %400 == 0)
-			in_manager.spawnRandomPowerup(in_logicEngine, (float) (Math.random()* LogicEngine.SCREEN_WIDTH));
+		//spawn powerups
+		if(i_stepCounter%400 == 0)
+			in_manager.spawnRandomPowerup(in_logicEngine, (float) (Math.random()*LogicEngine.SCREEN_WIDTH));
+
 		
+		//waves of pathfinders 0-500
+		if(i_stepCounter >= 80  && i_stepCounter < 80+80)
+		{
+			
+			if(i_stepCounter % 80 == 10)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 40));
+			else
+			if(i_stepCounter % 80 == 13)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 55));
+			else
+			if(i_stepCounter % 80 == 16)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 70));
+			else
+			if(i_stepCounter % 80 == 19)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 85));
+			else
+			if(i_stepCounter % 80 == 22)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 100));
+			
+		}
+				
+		if(i_stepCounter >= 150  && i_stepCounter < 150+80)
+		{
+			if(i_stepCounter % 80 == 40)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 100));
+			else
+			if(i_stepCounter % 80 == 43)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 85));
+			else
+			if(i_stepCounter % 80 == 46)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 70));
+			else
+			if(i_stepCounter % 80 == 49)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 55));
+			else
+			if(i_stepCounter % 80 == 52)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 40));
+		
+		}
 		/////////////////////////BUBBLES ////////////////////////////////////////
 		if(i_stepCounter < 500)
 		{
 			if(i_stepCounter%150==0)
-				spawnBubble(in_logicEngine,LogicEngine.SCREEN_WIDTH/3);
+				in_manager.spawnBubble(in_logicEngine,LogicEngine.SCREEN_WIDTH/3);
 			
 			if(i_stepCounter%150==75)
-				spawnBubble(in_logicEngine,(LogicEngine.SCREEN_WIDTH*2)/3);
+				in_manager.spawnBubble(in_logicEngine,(LogicEngine.SCREEN_WIDTH*2)/3);
 		}
+		
+		if(i_stepCounter ==500)
+			myWalls.setBlockSpeed(in_logicEngine, 16, i_stepCounter);
 		
 		if(i_stepCounter > 500 && i_stepCounter < 850)
 		{
@@ -79,11 +124,13 @@ public class Level8 extends BasicLevel{
 						((FlyStraightStep)slime.stepHandlers.get(i)).setXY(0, -8);
 			}
 			
+		
+			
 			///////////////////////// TUNNEL ////////////////////////////////////////
 			if(i_stepCounter < 600)
 			{
 			
-				myWalls.i_tunnelSpeed = 16;
+				
 				
 				myWalls.f_maximumBlockWidth = LogicEngine.SCREEN_WIDTH - 135;
 				
@@ -136,23 +183,62 @@ public class Level8 extends BasicLevel{
 		}
 		//////////////// WAVE RIDERS //////////////////////////////////
 		if(i_stepCounter == 800)
-			spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
+			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
 		
 		if(i_stepCounter == 1000)
-			spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
+			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
 		
+		
+		//waves of pathfinders 0-500
+		if(i_stepCounter >= 800  && i_stepCounter < 1400)
+		{
+			
+			if(i_stepCounter % 80 == 10)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 40));
+			else
+			if(i_stepCounter % 80 == 13)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 55));
+			else
+			if(i_stepCounter % 80 == 16)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 70));
+			else
+			if(i_stepCounter % 80 == 19)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 85));
+			else
+			if(i_stepCounter % 80 == 22)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 + 100));
+			
+		}
+				
+		if(i_stepCounter >= 800  && i_stepCounter < 1400)
+		{
+			if(i_stepCounter % 80 == 40)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 100));
+			else
+			if(i_stepCounter % 80 == 43)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 85));
+			else
+			if(i_stepCounter % 80 == 46)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 70));
+			else
+			if(i_stepCounter % 80 == 49)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 55));
+			else
+			if(i_stepCounter % 80 == 52)
+				in_manager.pathFinderStraightDown(in_logicEngine, (int) (LogicEngine.SCREEN_WIDTH/2 - 40));
+		}
 		
 		if(i_stepCounter == 1200)
 		{
-			spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
-			spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
+			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
+			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
 		}
 		
 		
 		if(i_stepCounter == 1400)
 		{
-			spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
-			spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
+			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
+			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
 		}
 
 		///////////////////////// TUNNEL 2////////////////////////////////////////
@@ -195,8 +281,12 @@ public class Level8 extends BasicLevel{
 	
 		if(i_stepCounter >= 1800 && i_stepCounter <= 2600)
 		{
+			//spawn satelites
+			if( i_stepCounter %150==0)
+				in_manager.spawnSateliteShip(in_logicEngine, 100);
+			
 			if(i_stepCounter%120==0)
-				this.spawnBubble(in_logicEngine, (float) (r.nextDouble() * in_logicEngine.SCREEN_WIDTH));
+				in_manager.spawnBubble(in_logicEngine, (float) (r.nextDouble() * in_logicEngine.SCREEN_WIDTH));
 		
 			if(i_stepCounter%20==0)
 				in_manager.spawnAsteroid(in_logicEngine, (int)(Math.random()*10.0f),(float)(Math.random()*320.0+1.0f),false);
@@ -205,16 +295,17 @@ public class Level8 extends BasicLevel{
 		
 		if(i_stepCounter == 2650)
 			{
-				spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/5);
-				spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/4);
-				spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*3)/4);
+				in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/5);
+				in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/4);
+				in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*3)/4);
 			}
 		
 		
 		
 		if(i_stepCounter == BOSS_STEP)
 		{
-			myWalls.i_tunnelSpeed = 8;
+			myWalls.setBlockSpeed(in_logicEngine, 8, i_stepCounter);
+
 			myWalls.narrowTunnel();
 		}
 		
@@ -226,7 +317,7 @@ public class Level8 extends BasicLevel{
 			myWalls.setBlockSpeed(in_logicEngine, 0,i_stepCounter);
 			myWalls.makeHarmless();
 			this.b_bossSpawned = true;
-			in_logicEngine.objectsEnemies.add(spawnBoss(in_logicEngine));
+			in_logicEngine.objectsEnemies.add(spawnBoss(in_logicEngine,in_manager));
 		}
 		
 		if(i_stepCounter==BOSS_STEP-100)
@@ -246,7 +337,7 @@ public class Level8 extends BasicLevel{
 	
 	Arrive boss_arrive = new Arrive();
 	
-	private GameObject spawnBoss(LogicEngine in_logicEngine)
+	private GameObject spawnBoss(LogicEngine in_logicEngine,LevelManager in_manager)
 	{
 		//75 x 93 - redcube.png - row 1 column 0
 		//eye 3x0 -  8x8
@@ -292,8 +383,8 @@ public class Level8 extends BasicLevel{
 		//initial velocity of first one 
 		boss.v.setVel(new Vector2d(0,-5));
 		
-		GameObject Tadpole1 = spawnTadpole(in_logicEngine);
-		GameObject Tadpole2 = spawnTadpole(in_logicEngine);
+		GameObject Tadpole1 = in_manager.spawnTadpole(in_logicEngine);
+		GameObject Tadpole2 = in_manager.spawnTadpole(in_logicEngine);
 		
 		GameObject Bubble = null;
 		
@@ -353,8 +444,8 @@ public class Level8 extends BasicLevel{
 		//every 50 set a new target
 		if(i_stepBoss%50 == 0)
 		{
-			
-			boss_arrive.setTargetXY(r.nextFloat()*LogicEngine.SCREEN_WIDTH,r.nextFloat()*LogicEngine.SCREEN_HEIGHT);
+			//set target to somewhere random in the top half of the screen
+			boss_arrive.setTargetXY(r.nextFloat()*LogicEngine.SCREEN_WIDTH,(r.nextFloat()*(LogicEngine.SCREEN_HEIGHT/2))+(LogicEngine.SCREEN_HEIGHT/2));
 		}
 		
 		if(i_stepBoss == i_bossBubbleEvery)
@@ -436,184 +527,6 @@ public class Level8 extends BasicLevel{
 	}
 	
 	
-	private GameObject spawnWaveRider(LogicEngine in_logicEngine,float in_x)
-	{
-		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,in_logicEngine.SCREEN_HEIGHT+25,0);
-		
-		go.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		go.i_animationFrameSizeWidth=40;
-		go.i_animationFrameSizeHeight=43;
-		go.i_animationFrameRow = 1;
-		go.i_animationFrame = 0;
-		//go.rotateToV = true;
-		
-		go.v.setMaxForce(2.5);
-		go.v.setMaxVel(0.5);
-		
-		
-		
-		CustomBehaviourStep cb = new CustomBehaviourStep(new Wander(-2.5,2.5,20,0.1));
-		go.stepHandlers.add( cb);
-		go.stepHandlers.add(new FlyStraightStep(new Vector2d(0,-2)));
-		
-		HitpointShipCollision collision = new HitpointShipCollision(go, 15, 25);
-		
-		if(Difficulty.isMedium() || Difficulty.isHard())
-		{
-			collision.f_numberOfHitpoints = 20;
-			go.v.setMaxVel(0.3);
-		}
-		
-		collision.setExplosion(Utils.getMiniBossExplosion(go));
-		go.collisionHandler = collision;
-		
-		LaunchShipsStep l1 = new LaunchShipsStep( spawnTadpole(in_logicEngine), 50, 5, 1, false);
-		LaunchShipsStep l2 = new LaunchShipsStep( spawnTadpole(in_logicEngine), 50, 5, 1, true);
-		l1.b_addToBullets = true;
-		l2.b_addToBullets = true;
 	
-		if(Difficulty.isMedium())
-		{
-			l1.i_launchEvery = 40;
-			l2.i_launchEvery = 40;
-			
-		}
-		else
-		if(Difficulty.isHard())
-		{
-			l1.i_launchEvery = 30;
-			l2.i_launchEvery = 30;
-		}
-		go.stepHandlers.add(l1);
-		go.stepHandlers.add(l2);
 	
-		in_logicEngine.objectsEnemies.add(go);
-		
-		//bullet/
-		//75 * 12
-		return null;
-	}
-	
-	private GameObject spawnTadpole(LogicEngine in_logicEngine)
-	{
-		
-		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/triangle.png",0,0,0);
-		
-		go.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		go.i_animationFrameSizeWidth=5;
-		go.i_animationFrameSizeHeight=16;
-		go.i_animationFrameRow = 1;
-		go.i_animationFrame = 1;
-		go.rotateToV = true;
-		go.stepHandlers.add( new SeekNearestPlayerStep(1000));
-		go.v.setMaxForce(0.25f);
-		go.v.setMaxVel(5);
-		go.collisionHandler = new DestroyIfEnemyCollision(go, 5, true);
-		
-		TimedLifeStep destroyAfter = new TimedLifeStep(100);
-		destroyAfter.explosion = Utils.getSimpleExplosion();
-		go.stepHandlers.add(destroyAfter);
-		
-		return go;
-	}
-	
-	private GameObject spawnBubble(LogicEngine in_logicEngine,float in_x)
-	{
-		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,LogicEngine.rect_Screen.getHeight()+20,0);
-		
-		//lethal to everyone
-		go.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		
-	//	double xDrift = (Math.random()*2.0)-1.0;
-		go.i_animationFrameSizeWidth=40;
-		go.i_animationFrameSizeHeight=37;
-		go.i_animationFrame = 0;
-		
-		
-		go.v.setMaxForce(0.1);
-		go.v.setMaxVel(3);
-		go.stepHandlers.add( new SeekNearestPlayerStep(1000));
-		
-		//hitpoint collision with explosion
-		SplitCollision c =  new SplitCollision(go,4, 32.0);
-		c.setSimpleExplosion();
-		c.c_flashColor = new Color(0,0,1,1);
-		
-		//---------------SUB BUBBLE---------------
-		for(int i=0;i<2;i++)
-		{
-			GameObject go2 = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);
-			go2.i_animationFrameRow = 0;
-			go2.i_animationFrame =0;
-			go2.i_animationFrameSizeWidth =40;
-			go2.i_animationFrameSizeHeight =37;
-			go2.f_forceScaleX = 0.75f;
-			go2.f_forceScaleY = 0.75f;
-			go2.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-	
-			if(i==0)
-				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-1)));
-			if(i==1)
-				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-1)));
-			if(i==2)
-				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-2)));
-			if(i==3)
-				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-2)));
-			
-			go2.v.setMaxForce(2);
-			go2.v.setMaxVel(3);
-			go2.stepHandlers.add( new SeekNearestPlayerStep(1000));
-			
-			SplitCollision c2 =  new SplitCollision(go2,4, 25.0);
-			
-			//-------------SUB-SUB BUBBLE--------------
-			for(int j=0;j<4;j++)
-			{
-				GameObject go3 = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);
-				go3.i_animationFrameRow = 0;
-				go3.i_animationFrame =0;
-				go3.i_animationFrameSizeWidth =40;
-				go3.i_animationFrameSizeHeight =37;
-				go3.f_forceScaleX = 0.5f;
-				go3.f_forceScaleY = 0.5f;
-				go3.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		
-				if(j==0)
-					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-1)));
-				if(j==1)
-					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-2)));
-				if(j==2)
-					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-1)));
-				if(j==3)
-					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-2)));
-				
-				
-				HitpointShipCollision c3 =  new HitpointShipCollision(go3,1, 15.0);
-				
-				c3.setSimpleExplosion();
-				
-				go3.collisionHandler = c3;
-				
-				go3.v.setMaxForce(2);
-				go3.v.setMaxVel(3);
-				go3.stepHandlers.add( new SeekNearestPlayerStep(1000));
-				
-				c2.splitObjects.add(go3);
-			}
-			
-			//set the bubble to pop into another bubble
-			
-			c2.c_flashColor = new Color(0,0,1,1);
-			c2.setSimpleExplosion();
-			c.splitObjects.add(go2);
-			go2.collisionHandler = c2;
-		}
-
-		go.collisionHandler = c;
-		
-		in_logicEngine.objectsEnemies.add(go);
-		
-		return go;
-	
-	}
 }

@@ -119,7 +119,7 @@ public class Level7 implements Level{
 		{
 
 			if(i_stepCounter==350)
-				this.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH /2,CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
+				in_manager.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH /2,CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
 			
 			if(i_stepCounter %200 == 0 )
 			{
@@ -130,7 +130,7 @@ public class Level7 implements Level{
 			}
 			
 			if(i_stepCounter==1300)
-				this.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH /3,CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
+				in_manager.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH /3,CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
 		}
 		
 		
@@ -193,8 +193,8 @@ public class Level7 implements Level{
 		{	
 			if(i_stepCounter == 2500)
 			{
-				finalCarrier1 = this.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH/3,CARRIER_TYPE.PATHFINDERS_LEFT_ONLY);
-				finalCarrier2 = this.spawnCarrier(in_logicEngine, (int)(LogicEngine.SCREEN_WIDTH/1.5),CARRIER_TYPE.PATHFINDERS_RIGHT_ONLY);
+				finalCarrier1 = in_manager.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH/3,CARRIER_TYPE.PATHFINDERS_LEFT_ONLY);
+				finalCarrier2 = in_manager.spawnCarrier(in_logicEngine, (int)(LogicEngine.SCREEN_WIDTH/1.5),CARRIER_TYPE.PATHFINDERS_RIGHT_ONLY);
 				
 				finalCarrier1.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-1.5)));
 				finalCarrier2.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-1.5)));
@@ -392,135 +392,10 @@ public class Level7 implements Level{
 		
 	}
 	
-	public GameObject spawnCarrier(LogicEngine in_logicEngine, float in_x , CARRIER_TYPE in_type)
-	{
-		
-		//spawn left and right halves next to one another
-		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/thrusterboss.png",in_x,LogicEngine.SCREEN_HEIGHT+64,30);
-		
-		
-		//set animation frame
-		ship.i_animationFrame=4;
-		ship.i_animationFrameRow=0;
-		ship.i_animationFrameSizeWidth=32;
-		ship.i_animationFrameSizeHeight=132;
-		
-		SimplePathfollowing followPathBehaviour = new SimplePathfollowing();
-		//pause at the first waypoint
-		followPathBehaviour.waitAtWaypoint(1, 50);
-		
-		followPathBehaviour.setInfluence(1);
-		followPathBehaviour.setAttribute("arrivedistance", "50", null);
-		
-		followPathBehaviour.waitAtWaypoint(1, 300);
-		
-		//go straight down then split
-		ship.v.addWaypoint(new Point2d(in_x, LogicEngine.SCREEN_HEIGHT/1.5));
-		ship.v.addWaypoint(new Point2d(in_x,-100));
-		
-		CustomBehaviourStep b = new CustomBehaviourStep(followPathBehaviour);
-		
-		//turret
-		//turret
-		Drawable turret = new Drawable();
-		turret.i_animationFrame = 6;
-		turret.i_animationFrameSizeWidth=16;
-		turret.i_animationFrameSizeHeight=16;
-		turret.str_spritename = "data/"+GameRenderer.dpiFolder+"/gravitonlevel.png";
-		turret.f_forceRotation = 90;
-		ship.shotHandler = new TurretShot(turret,"data/"+GameRenderer.dpiFolder+"/redbullets.png",6,5.0f);
-		ship.visibleBuffs.add(turret);
-		
-		ship.v.setMaxForce(1);
-		ship.v.setMaxVel(1);
-		
-		ship.stepHandlers.add(b);
-		
-		HitpointShipCollision s;
-		if(!Difficulty.isHard())
-			 s = new HitpointShipCollision(ship, 50, 32);
-		else
-			 s = new HitpointShipCollision(ship, 50, 32);
-			
-		s.setExplosion(Utils.getBossExplosion(ship));
-		ship.collisionHandler = s; 
-	
-		//TODO:launch ships handler for shooting
-		if(in_type == CARRIER_TYPE.PATHFINDERS_BOTH_SIDES)
-		{
-			ship.stepHandlers.add(new LaunchShipsStep(pathFinder(true), 50, 5, 5,true));
-			ship.stepHandlers.add(new LaunchShipsStep(pathFinder(false), 50, 5, 5,false));
-		}
-		else
-			if(in_type == CARRIER_TYPE.PATHFINDERS_RIGHT_ONLY)
-			{
-				ship.stepHandlers.add(new LaunchShipsStep(pathFinder(true), 50, 5, 5,true));
-			}
-			else
-				if(in_type == CARRIER_TYPE.PATHFINDERS_LEFT_ONLY)
-				{
-					ship.stepHandlers.add(new LaunchShipsStep(pathFinder(false), 50, 5, 5,false));
-				}
-						 
-		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		
-		in_logicEngine.objectsEnemies.add(ship);
-		
-		return ship;
-	
-	}
-	
-	
-	private GameObject pathFinder(boolean b_goRight)
-	{
-		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/triangle.png",(LogicEngine.SCREEN_WIDTH+10),LogicEngine.SCREEN_HEIGHT-10,0);
-		
-		ship.setRotateToVelocity(true);
-		ship.i_animationFrame=0;
-		ship.i_animationFrameSizeWidth=16;
-		ship.i_animationFrameSizeHeight=16;
-		
-		SimplePathfollowing followPathBehaviour = new SimplePathfollowing();
-		followPathBehaviour.setInfluence(1);
-		
-		followPathBehaviour.setAttribute("arrivedistance", "50", null);
-		
-		if(b_goRight)
-			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2 + 75,LogicEngine.SCREEN_HEIGHT/1.5));
-		else
-			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2 - 75,LogicEngine.SCREEN_HEIGHT/1.5));
-		
-		ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2,25));
-		
-		if(b_goRight)
-			ship.v.addWaypoint(new Point2d(50,50));
-		else
-			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH-50,50));
-		
-		
-		if(b_goRight)
-			ship.v.addWaypoint(new Point2d(50,Integer.MAX_VALUE));
-		else
-			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH-50,Integer.MAX_VALUE));
-		
+	@Override
+	public void gameOver(LogicEngine in_logicEngine) {
 
 		
-		CustomBehaviourStep b = new CustomBehaviourStep(followPathBehaviour);
-		
-		
-		ship.v.setMaxForce(2.5);
-		ship.v.setMaxVel(7.5);
-		
-	
-		
-		ship.stepHandlers.add(b);		
-		ship.collisionHandler = new DestroyIfEnemyCollision(ship, 6, true);
-		
-		
-		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		
-		return ship;
 	}
-
 
 }

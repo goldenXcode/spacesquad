@@ -16,6 +16,11 @@ public abstract class BasicLevel implements Level
 	
 	GameObject boss=null;
 	
+	public void gameOver(LogicEngine in_logicEngine)
+	{
+		
+	}
+	
 	public boolean stepLevel(LevelManager in_manager, LogicEngine in_logicEngine) {
 		//level text
 		if(i_stepCounter==0)

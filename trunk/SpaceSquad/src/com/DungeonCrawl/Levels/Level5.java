@@ -43,7 +43,7 @@ public class Level5 extends BasicLevel{
 		{
 			//spawn satellites
 			if( i_stepCounter %100==0)
-				spawnSateliteShip(in_logicEngine, 100);
+				in_manager.spawnSateliteShip(in_logicEngine, 100);
 		}
 		
 		if(i_stepCounter==BOSS_STEP-100)
@@ -103,7 +103,7 @@ public class Level5 extends BasicLevel{
 			
 			//spawn satelites
 			if( i_stepCounter %150==0)
-				spawnSateliteShip(in_logicEngine, 100);
+				in_manager.spawnSateliteShip(in_logicEngine, 100);
 		}
 		
 		//Phase 4, boss
@@ -235,62 +235,6 @@ public class Level5 extends BasicLevel{
 		}
 	}
 	
-	public void spawnSateliteShip(LogicEngine in_logicEngine,float in_x)
-	{
-
-		
-		//spawn at left edge
-		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/gravitonlevel.png",in_x,LogicEngine.SCREEN_HEIGHT,1);
-		ship.i_animationFrameSizeWidth = 64;
-		ship.i_animationFrameSizeHeight = 32;
-		ship.i_animationFrame = 2;
-		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
-		
-		ship.v.setMaxForce(1.0f);
-		ship.v.setMaxVel(4.0f);
-		
-		
-		//fly down
-		//ship.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-1f)));
-		
-		SimplePathfollowing followPathBehaviour = new SimplePathfollowing();
-		followPathBehaviour.setInfluence(1);
-		followPathBehaviour.setAttribute("arrivedistance", "10", null);
-		
-		//add waypoints
-		for(int i=0 ; i< 20 ; i++)
-		{
-						
-			//put in some edge ones too
-			if(r.nextInt(6)%3==0)
-				ship.v.addWaypoint(new Point2d((int) LogicEngine.SCREEN_WIDTH * (i%2), LogicEngine.SCREEN_HEIGHT/1.5 + r.nextInt((int) LogicEngine.SCREEN_HEIGHT/5)));
-			else
-				//put in some random doublebacks etc
-				ship.v.addWaypoint(new Point2d(r.nextInt((int) LogicEngine.SCREEN_WIDTH), LogicEngine.SCREEN_HEIGHT/1.5 + r.nextInt((int) LogicEngine.SCREEN_HEIGHT/5)));
-		}
-		ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2, -100));
-		
-		if(Difficulty.isEasy())
-			ship.shotHandler = new BeamShot(50);
-		else
-		if(Difficulty.isMedium())
-			ship.shotHandler = new BeamShot(40);
-		else
-		if(Difficulty.isHard())
-			ship.shotHandler = new BeamShot(30);
-		
-		CustomBehaviourStep b = new CustomBehaviourStep(followPathBehaviour);
-		ship.stepHandlers.add(b);
-		
-		//destroy ships that get too close
-		HitpointShipCollision hps = new HitpointShipCollision(ship, 10, 32);
-		hps.setSimpleExplosion();
-		
-		ship.collisionHandler = hps; 
-		
-		in_logicEngine.objectsEnemies.add(ship);	
-	
-	}
 	
 	
 	

@@ -11,17 +11,22 @@ import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.TextDisplaying;
 import com.DungeonCrawl.UI_LevelSelect;
+import com.DungeonCrawl.Utils;
 import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Collisions.PlayerCollision;
 import com.DungeonCrawl.Collisions.PowerupCollision;
+import com.DungeonCrawl.Collisions.SplitCollision;
 import com.DungeonCrawl.GameObject.ALLEGIANCES;
+import com.DungeonCrawl.Levels.Level7.CARRIER_TYPE;
 import com.DungeonCrawl.Powerups.DualFirePowerup;
+import com.DungeonCrawl.Powerups.MinesPowerup;
 import com.DungeonCrawl.Powerups.MissilePowerup;
 import com.DungeonCrawl.Powerups.MovementPowerup;
 import com.DungeonCrawl.Powerups.Powerup;
 import com.DungeonCrawl.Powerups.RapidFirePowerup;
 import com.DungeonCrawl.Powerups.ShieldPowerup;
+import com.DungeonCrawl.Powerups.SlowFieldPowerup;
 import com.DungeonCrawl.Powerups.WingmenPowerup;
 import com.DungeonCrawl.Shooting.BeamShot;
 import com.DungeonCrawl.Shooting.ExplodeIfInRange;
@@ -30,6 +35,7 @@ import com.DungeonCrawl.Shooting.TurretShot;
 import com.DungeonCrawl.Steps.AnimateRollStep;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;
+import com.DungeonCrawl.Steps.LaunchShipsStep;
 import com.DungeonCrawl.Steps.LoopingAnimationStep;
 import com.DungeonCrawl.Steps.PlayerStep;
 import com.DungeonCrawl.Steps.PullShipsStep;
@@ -60,7 +66,7 @@ public class LevelManager
 	}
 	
 	Level level0 = null;
-	Level1 level1 = null;
+	BasicLevel level1 = null;
 	Level2 level2 = null;
 	Level3 level3 = null;
 	Level4 level4 = null;
@@ -77,7 +83,6 @@ public class LevelManager
 	public void newBossRunGame(LogicEngine in_logicEngine) {
 	
 		level = 1;
-		
 		
 		//reload all levels
 		initLevels(in_logicEngine);
@@ -102,6 +107,21 @@ public class LevelManager
 		in_logicEngine.resAllDeadPlayers();
 		in_logicEngine.MyLifeCounter.refreshLives();
 		
+	}
+	
+	public void newSurvivalGame(LogicEngine in_logicEngine) {
+		level = 1;
+		
+		//reload all levels
+		level1 = new SurvivalLevel();
+		
+		clearStuff(in_logicEngine);
+		createPlayers(in_logicEngine);
+	
+		b_refreshLivesBetweenLevels = false;
+		
+		in_logicEngine.resAllDeadPlayers();
+		in_logicEngine.MyLifeCounter.refreshLives();
 	}
 	
 	
@@ -150,6 +170,7 @@ public class LevelManager
 		in_logicEngine.objectsPlayers.clear();
 		in_logicEngine.objectsOverlay.clear();
 		in_logicEngine.currentTextBeingDisplayed.clear();
+		
 		in_logicEngine.currentAreaEffects.clear();
 		
 	}
@@ -243,10 +264,13 @@ public class LevelManager
 		HitpointShipCollision c = new HitpointShipCollision(mine,3,10);
 		c.setSimpleExplosion();
 		
+		mine.collisionHandler =c; 
+		mine.allegiance = GameObject.ALLEGIANCES.ENEMIES;		
+		
+		
 		mine.shotHandler = new ExplodeIfInRange(true);
 		
-		mine.collisionHandler =c; 
-		mine.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+
 		
 		in_logicEngine.objectsObstacles.add(mine);
 		
@@ -402,7 +426,7 @@ public class LevelManager
 		go.i_animationFrameRow = 0;
 		Powerup p=null;
 
-		switch(r.nextInt(5))
+		switch(r.nextInt(7))
 		{
 		case 0:
 			 p = new ShieldPowerup();
@@ -434,7 +458,22 @@ public class LevelManager
 			go.i_animationFrame=1;
 			go.i_animationFrameRow=1;
 			//apply powerup once only!
-			go.collisionHandler = new PowerupCollision(p,true);			
+			go.collisionHandler = new PowerupCollision(p,true);
+			break;
+		case 5 : 
+			p= new MinesPowerup();
+			go.i_animationFrame=2;
+			go.i_animationFrameRow=1;
+			//apply powerup once only!
+			go.collisionHandler = new PowerupCollision(p,false);		
+			break;
+		case 6 : 
+			p= new SlowFieldPowerup();
+			go.i_animationFrame=3;
+			go.i_animationFrameRow=1;
+			//apply powerup once only!
+			go.collisionHandler = new PowerupCollision(p,false);		
+			break;
 		}
 		
 		
@@ -471,6 +510,165 @@ public class LevelManager
 	
 		in_logicEngine.objectsEnemies.add(go);
 	}
+	
+	
+	GameObject spawnBubble(LogicEngine in_logicEngine,float in_x)
+	{
+		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,LogicEngine.rect_Screen.getHeight()+20,0);
+		
+		//lethal to everyone
+		go.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		
+	//	double xDrift = (Math.random()*2.0)-1.0;
+		go.i_animationFrameSizeWidth=40;
+		go.i_animationFrameSizeHeight=37;
+		go.i_animationFrame = 0;
+		
+		
+		go.v.setMaxForce(0.1);
+		go.v.setMaxVel(3);
+		go.stepHandlers.add( new SeekNearestPlayerStep(1000));
+		
+		//hitpoint collision with explosion
+		SplitCollision c =  new SplitCollision(go,4, 32.0);
+		c.setSimpleExplosion();
+		c.c_flashColor = new Color(0,0,1,1);
+		
+		//---------------SUB BUBBLE---------------
+		for(int i=0;i<2;i++)
+		{
+			GameObject go2 = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);
+			go2.i_animationFrameRow = 0;
+			go2.i_animationFrame =0;
+			go2.i_animationFrameSizeWidth =40;
+			go2.i_animationFrameSizeHeight =37;
+			go2.f_forceScaleX = 0.75f;
+			go2.f_forceScaleY = 0.75f;
+			go2.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+	
+			if(i==0)
+				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-1)));
+			if(i==1)
+				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-1)));
+			if(i==2)
+				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-2)));
+			if(i==3)
+				go2.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-2)));
+			
+			go2.v.setMaxForce(2);
+			go2.v.setMaxVel(3);
+			go2.stepHandlers.add( new SeekNearestPlayerStep(1000));
+			
+			SplitCollision c2 =  new SplitCollision(go2,4, 25.0);
+			
+			//-------------SUB-SUB BUBBLE--------------
+			for(int j=0;j<4;j++)
+			{
+				GameObject go3 = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);
+				go3.i_animationFrameRow = 0;
+				go3.i_animationFrame =0;
+				go3.i_animationFrameSizeWidth =40;
+				go3.i_animationFrameSizeHeight =37;
+				go3.f_forceScaleX = 0.5f;
+				go3.f_forceScaleY = 0.5f;
+				go3.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		
+				if(j==0)
+					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-1)));
+				if(j==1)
+					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(-1,-2)));
+				if(j==2)
+					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-1)));
+				if(j==3)
+					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-2)));
+				
+				
+				HitpointShipCollision c3 =  new HitpointShipCollision(go3,1, 15.0);
+				
+				c3.setSimpleExplosion();
+				
+				go3.collisionHandler = c3;
+				
+				go3.v.setMaxForce(2);
+				go3.v.setMaxVel(3);
+				go3.stepHandlers.add( new SeekNearestPlayerStep(1000));
+				
+				c2.splitObjects.add(go3);
+			}
+			
+			//set the bubble to pop into another bubble
+			
+			c2.c_flashColor = new Color(0,0,1,1);
+			c2.setSimpleExplosion();
+			c.splitObjects.add(go2);
+			go2.collisionHandler = c2;
+		}
+
+		go.collisionHandler = c;
+		
+		in_logicEngine.objectsEnemies.add(go);
+		
+		return go;
+	
+	}
+	
+	public void spawnSateliteShip(LogicEngine in_logicEngine,float in_x)
+	{
+
+		
+		//spawn at left edge
+		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/gravitonlevel.png",in_x,LogicEngine.SCREEN_HEIGHT,1);
+		ship.i_animationFrameSizeWidth = 64;
+		ship.i_animationFrameSizeHeight = 32;
+		ship.i_animationFrame = 2;
+		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		
+		ship.v.setMaxForce(1.0f);
+		ship.v.setMaxVel(4.0f);
+		
+		
+		//fly down
+		//ship.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-1f)));
+		
+		SimplePathfollowing followPathBehaviour = new SimplePathfollowing();
+		followPathBehaviour.setInfluence(1);
+		followPathBehaviour.setAttribute("arrivedistance", "10", null);
+		
+		//add waypoints
+		for(int i=0 ; i< 20 ; i++)
+		{
+						
+			//put in some edge ones too
+			if(r.nextInt(6)%3==0)
+				ship.v.addWaypoint(new Point2d((int) LogicEngine.SCREEN_WIDTH * (i%2), LogicEngine.SCREEN_HEIGHT/1.5 + r.nextInt((int) LogicEngine.SCREEN_HEIGHT/5)));
+			else
+				//put in some random doublebacks etc
+				ship.v.addWaypoint(new Point2d(r.nextInt((int) LogicEngine.SCREEN_WIDTH), LogicEngine.SCREEN_HEIGHT/1.5 + r.nextInt((int) LogicEngine.SCREEN_HEIGHT/5)));
+		}
+		ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2, -100));
+		
+		if(Difficulty.isEasy())
+			ship.shotHandler = new BeamShot(50);
+		else
+		if(Difficulty.isMedium())
+			ship.shotHandler = new BeamShot(40);
+		else
+		if(Difficulty.isHard())
+			ship.shotHandler = new BeamShot(30);
+		
+		CustomBehaviourStep b = new CustomBehaviourStep(followPathBehaviour);
+		ship.stepHandlers.add(b);
+		
+		//destroy ships that get too close
+		HitpointShipCollision hps = new HitpointShipCollision(ship, 10, 32);
+		hps.setSimpleExplosion();
+		
+		ship.collisionHandler = hps; 
+		
+		in_logicEngine.objectsEnemies.add(ship);	
+	
+	}
+	
 
 	private void loadNextLevel(LogicEngine in_logicEngine)
 	{
@@ -503,10 +701,28 @@ public class LevelManager
 		level++;
 				
 	}
+	public Level getCurrentLevel() {
+		
+		switch(level)
+		{
+			case 0: return level0;
+			case 1: return level1;
+			case 2: return level2;
+			case 3: return level3;
+			case 4: return level4;
+			case 5: return level5;
+			case 6: return level6;
+			case 7: return level7;
+			case 8: return level8;
+			case 9: return level9;
+			case 10: return level10;
+			case 11: return level11;
+			default: return null;
+		}
+	}
+	
 	public void handleStep(LogicEngine in_logicEngine)
 	{	
-		
-		
 		switch(level)
 		{
 			case 0: if(level0.stepLevel(this, in_logicEngine))
@@ -557,8 +773,6 @@ public class LevelManager
 				loadNextLevel(in_logicEngine);
 			break;
 		}
-
-	
 	}
 	
 	//create dense mine wave
@@ -748,6 +962,214 @@ public class LevelManager
 		in_logicEngine.objectsObstacles.add(ship);	
 	}
 	
+	public GameObject spawnCarrier(LogicEngine in_logicEngine, float in_x , CARRIER_TYPE in_type)
+	{
+		
+		//spawn left and right halves next to one another
+		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/thrusterboss.png",in_x,LogicEngine.SCREEN_HEIGHT+64,30);
+		
+		
+		//set animation frame
+		ship.i_animationFrame=4;
+		ship.i_animationFrameRow=0;
+		ship.i_animationFrameSizeWidth=32;
+		ship.i_animationFrameSizeHeight=132;
+		
+		SimplePathfollowing followPathBehaviour = new SimplePathfollowing();
+		//pause at the first waypoint
+		followPathBehaviour.waitAtWaypoint(1, 50);
+		
+		followPathBehaviour.setInfluence(1);
+		followPathBehaviour.setAttribute("arrivedistance", "50", null);
+		
+		followPathBehaviour.waitAtWaypoint(1, 300);
+		
+		//go straight down then split
+		ship.v.addWaypoint(new Point2d(in_x, LogicEngine.SCREEN_HEIGHT/1.5));
+		ship.v.addWaypoint(new Point2d(in_x,-100));
+		
+		CustomBehaviourStep b = new CustomBehaviourStep(followPathBehaviour);
+		
+		//turret
+		//turret
+		Drawable turret = new Drawable();
+		turret.i_animationFrame = 6;
+		turret.i_animationFrameSizeWidth=16;
+		turret.i_animationFrameSizeHeight=16;
+		turret.str_spritename = "data/"+GameRenderer.dpiFolder+"/gravitonlevel.png";
+		turret.f_forceRotation = 90;
+		ship.shotHandler = new TurretShot(turret,"data/"+GameRenderer.dpiFolder+"/redbullets.png",6,5.0f);
+		ship.visibleBuffs.add(turret);
+		
+		ship.v.setMaxForce(1);
+		ship.v.setMaxVel(1);
+		
+		ship.stepHandlers.add(b);
+		
+		HitpointShipCollision s;
+		if(!Difficulty.isHard())
+			 s = new HitpointShipCollision(ship, 50, 32);
+		else
+			 s = new HitpointShipCollision(ship, 50, 32);
+			
+		s.setExplosion(Utils.getBossExplosion(ship));
+		ship.collisionHandler = s; 
+	
+		//TODO:launch ships handler for shooting
+		if(in_type == CARRIER_TYPE.PATHFINDERS_BOTH_SIDES)
+		{
+			ship.stepHandlers.add(new LaunchShipsStep(pathFinder(true), 50, 5, 5,true));
+			ship.stepHandlers.add(new LaunchShipsStep(pathFinder(false), 50, 5, 5,false));
+		}
+		else
+			if(in_type == CARRIER_TYPE.PATHFINDERS_RIGHT_ONLY)
+			{
+				ship.stepHandlers.add(new LaunchShipsStep(pathFinder(true), 50, 5, 5,true));
+			}
+			else
+				if(in_type == CARRIER_TYPE.PATHFINDERS_LEFT_ONLY)
+				{
+					ship.stepHandlers.add(new LaunchShipsStep(pathFinder(false), 50, 5, 5,false));
+				}
+						 
+		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		
+		in_logicEngine.objectsEnemies.add(ship);
+		
+		return ship;
+	
+	}
+	
+	
+	private GameObject pathFinder(boolean b_goRight)
+	{
+		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/triangle.png",(LogicEngine.SCREEN_WIDTH+10),LogicEngine.SCREEN_HEIGHT-10,0);
+		
+		ship.setRotateToVelocity(true);
+		ship.i_animationFrame=0;
+		ship.i_animationFrameSizeWidth=16;
+		ship.i_animationFrameSizeHeight=16;
+		
+		SimplePathfollowing followPathBehaviour = new SimplePathfollowing();
+		followPathBehaviour.setInfluence(1);
+		
+		followPathBehaviour.setAttribute("arrivedistance", "50", null);
+		
+		if(b_goRight)
+			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2 + 75,LogicEngine.SCREEN_HEIGHT/1.5));
+		else
+			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2 - 75,LogicEngine.SCREEN_HEIGHT/1.5));
+		
+		ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH/2,25));
+		
+		if(b_goRight)
+			ship.v.addWaypoint(new Point2d(50,50));
+		else
+			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH-50,50));
+		
+		
+		if(b_goRight)
+			ship.v.addWaypoint(new Point2d(50,Integer.MAX_VALUE));
+		else
+			ship.v.addWaypoint(new Point2d(LogicEngine.SCREEN_WIDTH-50,Integer.MAX_VALUE));
+		
+
+		
+		CustomBehaviourStep b = new CustomBehaviourStep(followPathBehaviour);
+		
+		
+		ship.v.setMaxForce(2.5);
+		ship.v.setMaxVel(7.5);
+		
+	
+		
+		ship.stepHandlers.add(b);		
+		ship.collisionHandler = new DestroyIfEnemyCollision(ship, 6, true);
+		
+		
+		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		
+		return ship;
+	}
+
+	GameObject spawnWaveRider(LogicEngine in_logicEngine,float in_x)
+	{
+		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,in_logicEngine.SCREEN_HEIGHT+25,0);
+		
+		go.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		go.i_animationFrameSizeWidth=40;
+		go.i_animationFrameSizeHeight=43;
+		go.i_animationFrameRow = 1;
+		go.i_animationFrame = 0;
+		//go.rotateToV = true;
+		
+		go.v.setMaxForce(2.5);
+		go.v.setMaxVel(100);
+
+		go.stepHandlers.add(new FlyStraightStep(new Vector2d(0,-2)));
+		
+		HitpointShipCollision collision = new HitpointShipCollision(go, 15, 25);
+		
+		if(Difficulty.isMedium() || Difficulty.isHard())
+		{
+			collision.f_numberOfHitpoints = 20;
+			go.v.setMaxVel(0.3);
+		}
+		
+		collision.setExplosion(Utils.getMiniBossExplosion(go));
+		go.collisionHandler = collision;
+		
+		LaunchShipsStep l1 = new LaunchShipsStep( spawnTadpole(in_logicEngine), 50, 5, 1, false);
+		LaunchShipsStep l2 = new LaunchShipsStep( spawnTadpole(in_logicEngine), 50, 5, 1, true);
+		l1.b_addToBullets = true;
+		l2.b_addToBullets = true;
+	
+		if(Difficulty.isMedium())
+		{
+			l1.i_launchEvery = 40;
+			l2.i_launchEvery = 40;
+			
+		}
+		else
+		if(Difficulty.isHard())
+		{
+			l1.i_launchEvery = 30;
+			l2.i_launchEvery = 30;
+		}
+		go.stepHandlers.add(l1);
+		go.stepHandlers.add(l2);
+	
+		in_logicEngine.objectsEnemies.add(go);
+		
+		//bullet/
+		//75 * 12
+		return null;
+	}
+	
+	GameObject spawnTadpole(LogicEngine in_logicEngine)
+	{
+		
+		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/triangle.png",0,0,0);
+		
+		go.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		go.i_animationFrameSizeWidth=5;
+		go.i_animationFrameSizeHeight=16;
+		go.i_animationFrameRow = 1;
+		go.i_animationFrame = 1;
+		go.rotateToV = true;
+		go.stepHandlers.add( new SeekNearestPlayerStep(1000));
+		go.v.setMaxForce(0.25f);
+		go.v.setMaxVel(5);
+		go.collisionHandler = new DestroyIfEnemyCollision(go, 5, true);
+		
+		TimedLifeStep destroyAfter = new TimedLifeStep(100);
+		destroyAfter.explosion = Utils.getSimpleExplosion();
+		go.stepHandlers.add(destroyAfter);
+		
+		return go;
+	}
+	
+	
 	public void pathFinderStraightDown(LogicEngine in_logicEngine , int in_x)
 	{
 		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/triangle.png",in_x,LogicEngine.SCREEN_HEIGHT+10,0);
@@ -918,6 +1340,11 @@ public class LevelManager
 			in_logicEngine.objectsEnemies.add(ship);
 		}
 	}
+
+
+
+
+	
 	
 
 }

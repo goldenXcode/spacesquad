@@ -8,7 +8,7 @@ import de.steeringbehaviors.simulation.renderer.Vector2d;
 public class FlyStraightStep implements StepHandler {
 
 	Vector2d velocity;
-	int i_offScreenCounter=0;
+	Vector2d currentVelocity;
 	boolean b_isAccelleration = false;
 	
 	public FlyStraightStep(Vector2d in_velocity)
@@ -23,33 +23,43 @@ public class FlyStraightStep implements StepHandler {
 	@Override
 	public boolean handleStep(LogicEngine in_theLogicEngine, GameObject o_runningOn) {
 		
+		
+		currentVelocity = new Vector2d(
+				velocity.getX(),
+				velocity.getY()
+				);
+				
+		if(currentVelocity.length()>1)
+			currentVelocity.normalize();
+		
+		currentVelocity.scale(Math.min(velocity.length(), o_runningOn.v.getMaxVel()));
+		
+		
+		
 		if(b_isAccelleration)
-			o_runningOn.v.addForce(velocity);
+			o_runningOn.v.addForce(currentVelocity);
 		else
 		{
-			o_runningOn.v.setVel(velocity);
-			o_runningOn.v.setX(o_runningOn.v.getX()+velocity.getX());
-			o_runningOn.v.setY(o_runningOn.v.getY()+velocity.getY());
+			o_runningOn.v.setVel(currentVelocity);
+			o_runningOn.v.setX(o_runningOn.v.getX()+currentVelocity.getX());
+			o_runningOn.v.setY(o_runningOn.v.getY()+currentVelocity.getY());
 			
 			//();
 			//o_runningOn.v.setY(o_runningOn.v.getY()+velocity.getY());
 		}
 		//if offscreen add to offscreen counter
 		if(LogicEngine.rect_Screen.inRect(o_runningOn.v.getPos())==false)
-			i_offScreenCounter++;
+			o_runningOn.i_offScreenCounter++;
 		else
-			i_offScreenCounter=0;
-
-		if(i_offScreenCounter >30 && !o_runningOn.isBoss)
-			return true;
-		else
-			// TODO Auto-generated method stub
-			return false;
+			o_runningOn.i_offScreenCounter=0;
+		
+		return false;
 	}
 
 	public void setXY(int x, float y) {
 		velocity.setX(x);
 		velocity.setY(y);
+		//TODO calling this is likely to result in bullets going slower than intended due to maxvel of vehicle
 		
 	}
 	
@@ -58,7 +68,7 @@ public class FlyStraightStep implements StepHandler {
 	{
 		FlyStraightStep s = new FlyStraightStep(velocity);
 		s.b_isAccelleration = b_isAccelleration;
-		s.i_offScreenCounter=i_offScreenCounter;
+		
 		
 		return s;
 	}

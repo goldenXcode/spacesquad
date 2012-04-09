@@ -36,6 +36,7 @@ public class StraightLineShot implements ShotHandler {
 	public void shoot(LogicEngine toRunIn,GameObject in_objectFiring) {
 		GameObject bullet = new GameObject(str_bulletImage,(float)in_objectFiring.v.getX() ,(float)in_objectFiring.v.getY(),0);
 		
+		
 		if(b_shootForwards)
 		{
 			direction = in_objectFiring.v.getVel();
@@ -44,7 +45,7 @@ public class StraightLineShot implements ShotHandler {
 		}
 		
 		
-		
+		bullet.v.setMaxVel(direction.length());
 		bullet.stepHandlers.add(new FlyStraightStep(direction));
 		
 		if(b_homing)

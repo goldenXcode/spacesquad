@@ -62,7 +62,8 @@ public class GameObject extends Drawable implements Cloneable, Comparable<GameOb
          
          
          try {
-			ship.collisionHandler = this.collisionHandler.cloneForShip(ship);
+        	 if(this.collisionHandler != null)
+        		 ship.collisionHandler = this.collisionHandler.cloneForShip(ship);
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

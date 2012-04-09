@@ -259,7 +259,7 @@ public class HitpointShipCollision implements CollisionHandler{
 			else
 				toRunIn.objectsOverlay.add(go_explosion);
 			//TODO:replace this with support for multiple sounds
-			SoundEffects.getInstance().explosion.play();
+			SoundEffects.getInstance().explosion.play(0.5f);
 		}
 		
 		//remove boss bar

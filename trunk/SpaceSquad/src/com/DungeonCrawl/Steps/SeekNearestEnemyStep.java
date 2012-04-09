@@ -53,10 +53,7 @@ public class SeekNearestEnemyStep implements StepHandler{
 				o_runningOn.i_offScreenCounter++;
 			else
 				o_runningOn.i_offScreenCounter=0;
-			
-			if(o_runningOn.i_offScreenCounter >30 && !o_runningOn.isBoss)
-				return true;
-			
+				
 			
 			if(go_objectToSeek != null)
 				o_runningOn.v.addForce(seek.calculate(o_runningOn.v));

@@ -5,7 +5,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 
-import com.DungeonCrawl.AreaEffect.Effect;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect.Effect;
 import com.DungeonCrawl.Collisions.DoNothingCollision;
 import com.DungeonCrawl.Shooting.BeamShot;
 import com.DungeonCrawl.Shooting.StraightLineShot;
@@ -43,7 +43,8 @@ public class Walls {
 		for(int i=0;i<i_maxBlocks;i++)
 		{
 			GameObject block = new GameObject("data/"+GameRenderer.dpiFolder+"/gravitonlevel.png", Integer.MIN_VALUE,LogicEngine.SCREEN_HEIGHT+(i_blockSize/2),0);
-		
+			block.v.setMaxForce(1000f);
+			block.v.setMaxVel(1000f);
 			wallSections.add(block);
 		}
 	}
@@ -72,8 +73,7 @@ public class Walls {
 	
 		block.allegiance = GameObject.ALLEGIANCES.LETHAL;
 		
-		block.v.setMaxForce(2.0f);
-		block.v.setMaxVel(2.0f);
+		
 		
 		block.str_name = "wall";
 		
@@ -107,6 +107,7 @@ public class Walls {
 	
 	private void speedUpBlocks(LogicEngine in_logicEngine, float in_newSpeed)
 	{
+		
 		//speed up obstacles
 		for(int i=0;i<in_logicEngine.objectsObstacles.size();i++)
 			if(in_logicEngine.objectsObstacles.get(i).str_name.equalsIgnoreCase("wall"))
@@ -215,6 +216,7 @@ public class Walls {
 	private void spawnTunnel(LogicEngine in_logicEngine, int in_leftWallWidth, int in_rightWallWidth, float i_tunnelSpeed2)
 	{
 		//wall blocks start at (i_blockSize/2) x 144 y
+	
 		
 		//spawn blocks
 		for(int i=0 ; i< in_leftWallWidth-1 ;i++)
@@ -332,6 +334,12 @@ public class Walls {
 	}
 
 	public void spawnBlockIfNeeded(LogicEngine in_logicEngine, int i_stepCounter) {
+
+		
+		
+		if(i_currentTunnelWidthLeft <=0 && i_currentTunnelWidthRight <=0 )
+			return;
+		
 		//every (i_blockSize/2) spawn new walls
 		if(i_stepCounter%(i_blockSize/i_tunnelSpeed) == 0)
 			spawnTunnel(in_logicEngine, i_currentTunnelWidthLeft,i_currentTunnelWidthRight,i_tunnelSpeed);
@@ -374,9 +382,7 @@ public class Walls {
 		ship.i_animationFrame = 3;
 		ship.i_animationFrameRow = 5;
 		ship.allegiance = GameObject.ALLEGIANCES.LETHAL;
-		
-		ship.v.setMaxForce(2.0f);
-		ship.v.setMaxVel(2.0f);
+
 		
 		ship.f_forceScaleX = 1 + (GameRenderer.f_pixelAdjustX-GameRenderer.dpiTextureCoordinatesAdjust);
 		ship.f_forceScaleY = 1 + (GameRenderer.f_pixelAdjustY-GameRenderer.dpiTextureCoordinatesAdjust);
@@ -391,6 +397,8 @@ public class Walls {
 		//scroll down
 		ship.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-1*i_tunnelSpeed)));
 		
+		ship.v.setMaxForce(1000);
+		ship.v.setMaxVel(1000);
 		ship.shootEverySteps = 1;
 		
 		BeamShot b = new BeamShot(25);
@@ -401,6 +409,7 @@ public class Walls {
 		
 		ship.shotHandler = b; 
 		
+		ship.v.setMaxVel(1000);
 		
 		in_logicEngine.objectsObstacles.add(ship);
 		b_skipSpawningWallLeft = true;
@@ -444,7 +453,7 @@ public class Walls {
 			ship.shootEverySteps = 15;
 		
 		ship.shotHandler = new StraightLineShot("data/"+GameRenderer.dpiFolder+"/redbullets.png", 6, new Vector2d(-4,-1*i_tunnelSpeed));
-		
+		ship.v.setMaxVel(1000);
 		
 		
 		in_logicEngine.objectsObstacles.add(ship);

@@ -1,6 +1,5 @@
 package com.DungeonCrawl.Levels;
 
-import com.DungeonCrawl.AreaEffect;
 import com.DungeonCrawl.Difficulty;
 import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
@@ -9,6 +8,7 @@ import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.TextDisplaying;
 import com.DungeonCrawl.Utils;
+import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;

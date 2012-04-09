@@ -43,7 +43,7 @@ public class SeekNearestPlayerStep implements StepHandler{
 		else
 			o_runningOn.i_offScreenCounter=0;
 		
-		if(o_runningOn.i_offScreenCounter >30 && !o_runningOn.isBoss)
+		if(o_runningOn.i_offScreenCounter >50 && !o_runningOn.isBoss)
 			return true;
 		
 		

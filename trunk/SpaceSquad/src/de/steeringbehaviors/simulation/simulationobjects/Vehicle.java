@@ -405,7 +405,7 @@ public class Vehicle extends Geometrie
 	/** Maximum force allowed to be applied	*/
 	private double 		m_maxForce = 0.0;	
 	/** Maximum velocity of the vehicle	*/
-	private double 		m_maxVel = 0.0; 					
+	private double 		m_maxVel = Double.MAX_VALUE; 					
 	/** The local x axis of the object before the simulation step */
 	private Vector2d 	m_oldLocalx = null;
 	/** The position of the object before the simulation step */
