@@ -4,6 +4,7 @@ import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
+import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.Shooting.ExplodeIfInRange;
 import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.LaunchShipsStep;
@@ -57,9 +58,15 @@ public class MinesPowerup implements Powerup{
 		in_toApplyTo.stepHandlers.remove(s);
 	}
 
+	boolean b_havePlayed=false;
 	@Override
 	public void collected() {
 		//TODO add sound
+		if(b_havePlayed==false)
+		{
+			SoundEffects.getInstance().mines.play();
+			b_havePlayed= true;
+		}
 	}
 	
 

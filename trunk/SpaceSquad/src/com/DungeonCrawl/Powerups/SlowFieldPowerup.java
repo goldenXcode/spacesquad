@@ -4,6 +4,7 @@ import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
+import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.DungeonCrawl.AreaEffects.SlowAreaEffect;
 import com.DungeonCrawl.Steps.AreaFollowObjectStep;
@@ -59,6 +60,17 @@ public class SlowFieldPowerup implements Powerup{
 		
 	}
 
+	boolean b_havePlayed=false;
+	@Override
+	public void collected() {
+		//TODO add sound
+		if(b_havePlayed==false)
+		{
+			SoundEffects.getInstance().slow.play();
+			b_havePlayed= true;
+		}
+	}
+	
 	@Override
 	public void unApplyPowerup(GameObject in_toApplyTo) {
 		
@@ -69,11 +81,5 @@ public class SlowFieldPowerup implements Powerup{
 		in_toApplyTo.activePowerups.remove(this);
 	}
 
-	@Override
-	public void collected() {
-
-		//play sound
-		
-	}
 
 }

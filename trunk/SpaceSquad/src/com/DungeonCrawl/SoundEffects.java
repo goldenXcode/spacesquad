@@ -22,6 +22,8 @@ public class SoundEffects
 	public Sound rapidfire;
 	public Sound wingmen;
 	public Sound warningThreatApproaching;
+	public Sound mines;
+	public Sound slow;
 	
 	
 	public Sound enhanced_weapons;
@@ -65,6 +67,8 @@ public class SoundEffects
 		dualfire = Gdx.audio.newSound(Gdx.files.internal("data/sounds/dualfire.ogg"));
 		rapidfire = Gdx.audio.newSound(Gdx.files.internal("data/sounds/rapidfire.ogg"));
 		wingmen = Gdx.audio.newSound(Gdx.files.internal("data/sounds/wingmen.ogg"));
+		mines = Gdx.audio.newSound(Gdx.files.internal("data/sounds/mines.ogg"));
+		slow = Gdx.audio.newSound(Gdx.files.internal("data/sounds/slow.ogg"));
 		warningThreatApproaching = Gdx.audio.newSound(Gdx.files.internal("data/sounds/warning.ogg"));
 	
 		
