@@ -9,6 +9,7 @@ import com.DungeonCrawl.SoundEffects;
 import com.DungeonCrawl.TextDisplaying;
 import com.DungeonCrawl.Levels.Level7.CARRIER_TYPE;
 import com.DungeonCrawl.Steps.FlyStraightStep;
+import com.DungeonCrawl.Collisions.HitpointShipCollision;
 
 import de.steeringbehaviors.simulation.renderer.Vector2d;
 
@@ -18,8 +19,8 @@ public class SurvivalLevel extends BasicLevel {
 	TextDisplaying txt_timer = new TextDisplaying("00:00", LogicEngine.SCREEN_WIDTH/2,  LogicEngine.SCREEN_HEIGHT-20, true);
 	TextDisplaying txt_best = new TextDisplaying("Record: 00:00", LogicEngine.SCREEN_WIDTH/2,  LogicEngine.SCREEN_HEIGHT-5, true);
 	int i_spawnEasyEvery=20;
-	int i_spawnMediumEvery=300;
-	int i_spawnHardEvery=600;
+	int i_spawnMediumEvery=400;
+	int i_spawnHardEvery=1000;
 	
 	int i_bestScoreEasy;
 	int i_bestScoreMedium;
@@ -218,10 +219,12 @@ public class SurvivalLevel extends BasicLevel {
 		switch((int)(Math.random()*2f))
 		{
 		case 0:
-			in_manager.spawnCarrier(in_logicEngine, (float)(Math.random()*320.0f),CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
+			GameObject ship1 = in_manager.spawnCarrier(in_logicEngine, (float)(Math.random()*320.0f),CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
+			((HitpointShipCollision)(ship1.collisionHandler)).f_numberOfHitpoints=30f;
 			break;
 		case 1:
-			in_manager.spawnWaveRider(in_logicEngine, (float)(Math.random()*320.0f));
+			GameObject ship2 = in_manager.spawnWaveRider(in_logicEngine, (float)(Math.random()*320.0f));
+			((HitpointShipCollision)(ship2.collisionHandler)).f_numberOfHitpoints=30f;
 			break;
 		}
 	}

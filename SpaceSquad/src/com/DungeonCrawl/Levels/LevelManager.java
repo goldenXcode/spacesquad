@@ -1143,7 +1143,7 @@ public class LevelManager
 		
 		//bullet/
 		//75 * 12
-		return null;
+		return go;
 	}
 	
 	GameObject spawnTadpole(LogicEngine in_logicEngine)

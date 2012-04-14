@@ -76,7 +76,7 @@ public class Advantage {
 				{
 					//big shot gun
 					in_ship.i_animationFrameRow = 4;
-					in_ship.shootEverySteps *= 2; 
+					in_ship.shootEverySteps *= 1.25; 
 					in_ship.shotHandler = bigShot;
 					//in_ship.shootEverySteps*=2f; //does not work!
 					in_ship.b_ignorePowerupFrameChanges=true;

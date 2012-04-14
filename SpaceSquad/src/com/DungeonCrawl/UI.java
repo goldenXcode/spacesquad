@@ -275,8 +275,11 @@ public class UI
 		else
 		//if game has just loaded and they hit back then exit
 		if(!b_cameFromGame)
+		{
 			//exit
 			Gdx.app.exit();
+			System.exit(0);
+		}
 		else
         // Do your optional back button handling (show pause menu?)
     	myLogicEngine.b_paused=false;
@@ -311,8 +314,10 @@ public class UI
 		
 		//see what button they clicked on
 		if(btn_exit.inRect(p_clicked))
+		{
 			Gdx.app.exit();
-		
+			System.exit(0);
+		}
 		if(btn_launch.inRect(p_clicked))
 		{
 			SoundEffects.getInstance().launch.play(SoundEffects.SPEECH_VOLUME);
