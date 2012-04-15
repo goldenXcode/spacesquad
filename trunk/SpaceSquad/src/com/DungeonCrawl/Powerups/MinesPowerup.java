@@ -28,15 +28,20 @@ public class MinesPowerup implements Powerup{
 		buff_minelayer.i_animationFrameRow = 3;
 	}
 
+	static int i_numberOfMines = 0;
 	@Override
 	public void applyPowerup(GameObject in_toApplyTo, LogicEngine in_logicEngine) {
 
+		//only allow 2 mines to exist concurrently
+		if(MinesPowerup.i_numberOfMines >1)
+			return;
+		
 		if(b_haveApplied )
 			return;
 		else 
 			b_haveApplied = true;
 		
-		//TODO make it only apply to 2 ships
+
 		if(in_toApplyTo.visibleBuffs.indexOf(buff_minelayer)==-1)
 			in_toApplyTo.visibleBuffs.add(buff_minelayer);
 		
@@ -46,6 +51,7 @@ public class MinesPowerup implements Powerup{
 		in_toApplyTo.stepHandlers.add(s);
 		
 		in_toApplyTo.activePowerups.add(this);
+		MinesPowerup.i_numberOfMines++;
 	}
 	
 	
@@ -55,6 +61,7 @@ public class MinesPowerup implements Powerup{
 		
 		in_toApplyTo.visibleBuffs.remove(buff_minelayer);
 		in_toApplyTo.activePowerups.remove(this);
+		MinesPowerup.i_numberOfMines--;
 		in_toApplyTo.stepHandlers.remove(s);
 	}
 

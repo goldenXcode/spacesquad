@@ -572,11 +572,13 @@ public class LogicEngine implements Runnable
 				return;
 			}
 		    
-		}while(true);
+		}while(!b_exit);
 	
 	}
 
 	private UI theUI = null;
+	public boolean b_exit = false;
+	
 	public void setUI(UI in_theUI) {
 		// TODO Auto-generated method stub
 		theUI = in_theUI;

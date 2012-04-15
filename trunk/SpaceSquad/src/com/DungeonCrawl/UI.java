@@ -277,8 +277,14 @@ public class UI
 		if(!b_cameFromGame)
 		{
 			//exit
-			Gdx.app.exit();
-			System.exit(0);
+			myLogicEngine.b_exit=true;
+			//close all threads
+			if(DungeonCrawlMain.b_isAndroid)
+				System.exit(0);
+			else
+				Gdx.app.exit();
+			
+			
 		}
 		else
         // Do your optional back button handling (show pause menu?)
@@ -315,8 +321,13 @@ public class UI
 		//see what button they clicked on
 		if(btn_exit.inRect(p_clicked))
 		{
-			Gdx.app.exit();
-			System.exit(0);
+			myLogicEngine.b_exit=true;
+			//close all threads
+			if(DungeonCrawlMain.b_isAndroid)
+				System.exit(0);
+			else
+				Gdx.app.exit();
+			
 		}
 		if(btn_launch.inRect(p_clicked))
 		{

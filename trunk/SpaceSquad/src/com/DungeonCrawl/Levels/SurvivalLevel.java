@@ -1,6 +1,7 @@
 package com.DungeonCrawl.Levels;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.DungeonCrawl.Difficulty;
 import com.DungeonCrawl.GameObject;
@@ -26,6 +27,8 @@ public class SurvivalLevel extends BasicLevel {
 	int i_bestScoreMedium;
 	int i_bestScoreHard;
 	
+	Random r = new Random();
+	
 	public SurvivalLevel()
 	{
 		if(Difficulty.progressArray.containsKey("SURVIVAL_BEST_EASY"))
@@ -37,12 +40,11 @@ public class SurvivalLevel extends BasicLevel {
 	@Override
 	public boolean stepLevel(LevelManager in_manager, LogicEngine in_logicEngine) {
 
-
-			
 		//TODO:survival
 		//level text
 		if(i_stepCounter==0)
 		{
+			in_logicEngine.background.setBackground(r.nextInt(3));
 			
 			in_logicEngine.currentTextBeingDisplayed.add(txt_timer);
 			in_logicEngine.currentTextBeingDisplayed.add(txt_best);
@@ -74,9 +76,12 @@ public class SurvivalLevel extends BasicLevel {
 		}
 		/////////////////////////////////
 		
-		//spawn powerups
-		if(i_stepCounter%150 == 0)
-			in_manager.spawnRandomPowerup(in_logicEngine, (float) (Math.random()*LogicEngine.SCREEN_WIDTH));
+		//spawn powerups (offensive then defensive)
+		if(i_stepCounter%600 == 0)
+			in_manager.spawnRandomPowerup(true,in_logicEngine, (float) (Math.random()*LogicEngine.SCREEN_WIDTH));
+
+		if(i_stepCounter%600 == 300)
+			in_manager.spawnRandomPowerup(false,in_logicEngine, (float) (Math.random()*LogicEngine.SCREEN_WIDTH));
 
 		
 		if(i_stepCounter==100)

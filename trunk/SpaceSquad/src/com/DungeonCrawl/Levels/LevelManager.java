@@ -172,6 +172,9 @@ public class LevelManager
 		in_logicEngine.currentTextBeingDisplayed.clear();
 		
 		in_logicEngine.currentAreaEffects.clear();
+		in_logicEngine.currentAreaEffectsPlayers.clear();
+		
+		
 		
 	}
 	
@@ -390,29 +393,88 @@ public class LevelManager
 		return go;
 	}
 	
-	public void spawnWingmenPowerup(LogicEngine in_logicEngine, float in_x)
+	public void spawnRandomPowerup(boolean b_isOffensive,LogicEngine in_logicEngine, float in_x)
 	{
-		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/powerups.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);
 		
-		//not lethal to anyone
-		go.allegiance = GameObject.ALLEGIANCES.NONE;
-		
-		
-		go.i_animationFrameSizeWidth=16;
-		go.i_animationFrameSizeHeight=16;
-		go.i_animationFrameRow = 0;
-		Powerup p=null;
-		 
-		p = new WingmenPowerup();
-		go.i_animationFrame=0;
-		go.i_animationFrameRow=1;
+			GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/powerups.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);
+			
+			//not lethal to anyone
+			go.allegiance = GameObject.ALLEGIANCES.NONE;
+			
+			
+			go.i_animationFrameSizeWidth=16;
+			go.i_animationFrameSizeHeight=16;
+			go.i_animationFrameRow = 0;
+			Powerup p=null;
+			
+			if(b_isOffensive)
+			{
+				switch(r.nextInt(4))
+				{
+			
+				case 0 : 
+					p = new RapidFirePowerup();
+					go.i_animationFrame=0;
+					//apply powerup to all ships
+					go.collisionHandler = new PowerupCollision(p,true);
+					break;
+				case 1 : 
+					p= new WingmenPowerup();
+					go.i_animationFrame=0;
+					go.i_animationFrameRow=1;
+					//apply powerup once only!
+					go.collisionHandler = new PowerupCollision(p,false);
+					break;
+				case 2 : 
+					p= new MissilePowerup();
+					go.i_animationFrame=1;
+					go.i_animationFrameRow=1;
+					//apply powerup once only!
+					go.collisionHandler = new PowerupCollision(p,true);
+					break;
+				case 3 : 
+					p= new MinesPowerup();
+					go.i_animationFrame=2;
+					go.i_animationFrameRow=1;
+					//apply powerup once only!
+					go.collisionHandler = new PowerupCollision(p,false);		
+					break;
+				}
+				
+			}	
+			else
+			{
+				//is defensive
+				switch(r.nextInt(3))
+				{
+				case 0:
+					 p = new ShieldPowerup();
+					 go.i_animationFrame=1;
+					//apply powerup to all ships
+						go.collisionHandler = new PowerupCollision(p,true);
+					break;
 
+				case 1 : 
+					p = new DualFirePowerup();
+					go.i_animationFrame=2;
+					//apply powerup to all ships
+					go.collisionHandler = new PowerupCollision(p,true);
+					break;
+				
+				case 2 : 
+					p= new SlowFieldPowerup();
+					go.i_animationFrame=3;
+					go.i_animationFrameRow=1;
+					//apply powerup once only!
+					go.collisionHandler = new PowerupCollision(p,false);		
+					break;
+				}
+			}
+			go.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-2.5)));
+			in_logicEngine.objectsPowerups.add(go);
 		
-		//apply powerup to all ships
-		go.collisionHandler = new PowerupCollision(p,false);
-		go.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-2.5)));
-		in_logicEngine.objectsPowerups.add(go);
 	}
+
 	public void spawnRandomPowerup(LogicEngine in_logicEngine, float in_x)
 	{
 		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/powerups.png",in_x,LogicEngine.rect_Screen.getHeight()+50,0);

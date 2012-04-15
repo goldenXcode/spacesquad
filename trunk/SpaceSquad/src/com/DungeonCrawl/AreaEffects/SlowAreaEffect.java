@@ -32,7 +32,7 @@ public class SlowAreaEffect extends AreaEffect {
 		super(in_area, in_d);
 		
 		toSlow = in_toSlow;
-		 slimeDebuff = new Drawable();
+		slimeDebuff = new Drawable();
 
 		slimeDebuff.i_animationFrameRow = 1;
 		slimeDebuff.i_animationFrameSizeWidth = 16;
@@ -40,10 +40,18 @@ public class SlowAreaEffect extends AreaEffect {
 		
 		slimeDebuff.str_spritename = "data/"+GameRenderer.dpiFolder+"/slime.png";
 		
-		debuff = new MovementPowerup(.75f,new Color(0f,1f,0f,1f));
+		debuff = new MovementPowerup(.50f,new Color(0.5f,1f,0.5f,1f));
 			
 	}
 	
+	public void growArea()
+	{
+		this.area.getp1().setX( this.area.getp1().getX() - (0.25 * this.area.getWidth()));
+		this.area.getp2().setX( this.area.getp2().getX() + (0.25 * this.area.getWidth()));
+		this.area.getp1().setY( this.area.getp1().getY() - (0.25 * this.area.getHeight()));
+		this.area.getp2().setY( this.area.getp2().getY() + (0.25 * this.area.getHeight()));
+		this.c_Color.a =this.c_Color.a/2; 
+	}
 	@Override
 	public void stepEffect(LogicEngine in_logicEngine)
 	{
@@ -73,7 +81,7 @@ public class SlowAreaEffect extends AreaEffect {
 					
 					//if it doesnt already have a slow debuff, give it one
 					debuffcopy.applyPowerup(enemy, in_logicEngine);
-					enemy.stepHandlers.add(new TimedLifePowerupStep(3,debuffcopy));
+					enemy.stepHandlers.add(new TimedLifePowerupStep(10,debuffcopy));
 				}
 		}
 		
