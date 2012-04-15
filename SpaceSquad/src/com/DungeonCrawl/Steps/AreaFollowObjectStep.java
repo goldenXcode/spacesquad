@@ -9,7 +9,7 @@ import de.steeringbehaviors.simulation.renderer.Point2d;
 
 public class AreaFollowObjectStep implements StepHandler 
 {
-	AreaEffect area;
+	AreaEffect ae_AreaEffect;
 	GameObject attachToObject;
 	
 	float f_halfAreaWidth;
@@ -17,9 +17,7 @@ public class AreaFollowObjectStep implements StepHandler
 
 	public AreaFollowObjectStep(AreaEffect in_area , GameObject in_attachToObject)
 	{
-		area = in_area;
-		f_halfAreaWidth = (float) in_area.area.getWidth()/2;
-		f_halfAreaHeight = (float) in_area.area.getHeight()/2;
+		ae_AreaEffect = in_area;
 		
 		attachToObject = in_attachToObject;
 	}
@@ -27,8 +25,12 @@ public class AreaFollowObjectStep implements StepHandler
 	public boolean handleStep(LogicEngine in_theLogicEngine,
 			GameObject o_runningOn) {
 
-		area.area.setp1(new Point2d(o_runningOn.v.getX() - f_halfAreaWidth,o_runningOn.v.getY() + f_halfAreaHeight));
-		area.area.setp2(new Point2d(o_runningOn.v.getX() + f_halfAreaWidth,o_runningOn.v.getY() - f_halfAreaHeight));
+		f_halfAreaWidth = (float) ae_AreaEffect.area.getWidth()/2;
+		f_halfAreaHeight = (float) ae_AreaEffect.area.getHeight()/2;
+		
+		
+		ae_AreaEffect.area.setp1(new Point2d(o_runningOn.v.getX() - f_halfAreaWidth,o_runningOn.v.getY() + f_halfAreaHeight));
+		ae_AreaEffect.area.setp2(new Point2d(o_runningOn.v.getX() + f_halfAreaWidth,o_runningOn.v.getY() - f_halfAreaHeight));
 		
 		return false;
 	}	

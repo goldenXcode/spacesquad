@@ -9,6 +9,9 @@ public class DungeonCrawlMain implements ApplicationListener{
 
 	private GameRenderer gr;
 	private LogicEngine theLogicEngine;
+	Thread gameThread;
+	
+	public static boolean b_isAndroid=false;
 	
 	@Override
 	public void create() {
@@ -25,7 +28,7 @@ public class DungeonCrawlMain implements ApplicationListener{
 		gr = new GameRenderer(theLogicEngine);
 		
 		//start game loop
-		Thread gameThread = new Thread( theLogicEngine);
+		gameThread = new Thread( theLogicEngine);
 		gameThread.start();
 		 
 	}
@@ -33,16 +36,29 @@ public class DungeonCrawlMain implements ApplicationListener{
 	@Override
 	public void dispose() {
 		//close all threads
-		Gdx.app.exit();
-		System.exit(0);
+		if(DungeonCrawlMain.b_isAndroid)
+			System.exit(0);
+		else
+			Gdx.app.exit();
+		
+		theLogicEngine.b_exit=true;
+		
+		
 	}
 
 	@Override
 	public void pause() {
 
     	System.out.println("closing");
-    	Gdx.app.exit();
-    	System.exit(0);
+		
+    	//close all threads
+		if(DungeonCrawlMain.b_isAndroid)
+			System.exit(0);
+		else
+			Gdx.app.exit();
+		
+    	theLogicEngine.b_exit=true;
+		
 	}
 
 	@Override
