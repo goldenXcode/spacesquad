@@ -67,6 +67,7 @@ public class Walls {
 		block.f_forceScaleX = 1 + (GameRenderer.f_pixelAdjustX-GameRenderer.dpiTextureCoordinatesAdjust);
 		block.f_forceScaleY = 1 + (GameRenderer.f_pixelAdjustY-GameRenderer.dpiTextureCoordinatesAdjust);
 		
+		block.i_offScreenCounter=0;
 		
 		block.i_animationFrame = in_row;
 		block.i_animationFrameRow = in_column;

@@ -63,4 +63,11 @@ public class TurretShot implements ShotHandler {
 		
 	}
 
+
+	@Override
+	public String getImagePath() {
+
+		return str_bulletImage;
+	}
+
 }

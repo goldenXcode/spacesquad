@@ -161,5 +161,10 @@ public class ExplodeIfInRange implements ShotHandler{
 		}	
 		
 	}
+	@Override
+	public String getImagePath() {
+		
+		return str_bullet;
+	}
 
 }

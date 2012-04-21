@@ -1,8 +1,10 @@
 package com.DungeonCrawl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.DungeonCrawl.Collisions.DoNothingCollision;
+import com.DungeonCrawl.KdTree.Entry;
 import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.LaunchShipsStep;
 import com.DungeonCrawl.Steps.PlayerStep;
@@ -19,6 +21,12 @@ import de.steeringbehaviors.simulation.simulationobjects.Vehicle;
 
 public class Utils {
 
+	
+	static int i_LastUpdatedKd = -1;
+	static KdTree<GameObject> kd_enemies = null;
+	static KdTree<GameObject> kd_obstacles = null;
+	
+	
 	public enum Direction
 	{
 		NORTH,
@@ -29,6 +37,9 @@ public class Utils {
 		
 	public static double getDistanceToClosestPlayerShip(LogicEngine in_theLogicEngine, Point2d in_position)
 	{
+		
+		
+		
 		//find closest player to the past in vehicle/Geometrie
 		
 		double d_closestPlayerDistance=Double.MAX_VALUE;
@@ -77,29 +88,50 @@ public class Utils {
 		return i_closestPlayer;
 	}
 	
+	private static void buildKdTrees(LogicEngine in_theLogicEngine)
+	{
+		//build kd tree
+		if(in_theLogicEngine.i_stepCounter != i_LastUpdatedKd)
+		{
+			i_LastUpdatedKd = in_theLogicEngine.i_stepCounter;
+			kd_enemies = new KdTree.Manhattan<GameObject>(2,1000);
+			kd_obstacles = new KdTree.Manhattan<GameObject>(2,1000);
+			
+			//build kd tree of enemies
+			for(int i=0;i<in_theLogicEngine.objectsEnemies.size();i++)
+			{
+				GameObject go_currentEnemy = in_theLogicEngine.objectsEnemies.get(i);
+					kd_enemies.addPoint(new double[]{go_currentEnemy.v.getX(),go_currentEnemy.v.getY()}, go_currentEnemy);
+			}
+			
+			//build kd tree of obstacles
+			for(int i=0;i<in_theLogicEngine.objectsObstacles.size();i++)
+			{
+				GameObject go_currentObstacle = in_theLogicEngine.objectsObstacles.get(i);
+				kd_obstacles.addPoint(new double[]{go_currentObstacle.v.getX(),go_currentObstacle.v.getY()}, go_currentObstacle);
+			}
+		}
+	}
+	
 	public static double getDistanceToClosestEnemyShip(LogicEngine in_theLogicEngine, Point2d in_point)
 	{
-		//find closest player to the past in vehicle/Geometrie
 		
-		double d_closestEnemyDistance=Double.MAX_VALUE;
+		buildKdTrees(in_theLogicEngine);
 		
-		//returns distance to nearest obstacle/enemy
-		//return closest enemy
-		for(int i=0;i<in_theLogicEngine.objectsEnemies.size();i++)
-		{
-			double d_distance =  Math.abs(in_point.sub(in_theLogicEngine.objectsEnemies.get(i).v.getPos()).length());
-			if(d_distance < d_closestEnemyDistance)
-				d_closestEnemyDistance = d_distance;
-		}
-		//return closest obstacle
-		for(int i=0;i<in_theLogicEngine.objectsObstacles.size();i++)
-		{
-			double d_distance =  Math.abs(in_point.sub(in_theLogicEngine.objectsObstacles.get(i).v.getPos()).length());
-			if(d_distance < d_closestEnemyDistance)
-				d_closestEnemyDistance = d_distance;
-		}
-		
-		return d_closestEnemyDistance;
+		List<Entry<GameObject>> go_closestEnemy = kd_enemies.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+		List<Entry<GameObject>> go_closestObstacle = kd_obstacles.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+
+		//find closest enemy/obstacle to point
+		if(go_closestEnemy.size() > 0 && go_closestObstacle.size()>0)
+			return Math.min(go_closestEnemy.get(0).distance, go_closestObstacle.get(0).distance);
+		else
+			if(go_closestEnemy.size() > 0) //only enemies exist
+				return go_closestEnemy.get(0).distance;	
+		if(go_closestObstacle.size() >0) //only obstacles exist
+			return go_closestObstacle.get(0).distance;
+		else
+			return Double.MAX_VALUE; //nothing exists
+				
 	}
 	
 	public static Vector2d getVectorToClosestPlayer(LogicEngine in_theLogicEngine, Point2d in_point) {
@@ -301,43 +333,26 @@ public class Utils {
 	public static GameObject getClosestEnemy(LogicEngine in_theLogicEngine,
 			Vehicle in_point) {
 	
+			buildKdTrees(in_theLogicEngine);
+			
+			
+			List<Entry<GameObject>> go_closestEnemy = kd_enemies.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+			List<Entry<GameObject>> go_closestObstacle = kd_obstacles.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+
+			//find closest enemy/obstacle to point
+			if(go_closestEnemy.size() > 0 && go_closestObstacle.size()>0)
+				if(go_closestEnemy.get(0).distance > go_closestObstacle.get(0).distance) //enemy is closest
+					return go_closestEnemy.get(0).value;
+				else
+					return go_closestObstacle.get(0).value;
+			else
+				if(go_closestEnemy.size() > 0) //only enemies exist
+					return go_closestEnemy.get(0).value;	
+			if(go_closestObstacle.size() >0) //only obstacles exist
+				return go_closestObstacle.get(0).value;
+			else
+				return null; //nothing exists
 		
-		
-			//find closest player to the past in vehicle/Geometrie
-			GameObject go_closestEnemy=null;
-			double d_closestPlayerDistance=Double.MAX_VALUE;
-			Point2d position = in_point.getPos();
-			
-			for(int i=0;i<in_theLogicEngine.objectsEnemies.size();i++)
-			{
-				double d_distance = position.sub(in_theLogicEngine.objectsEnemies.get(i).v.getPos()).length();
-				if(d_distance < d_closestPlayerDistance)
-				{
-					d_closestPlayerDistance = d_distance;
-					go_closestEnemy = in_theLogicEngine.objectsEnemies.get(i);
-				}
-				
-			}
-			
-			in_theLogicEngine.objectsObstaclesLock.writeLock().lock();
-			
-			for(int i=0;i<in_theLogicEngine.objectsObstacles.size();i++)
-			{
-				//if obstacle can actually be destroyed
-				if(in_theLogicEngine.objectsObstacles.get(i).collisionHandler != null && !(in_theLogicEngine.objectsObstacles.get(i).collisionHandler instanceof DoNothingCollision))
-				{
-					double d_distance = position.sub(in_theLogicEngine.objectsObstacles.get(i).v.getPos()).length();
-					if(d_distance < d_closestPlayerDistance)
-					{
-						d_closestPlayerDistance = d_distance;
-						go_closestEnemy = in_theLogicEngine.objectsObstacles.get(i);
-					}
-				}
-				
-			}
-			in_theLogicEngine.objectsObstaclesLock.writeLock().unlock();
-			
-			return go_closestEnemy;
 	}
 	public static int getPlayerShipIndex(LogicEngine in_theLogicEngine,GameObject in_ship)
 	{

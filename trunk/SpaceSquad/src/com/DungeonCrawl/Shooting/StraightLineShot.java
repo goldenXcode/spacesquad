@@ -3,9 +3,11 @@ package com.DungeonCrawl.Shooting;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
+import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.SeekNearestPlayerStep;
 import com.DungeonCrawl.Steps.SeekNearestEnemyStep;
+import com.DungeonCrawl.Steps.TimedLifeStep;
 
 import de.steeringbehaviors.simulation.renderer.Vector2d;
 
@@ -32,6 +34,9 @@ public class StraightLineShot implements ShotHandler {
 		str_bulletImage = in_bulletImage;
 		f_collisionRadius = in_collisionRadius;
 	}
+	
+	public float f_damage = 1f;
+	
 	@Override
 	public void shoot(LogicEngine toRunIn,GameObject in_objectFiring) {
 		GameObject bullet = new GameObject(str_bulletImage,(float)in_objectFiring.v.getX() ,(float)in_objectFiring.v.getY(),0);
@@ -46,21 +51,34 @@ public class StraightLineShot implements ShotHandler {
 		
 		
 		bullet.v.setMaxVel(direction.length());
-		bullet.stepHandlers.add(new FlyStraightStep(direction));
+		
 		
 		if(b_homing)
 			if(in_objectFiring.allegiance == GameObject.ALLEGIANCES.PLAYER )
 			{
-				bullet.stepHandlers.add(new SeekNearestEnemyStep(1000,0.5f));
+				SeekNearestEnemyStep seek = new SeekNearestEnemyStep(60,0.5f);
+				
+				seek.v_noTarget = direction;
+				bullet.rotateToV = true;
+				
+				bullet.stepHandlers.add(seek);
 				bullet.v.setMaxVel(direction.length());
+				bullet.stepHandlers.add(new TimedLifeStep(30));
 			}
 			else
 			{
 				bullet.stepHandlers.add(new SeekNearestPlayerStep(1000));
 				bullet.v.setMaxVel(direction.length());
 			}
-		
-		bullet.collisionHandler = new DestroyIfEnemyCollision(bullet,f_collisionRadius,false);
+		else
+		{
+			bullet.stepHandlers.add(new FlyStraightStep(direction));
+		}
+		if(f_damage==1)
+			bullet.collisionHandler = new DestroyIfEnemyCollision(bullet,f_collisionRadius,false);
+		else
+			bullet.collisionHandler = new HitpointShipCollision(bullet,f_damage,f_collisionRadius,false);
+			
 		//bullet inherits the allegiance of whoever fired it
 		bullet.allegiance = in_objectFiring.allegiance;
 	
@@ -72,6 +90,12 @@ public class StraightLineShot implements ShotHandler {
 		else
 			toRunIn.objectsPlayerBullets.add(bullet);
 		
+	}
+
+	@Override
+	public String getImagePath() {
+
+		return str_bulletImage;
 	}
 
 }

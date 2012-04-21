@@ -216,6 +216,8 @@ public class LogicEngine implements Runnable
 	public void processStep() throws Exception
 	{
 		
+		MyInputProcessor.stepInputProcessor();
+		
 		//if paused
 		if(b_paused)
 		{

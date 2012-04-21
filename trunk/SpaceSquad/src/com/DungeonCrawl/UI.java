@@ -82,13 +82,20 @@ public class UI
 	TextDisplaying txt_cost;
 	TextDisplaying txt_ships;
 	
-	private int calculateAndUpdateShipCost()
+	private int getNumberOfSelectedAdvantages()
 	{
-		int i_numberAdvantages =0;
-		
+		int i_numberAdvantages=0;
 		for(int i=0;i<Advantage.b_advantages.length;i++)
 			if(Advantage.b_advantages[i])
 				i_numberAdvantages++;
+		
+		return i_numberAdvantages;
+	}
+	
+	private int calculateAndUpdateShipCost()
+	{
+		int i_numberAdvantages =getNumberOfSelectedAdvantages();
+		
 		
 		int i_shipCost=1;
 		
@@ -357,34 +364,37 @@ public class UI
 		for(int i=0 ; i< rects_advantages.size();i++)
 			if(rects_advantages.get(i).inRect(p_clicked))
 			{	
-				
-				//invert selected status
-				Advantage.b_advantages[i]=!Advantage.b_advantages[i];
-				
-				//only play sound when toggling on
-				if(Advantage.b_advantages[i])
+				//if it is on turn it off
+				if(Advantage.b_advantages[i] == true)
+					Advantage.b_advantages[i] = false;
+				else if(getNumberOfSelectedAdvantages() < 8)
 				{
+					Advantage.b_advantages[i] = true;
 					Advantage.playAudioForAdvantage(i);
-				
 				}
 				
 				//refresh the advantages
 				Advantage.clearSimulatedAdvantages(go_ships,go_otherStuff);
 				Advantage.simulateAdvantages(go_ships,go_otherStuff,new Point2d(this.f_holoCentreX-10,this.f_holoCentreY));
 				calculateAndUpdateNumberOfShips();
+				
 			}
 		
 		for(int i=0 ; i< rects_advantages2.size();i++)
 			if(rects_advantages2.get(i).inRect(p_clicked))
 			{
-				if(isAdvantageUnlocked(5+i) && i<3)
+				if(isAdvantageUnlocked(5+i) && i<5)
 				{
-					Advantage.b_advantages[5+i]=!Advantage.b_advantages[5+i];
+				
 					
-					//only play sound when toggling it on
-					if(Advantage.b_advantages[5+i] ==true)
+					if(Advantage.b_advantages[5+i] == true)
+						Advantage.b_advantages[5+i] = false;
+					else if(getNumberOfSelectedAdvantages() < 8)
+					{
+						Advantage.b_advantages[5+i] = true;
 						Advantage.playAudioForAdvantage(5+i);
-					
+					}
+				
 					
 				}
 				else

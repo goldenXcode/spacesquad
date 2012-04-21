@@ -46,7 +46,7 @@ public class SplitCollision extends HitpointShipCollision
 				//if theres a health bar reduce its size
 				if(go_healthBar != null)
 				{
-					go_healthBar.f_forceScaleX = (float)f_numberOfHitpoints/(float)i_startingHitpoints;
+					go_healthBar.f_forceScaleX = (float)f_numberOfHitpoints/(float)f_startingHitpoints;
 					go_healthBar.f_forceScaleY = 1f;
 				}
 			}

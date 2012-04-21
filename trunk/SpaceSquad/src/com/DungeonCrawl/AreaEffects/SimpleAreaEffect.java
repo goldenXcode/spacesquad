@@ -2,6 +2,7 @@ package com.DungeonCrawl.AreaEffects;
 
 import java.util.ArrayList;
 
+import com.DungeonCrawl.Advantage;
 import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
@@ -174,6 +175,8 @@ public class SimpleAreaEffect extends AreaEffect{
 					{
 						//make it red
 						objectToTest.c_Color = ((HitpointShipCollision)objectToTest.collisionHandler).c_flashColor;
+						((HitpointShipCollision)objectToTest.collisionHandler).updateBossHealth(in_logicEngine);
+							
 						b_destroyShip=false;
 					}
 				}

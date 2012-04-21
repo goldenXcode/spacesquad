@@ -37,9 +37,12 @@ public class Level6 extends BasicLevel{
 	
 	public Level6()
 	{
+		
 		BOSS_STEP = 1800;
 		i_stepCounter = 0;
 		i_levelNumber = 6;
+		
+		
 	}
 
 	
