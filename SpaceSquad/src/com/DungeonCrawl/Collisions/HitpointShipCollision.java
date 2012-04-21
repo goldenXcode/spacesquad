@@ -24,7 +24,7 @@ public class HitpointShipCollision implements CollisionHandler{
 	GameObject go_healthBar = null;
 	GameObject go_healthBarWindow =null;
 	
-	int i_startingHitpoints;
+	float f_startingHitpoints;
 	
 	protected GameObject go_explosion=null;
 	
@@ -57,11 +57,11 @@ public class HitpointShipCollision implements CollisionHandler{
 		toDisplayIn.objectsOverlay.add(go_healthBarWindow);
 		toDisplayIn.objectsOverlay.add(go_healthBar);
 		
-		i_startingHitpoints = (int)f_numberOfHitpoints;
+		f_startingHitpoints = f_numberOfHitpoints;
 		
 		
 	}
-	public HitpointShipCollision(GameObject in_for,int in_numberOfHitpoints, double in_collisionRadius)
+	public HitpointShipCollision(GameObject in_for,float in_numberOfHitpoints, double in_collisionRadius)
 	{
 		thisObject = in_for;
 		collisionRadius = in_collisionRadius;
@@ -72,7 +72,7 @@ public class HitpointShipCollision implements CollisionHandler{
 
 		
 	}
-	public HitpointShipCollision(GameObject in_for,int in_numberOfHitpoints, double in_collisionRadius,boolean in_flash,int in_flashFrame)
+	public HitpointShipCollision(GameObject in_for,float in_numberOfHitpoints, double in_collisionRadius,boolean in_flash,int in_flashFrame)
 	{
 		thisObject = in_for;
 		collisionRadius = in_collisionRadius;
@@ -84,7 +84,7 @@ public class HitpointShipCollision implements CollisionHandler{
 			c_initialColour = in_for.c_Color ;
 	}
 	
-	public HitpointShipCollision(GameObject in_for,int in_numberOfHitpoints, double in_collisionRadius, boolean in_simpleExplosion)
+	public HitpointShipCollision(GameObject in_for,float in_numberOfHitpoints, double in_collisionRadius, boolean in_simpleExplosion)
 	{
 		thisObject = in_for;
 		collisionRadius = in_collisionRadius;
@@ -132,22 +132,17 @@ public class HitpointShipCollision implements CollisionHandler{
 		{
 			//if colliding with another hp ship
 			if(collidingWith.collisionHandler instanceof HitpointShipCollision)
-				f_numberOfHitpoints -= Math.max(0,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints);
+			{
+				
+				f_numberOfHitpoints -= Math.max(0f,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints);
+				updateBossHealth(toRunIn);
+			}
 			else
 			{
 				f_numberOfHitpoints--;
 				
-				//if theres a health bar reduce its size
-				if(go_healthBar != null)
-				{
-					go_healthBar.f_forceScaleX = (float)f_numberOfHitpoints/(float)i_startingHitpoints;
-					
-					float f_moveBarLeft = (1.0f - go_healthBar.f_forceScaleX)/2;
-					f_moveBarLeft = f_moveBarLeft*go_healthBar.i_animationFrameSizeWidth;
-					
-					go_healthBar.v.setX(f_healthBarStartX-f_moveBarLeft);
-					go_healthBar.f_forceScaleY = 1f;
-				}
+				updateBossHealth(toRunIn);
+				
 			}
 			
 			
@@ -182,6 +177,20 @@ public class HitpointShipCollision implements CollisionHandler{
 		return false;
 	}
 
+	public void updateBossHealth(LogicEngine toRunIn) {
+		//if theres a health bar reduce its size
+		if(go_healthBar != null)
+		{
+			go_healthBar.f_forceScaleX = (float)f_numberOfHitpoints/(float)f_startingHitpoints;
+			
+			float f_moveBarLeft = (1.0f - go_healthBar.f_forceScaleX)/2;
+			f_moveBarLeft = f_moveBarLeft*go_healthBar.i_animationFrameSizeWidth;
+			
+			go_healthBar.v.setX(f_healthBarStartX-f_moveBarLeft);
+			go_healthBar.f_forceScaleY = 1f;
+		}
+		
+	}
 	@Override
 	public double getCollisionRadius() {
 		// TODO Auto-generated method stub
@@ -194,9 +203,10 @@ public class HitpointShipCollision implements CollisionHandler{
 		returnVal.c_flashColor = this.c_flashColor;
 		returnVal.c_initialColour = this.c_initialColour;
 		returnVal.i_flashDuration = this.i_flashDuration;
+		returnVal.f_numberOfHitpoints = this.f_numberOfHitpoints;
 		
-		
-		returnVal.setSimpleExplosion();
+		if(this.go_explosion != null)
+			returnVal.go_explosion = this.go_explosion.clone();
 		
 		return returnVal;
 		

@@ -79,7 +79,8 @@ public class PlayerStep implements StepHandler{
 				playerShip.v.setX(go_warpIn.v.getX());
 				playerShip.v.setY(go_warpIn.v.getY());
 				
-				for(int i=0;i<Advantage.b_advantages.length;i++)
+				//apply in reverse order so rapid fire/dual fire works
+				for(int i=Advantage.b_advantages.length-1 ;i>=0;i--)
 					if(Advantage.b_advantages[i] == true)
 						Advantage.applyAdvantageToShip(i,playerShip,i_positionInFleet,in_theLogicEngine);
 				

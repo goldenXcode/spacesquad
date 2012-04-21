@@ -34,7 +34,7 @@ boolean b_havePlayedSound = false;
 		{
 			//spawn 2 cannons
 		
-			GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/tinyship.png",(LogicEngine.rect_Screen.getWidth()/2) - (32*i) + 64,50,20);
+			GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/tinyship.png",(LogicEngine.rect_Screen.getWidth()/2) - (32*i) + 64,50,10);
 			ship.i_animationFrame=2;
 			ship.i_animationFrameRow=3;
 			
@@ -63,10 +63,6 @@ boolean b_havePlayedSound = false;
 			in_logicEngine.objectsPlayers.add(ship);
 			
 			
-			
-			//double firing speed on hell
-			if(Difficulty.isHard())
-				ship.shootEverySteps = (int) (ship.shootEverySteps * 0.75); 
 		}
 		
 	}

@@ -37,6 +37,8 @@ public class SoundEffects
 	public Sound homing;
 	public Sound elitesquad;
 	public Sound missiles;
+	public Sound flame;
+	public Sound railgun;
 	public Sound locked;
 	
 	public Music intro;				
@@ -82,6 +84,10 @@ public class SoundEffects
 		laser= Gdx.audio.newSound(Gdx.files.internal("data/sounds/advantages/laser.ogg"));
 		homing= Gdx.audio.newSound(Gdx.files.internal("data/sounds/advantages/homing.ogg"));
 		elitesquad= Gdx.audio.newSound(Gdx.files.internal("data/sounds/advantages/elitesquad.ogg"));
+		flame =  Gdx.audio.newSound(Gdx.files.internal("data/sounds/advantages/flame.ogg"));
+		railgun =  Gdx.audio.newSound(Gdx.files.internal("data/sounds/advantages/railgun.ogg"));
+		
+		
 		missiles =  Gdx.audio.newSound(Gdx.files.internal("data/sounds/missiles.ogg"));
 		
 		intro = Gdx.audio.newMusic(Gdx.files.internal("data/sounds/intro.ogg"));

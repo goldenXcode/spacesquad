@@ -15,6 +15,7 @@ import com.DungeonCrawl.Powerups.SideCannonsPowerup;
 import com.DungeonCrawl.Powerups.SlowFieldPowerup;
 import com.DungeonCrawl.Shooting.BeamShot;
 import com.DungeonCrawl.Shooting.ExplodeIfInRange;
+import com.DungeonCrawl.Shooting.FlamerShot;
 import com.DungeonCrawl.Shooting.FragmentationProjectile;
 import com.DungeonCrawl.Shooting.StraightLineShot;
 import com.DungeonCrawl.Steps.FlyStraightStep;
@@ -33,10 +34,10 @@ import de.steeringbehaviors.simulation.renderer.Vector2d;
 
 public class Advantage {
 
-	private static int i_numberOfAdvantages=10; 
+	
 	
 	//array showing which advantages are currently active
-	public static boolean[] b_advantages = new boolean[8];
+	public static boolean[] b_advantages = new boolean[10];
 	
 	public static FragmentationProjectile bigShot = new FragmentationProjectile("data/"+GameRenderer.dpiFolder+"/bulletsheet.png",12.0f,new Vector2d(0,6));
 	public static BeamShot beamShot = new BeamShot(50);
@@ -72,7 +73,7 @@ public class Advantage {
 			if(in_position == 0  || in_position == 2)
 			{
 				//only apply once
-				if(in_ship.shotHandler != bigShot)
+				if(in_ship.shotHandler != bigShot && in_ship.shotHandler != beamShot)
 				{
 					//big shot gun
 					in_ship.i_animationFrameRow = 4;
@@ -131,21 +132,28 @@ public class Advantage {
 		case 7:
 			//homing
 			if(in_ship.shotHandler instanceof StraightLineShot)
-				((StraightLineShot)in_ship.shotHandler).b_homing=true;
+			{
+										
+					((StraightLineShot)in_ship.shotHandler).b_homing=true;
 			
+			}
 			break;
 		case 8:
-			if(in_position == 3)
-			{
-				
-			}
+			if(in_position == 1 || in_position == 3)
+				if(!(in_ship.shotHandler instanceof FlamerShot))
+				{
+					in_ship.shootEverySteps=3;
+					in_ship.shotHandler = new FlamerShot(in_ship);
+				}
 		break;
 		case 9:
-			if(in_position == 1)
+			
+			if(in_position == 1 || in_position == 3)
 			{	
-				//PENDING this is a hack
-				SlowFieldPowerup p = new SlowFieldPowerup();
-				p.applyPowerup(in_ship, in_logicEngine);
+				//railgun shot
+				StraightLineShot s = new StraightLineShot("data/"+GameRenderer.dpiFolder+"/railshot.png",7.0f,new Vector2d(0,12f));
+				s.f_damage = 2f;
+				in_ship.shotHandler=s;
 			}
 			break;
 		}
@@ -170,6 +178,10 @@ public class Advantage {
 			case 6 : SoundEffects.getInstance().laser.play(SoundEffects.SPEECH_VOLUME);
 			break;
 			case 7 : SoundEffects.getInstance().homing.play(SoundEffects.SPEECH_VOLUME);
+			break;
+			case 8 : SoundEffects.getInstance().flame.play(SoundEffects.SPEECH_VOLUME);
+			break;
+			case 9 : SoundEffects.getInstance().railgun.play(SoundEffects.SPEECH_VOLUME);
 			break;
 		}
 	}
@@ -281,13 +293,17 @@ public class Advantage {
 								}
 								
 								go_otherStuff.add(ship);
-								
 							}
 						break;
 						case 6 :
 						break;
 						case 7 :
 						break;
+						case 8 :
+							break;
+						case 9 :
+							
+							break;
 					}
 			
 	}

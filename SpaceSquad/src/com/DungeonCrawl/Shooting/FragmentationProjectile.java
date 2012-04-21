@@ -70,7 +70,10 @@ public class FragmentationProjectile implements ShotHandler{
 		bullet.stepHandlers.add(new FlyStraightStep(direction));
 		bullet.collisionHandler = new DestroyIfEnemyCollision(bullet,f_collisionRadius,false);
 		bullet.shootEverySteps=2;
-		bullet.shotHandler = new ExplodeIfInRange("data/"+GameRenderer.dpiFolder+"/fragbullet.png",60,true,3);
+		if(in_objectFiring.allegiance == GameObject.ALLEGIANCES.PLAYER)
+			bullet.shotHandler = new ExplodeIfInRange("data/"+GameRenderer.dpiFolder+"/fragbullet.png",60,true,3);
+		else
+			bullet.shotHandler = new ExplodeIfInRange("data/"+GameRenderer.dpiFolder+"/redbullets.png",60,true,3);
 		//bullet inherits the allegiance of whoever fired it
 		bullet.allegiance = in_objectFiring.allegiance;
 	
@@ -82,6 +85,11 @@ public class FragmentationProjectile implements ShotHandler{
 		else
 			in_toShootIn.objectsPlayerBullets.add(bullet);
 		
+	}
+	@Override
+	public String getImagePath() {
+		
+		return str_bulletImage;
 	}
 	
 

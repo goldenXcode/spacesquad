@@ -137,6 +137,9 @@ public class Level7 implements Level{
 		////////////////////////////////////1000-2000 WALLS AND LAZORS////////////////////////////
 		if(i_stepCounter>=1400 && i_stepCounter<2500)
 		{
+			if(i_stepCounter%4 ==0)
+				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
+			
 			//narrow the steps
 			if(i_stepCounter>=1400 && i_stepCounter%32==0 && i_stepCounter < 1700)
 				myWalls.narrowTunnel();
@@ -207,7 +210,7 @@ public class Level7 implements Level{
 		if(i_stepCounter == BOSS_STEP)
 			spawnBoss(in_logicEngine, in_manager);
 		
-		myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
+		
 		
 		//level text
 		if(i_stepCounter==0)
@@ -265,6 +268,31 @@ public class Level7 implements Level{
 		ship.v.setMaxVel(3);
 		ship.v.setMaxForce(1);
 		
+		
+		//turret
+		Drawable turret = new Drawable();
+		turret.i_animationFrame = 6;
+		turret.i_animationFrameSizeWidth=16;
+		turret.i_animationFrameSizeHeight=16;
+		turret.str_spritename = "data/"+GameRenderer.dpiFolder+"/gravitonlevel.png";
+		turret.f_forceRotation = 90;
+	
+		
+		ship.visibleBuffs.add(turret);
+		ship.shotHandler = new TurretShot(turret,"data/"+GameRenderer.dpiFolder+"/redbullets.png",6,5.0f);
+		
+		
+		ship.shootEverySteps=25;
+		
+		if(Difficulty.isMedium())
+			ship.shootEverySteps=15;
+		
+		if(Difficulty.isHard())
+			ship.shootEverySteps=10;
+		
+		//destroy ships that get too close
+		
+		
 		bossTarget = null;
 		bossTarget = new Arrive();
 		bossTarget.setActiveDistance(Integer.MAX_VALUE);
@@ -289,7 +317,6 @@ public class Level7 implements Level{
 		currentTarget = bossSpawnLocations[2];
 		
 		ship.isBoss = true;
-		
 		ship.collisionHandler = c;
 		
 		CustomBehaviourStep b = new CustomBehaviourStep(bossTarget);

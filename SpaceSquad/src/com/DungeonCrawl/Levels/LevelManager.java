@@ -207,7 +207,7 @@ public class LevelManager
 				ship.shootEverySteps = (int) (ship.shootEverySteps * 0.75); 
 			
 			//for each advantage if it is enabled apply it
-			for(int j=0;j< Advantage.b_advantages.length;j++)
+			for(int j=Advantage.b_advantages.length-1 ;j>=0;j--)
 				if(Advantage.b_advantages[j])
 					Advantage.applyAdvantageToShip(j,ship,i,in_logicEngine);
 			
@@ -592,7 +592,7 @@ public class LevelManager
 		go.stepHandlers.add( new SeekNearestPlayerStep(1000));
 		
 		//hitpoint collision with explosion
-		SplitCollision c =  new SplitCollision(go,4, 32.0);
+		SplitCollision c =  new SplitCollision(go,4, 40.0);
 		c.setSimpleExplosion();
 		c.c_flashColor = new Color(0,0,1,1);
 		
@@ -621,7 +621,7 @@ public class LevelManager
 			go2.v.setMaxVel(3);
 			go2.stepHandlers.add( new SeekNearestPlayerStep(1000));
 			
-			SplitCollision c2 =  new SplitCollision(go2,4, 25.0);
+			SplitCollision c2 =  new SplitCollision(go2,4, 30.0);
 			
 			//-------------SUB-SUB BUBBLE--------------
 			for(int j=0;j<4;j++)
@@ -645,7 +645,7 @@ public class LevelManager
 					go3.stepHandlers.add(new FlyStraightStep(new Vector2d(1,-2)));
 				
 				
-				HitpointShipCollision c3 =  new HitpointShipCollision(go3,1, 15.0);
+				HitpointShipCollision c3 =  new HitpointShipCollision(go3,1, 20.0);
 				
 				c3.setSimpleExplosion();
 				

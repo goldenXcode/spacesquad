@@ -27,6 +27,31 @@ public class MyInput implements InputProcessor{
 		Gdx.input.setCatchBackKey(true);
 	}
 	
+	public boolean b_keyboardInput = false;
+	boolean b_leftDown = false;
+	boolean b_rightDown = false;
+	boolean b_upDown = false;
+	boolean b_downDown = false;
+	
+	public void stepInputProcessor()
+	{
+		int i_pointerToControlWithKeyboard = 0;
+		
+		if(targetsActive[1])
+			i_pointerToControlWithKeyboard = 1;
+		
+		
+		System.out.println(Targets[1].x + "," + Targets[1].y);
+		if(b_leftDown)
+			Targets[i_pointerToControlWithKeyboard].x = Math.max(10f, Targets[i_pointerToControlWithKeyboard].x - 10f) ;
+		if(b_rightDown)
+			Targets[i_pointerToControlWithKeyboard].x = Math.min(320, Targets[i_pointerToControlWithKeyboard].x + 10f) ;
+		if(b_upDown)
+			Targets[i_pointerToControlWithKeyboard].y = Math.min(480, Targets[i_pointerToControlWithKeyboard].y + 10f) ;
+		if(b_downDown)
+			Targets[i_pointerToControlWithKeyboard].y = Math.max(10, Targets[i_pointerToControlWithKeyboard].y - 10f) ;
+	}
+	
 	public MyInput(UI in_ui)
 	{
 		myUI = in_ui;
@@ -41,7 +66,6 @@ public class MyInput implements InputProcessor{
 			Targets[i].x = NOTARGET;
 			Targets[i].y = NOTARGET;
 		}
-	
 	}
 
 	@Override
@@ -52,16 +76,45 @@ public class MyInput implements InputProcessor{
 		        }
 		        
 		        
-		        if(keycode == Keys.BACK ){
-
-		        	System.out.println("left");
+		        if(keycode == Keys.CONTROL_RIGHT )
+		        {
+		        	//toggle follow main squad
+		        	targetsActive[1] = !targetsActive[1];
 		        	
-		        	if(Targets[0].x == 0)
-		        		Targets[1].x = Targets[0].x -150;
+		        	b_keyboardInput = true; 
 		        	
-		        	
-		        	Targets[1].y = Targets[0].y;  
-		        	targetsActive[1] = true;
+		        	//if switched to independent control
+		        	if(targetsActive[1])
+		        	{
+		        		Targets[1].x = Targets[0].x;
+		        		Targets[1].y =Targets[0].y;
+		        	}
+		        }
+		        
+		        if(keycode == Keys.LEFT )
+		        {
+		        	targetsActive[0] =true;
+		        	b_leftDown = true;
+		        	b_keyboardInput = true;
+		        }
+		        if(keycode == Keys.RIGHT )
+		        {
+		        	targetsActive[0] =true;
+		        	b_rightDown = true;
+		        	b_keyboardInput = true;
+		        }
+		        
+		        if(keycode == Keys.UP )
+		        {
+		        	targetsActive[0] =true;
+		        	b_upDown = true;
+		        	b_keyboardInput = true;
+		        }
+		        if(keycode == Keys.DOWN )
+		        {
+		        	targetsActive[0] =true;
+		        	b_downDown = true;
+		        	b_keyboardInput = true;
 		        }
 		      
 		 
@@ -87,6 +140,18 @@ public class MyInput implements InputProcessor{
 	      //  	targetsActive[1] = false;
 	        }
 		// TODO Auto-generated method stub
+		 
+		 if(keycode == Keys.LEFT )
+	        	b_leftDown = false;
+	        if(keycode == Keys.RIGHT )
+	        	b_rightDown = false;
+	        
+	        if(keycode == Keys.UP )
+	        	b_upDown = false;
+	        if(keycode == Keys.DOWN )
+	        	b_downDown = false;
+	        
+		 
 		return false;
 	}
 
@@ -103,7 +168,7 @@ public class MyInput implements InputProcessor{
 		if(myLogicEngine.b_paused)
  			return false;
 		
-		if(pointer == 0 && b_sticky2)
+		if(pointer == 0 && b_sticky2 && !b_keyboardInput)
 			targetsActive[1] = false;
 		
 		//TODO : Check
@@ -125,7 +190,7 @@ public class MyInput implements InputProcessor{
  			return false;
 		
 		
-		if(pointer == 0 && b_sticky2)
+		if(pointer == 0 && b_sticky2 && !b_keyboardInput)
 			targetsActive[1] = false;
 		
 		y = Math.min(y, Gdx.graphics.getHeight());
@@ -179,7 +244,7 @@ public class MyInput implements InputProcessor{
 			b_sticky2=true;
 		
 		//if taking finger 1 off when 2 is still on
-		if(pointer == 0 && targetsActive[1] == true)
+		if(pointer == 0 && targetsActive[1] == true && !b_keyboardInput)
 			targetsActive[pointer] = false;
 		
 		return false;

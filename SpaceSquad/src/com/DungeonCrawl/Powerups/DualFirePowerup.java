@@ -5,9 +5,12 @@ import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.SoundEffects;
+import com.DungeonCrawl.Shooting.FlamerShot;
 import com.DungeonCrawl.Shooting.ShotHandler;
 import com.DungeonCrawl.Shooting.SplitShot;
 import com.DungeonCrawl.Shooting.StraightLineShot;
+
+import de.steeringbehaviors.simulation.renderer.Vector2d;
 
 public class DualFirePowerup implements Powerup {
 
@@ -35,13 +38,30 @@ public class DualFirePowerup implements Powerup {
 			
 		oldShotHandler = in_toApplyTo.shotHandler; 
 		
-		SplitShot ss = new SplitShot("data/"+GameRenderer.dpiFolder+"/bullet.png",9.0);
+
 		
+		SplitShot ss = new SplitShot(oldShotHandler.getImagePath(),9.0);
+		
+		
+		 
 		if(oldShotHandler instanceof StraightLineShot)
+		{
 			ss.b_homing = ((StraightLineShot)oldShotHandler).b_homing;
-			
+			ss.f_damage = ((StraightLineShot)oldShotHandler).f_damage;
+		}
 		
-		in_toApplyTo.shotHandler =  ss;
+		
+		//split flame differently
+		if(in_toApplyTo.shotHandler instanceof FlamerShot)
+		{
+			FlamerShot f = (FlamerShot)in_toApplyTo.shotHandler;
+			f.a_flameVectors.clear();
+			f.a_flameVectors.add(new Vector2d(2.5f,5f));
+			f.a_flameVectors.add(new Vector2d(-2.5f,5f));
+			
+		}
+		else
+			in_toApplyTo.shotHandler =  ss;
 			
 		if(!in_toApplyTo.b_ignorePowerupFrameChanges)
 			in_toApplyTo.i_animationFrameRow=2;
@@ -52,6 +72,12 @@ public class DualFirePowerup implements Powerup {
 	@Override
 	public void unApplyPowerup(GameObject in_toApplyTo) {
 		
+		if(in_toApplyTo.shotHandler instanceof FlamerShot)
+		{
+			FlamerShot f = (FlamerShot)in_toApplyTo.shotHandler;
+			f.a_flameVectors.clear();
+			f.a_flameVectors.add(new Vector2d(0.0f,5f));
+		}
 		
 		in_toApplyTo.activePowerups.remove(this);
 		

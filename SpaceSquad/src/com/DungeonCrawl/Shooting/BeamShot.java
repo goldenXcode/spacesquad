@@ -141,5 +141,10 @@ public class BeamShot  implements ShotHandler{
 		else
 			i_stepCounter++;
 	}
+	@Override
+	public String getImagePath() {
+		
+		return null;
+	}
 
 }
