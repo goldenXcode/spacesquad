@@ -8,6 +8,7 @@ import de.steeringbehaviors.simulation.simulationobjects.Vehicle;
 
 public class BounceOfScreenEdgesStep implements StepHandler {
 
+	public boolean b_sidesOnly = false;
 	@Override
 	public boolean handleStep(LogicEngine in_theLogicEngine,
 			GameObject o_runningOn) {
@@ -33,24 +34,26 @@ public class BounceOfScreenEdgesStep implements StepHandler {
 				vel.setY(1f * Math.random());
 		}
 		
-		if(v.getY() < -1)
+		if(!b_sidesOnly)
 		{
-			vel.setY(Math.abs(v.getY()) * 1); //make negative
-
-			//hack to prevent balls bouncing back and forth on bottom
-			if(Math.abs(vel.getX()) < 0.2f)
-				vel.setX(1f * Math.random());
-		}
-		if(v.getY() > LogicEngine.SCREEN_HEIGHT - 1)
-		{
-			vel.setY(Math.abs(v.getY()) * -1); //make negative
+			if(v.getY() < -1)
+			{
+				vel.setY(Math.abs(v.getY()) * 1); //make negative
+	
+				//hack to prevent balls bouncing back and forth on bottom
+				if(Math.abs(vel.getX()) < 0.2f)
+					vel.setX(1f * Math.random());
+			}
+			if(v.getY() > LogicEngine.SCREEN_HEIGHT - 1)
+			{
+				vel.setY(Math.abs(v.getY()) * -1); //make negative
+				
+				//hack to prevent balls bouncing back and forth on bottom
+				if(Math.abs(vel.getX()) < 0.2f)
+					vel.setX(1f * Math.random());
+			}
 			
-			//hack to prevent balls bouncing back and forth on bottom
-			if(Math.abs(vel.getX()) < 0.2f)
-				vel.setX(1f * Math.random());
 		}
-		
-		
 		//advance it along
 		v.addForce(v.getVel());
 		
@@ -61,7 +64,7 @@ public class BounceOfScreenEdgesStep implements StepHandler {
 	public StepHandler clone() throws CloneNotSupportedException
 	{
 		BounceOfScreenEdgesStep b = new BounceOfScreenEdgesStep();
-	
+		b.b_sidesOnly = this.b_sidesOnly;
 		
 		return b;
 	}

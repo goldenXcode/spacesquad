@@ -228,7 +228,7 @@ public class SurvivalLevel extends BasicLevel {
 			((HitpointShipCollision)(ship1.collisionHandler)).f_numberOfHitpoints=30f;
 			break;
 		case 1:
-			GameObject ship2 = in_manager.spawnWaveRider(in_logicEngine, (float)(Math.random()*320.0f));
+			GameObject ship2 = in_manager.spawnWaveRider(in_logicEngine, (float)(Math.random()*320.0f),2);
 			((HitpointShipCollision)(ship2.collisionHandler)).f_numberOfHitpoints=30f;
 			break;
 		}

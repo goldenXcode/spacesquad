@@ -33,9 +33,11 @@ import com.DungeonCrawl.Shooting.ExplodeIfInRange;
 import com.DungeonCrawl.Shooting.StraightLineShot;
 import com.DungeonCrawl.Shooting.TurretShot;
 import com.DungeonCrawl.Steps.AnimateRollStep;
+import com.DungeonCrawl.Steps.BounceOfScreenEdgesStep;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.LaunchShipsStep;
+import com.DungeonCrawl.Steps.LoopWaypointsStep;
 import com.DungeonCrawl.Steps.LoopingAnimationStep;
 import com.DungeonCrawl.Steps.PlayerStep;
 import com.DungeonCrawl.Steps.PullShipsStep;
@@ -163,7 +165,9 @@ public class LevelManager
 	{
 		in_logicEngine.objectsEnemies.clear();
 		in_logicEngine.objectsEnemyBullets.clear();
+		in_logicEngine.objectsObstaclesLock.writeLock().lock();
 		in_logicEngine.objectsObstacles.clear();
+		in_logicEngine.objectsObstaclesLock.writeLock().unlock();
 		in_logicEngine.objectsPlayerBullets.clear();
 		in_logicEngine.objectsPowerups.clear();
 		in_logicEngine.objectsUnderlay.clear();
@@ -275,7 +279,7 @@ public class LevelManager
 		
 
 		
-		in_logicEngine.objectsObstacles.add(mine);
+		in_logicEngine.toAddObjectsObstacles.add(mine);
 		
 		//return the object created 
 		return mine;
@@ -389,7 +393,9 @@ public class LevelManager
 		if( Difficulty.isHard())
 			go.stepHandlers.add( new FlyStraightStep(new Vector2d(xDrift*2,-10)));
 		
-		in_logicEngine.objectsObstacles.add(go);
+		
+		in_logicEngine.toAddObjectsObstacles.add(go);
+		
 		return go;
 	}
 	
@@ -737,7 +743,9 @@ public class LevelManager
 		//clear enemies
 		in_logicEngine.objectsEnemies.clear();
 		in_logicEngine.objectsEnemyBullets.clear();
+		in_logicEngine.objectsObstaclesLock.writeLock().lock();
 		in_logicEngine.objectsObstacles.clear();
+		in_logicEngine.objectsObstaclesLock.writeLock().unlock();
 		in_logicEngine.objectsPlayerBullets.clear();
 		in_logicEngine.objectsPowerups.clear();
 		in_logicEngine.objectsUnderlay.clear();
@@ -952,6 +960,53 @@ public class LevelManager
 		
 	}
 	
+	
+	public GameObject spawnBigBeamer(LogicEngine in_logicEngine) {
+
+		//spawn pyramid in center of screen
+		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/bigbeamer.png",((float)LogicEngine.SCREEN_WIDTH/2),LogicEngine.SCREEN_HEIGHT+64,0);
+		ship.i_animationFrameSizeHeight =  115;
+		ship.i_animationFrameSizeWidth = 115;
+		
+		
+		ship.stepHandlers.add(new FlyStraightStep(new Vector2d(0,-1f)));
+		
+	
+		ship.v.setMaxForce(2.5f);
+		ship.v.setMaxVel(2.5f);
+		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+		
+		int i_shootEvery = 80;
+		
+		BeamShot b = new BeamShot(i_shootEvery);
+		
+		b.b_flare=false;
+		b.f_offsetX=-40;
+		b.f_offsetY=-30;
+		b.i_delay = 40;
+		b.i_beamWidth = 15;
+		
+		BeamShot b2 = new BeamShot(i_shootEvery);
+		b2.b_flare=false;
+		b2.f_offsetX=40;
+		b2.f_offsetY=-30;
+		b2.i_delay = 40+(i_shootEvery/2);
+		b2.i_beamWidth = 15;
+		b.nextBeam = b2;
+		
+		ship.shootEverySteps=1;
+		ship.shotHandler = b;
+		
+		HitpointShipCollision c = new HitpointShipCollision(ship, 100, 50f);
+		c.setExplosion(Utils.getBossExplosion(ship));
+		ship.collisionHandler = c;
+		
+		in_logicEngine.objectsEnemies.add(ship);
+		
+		return ship;
+	}
+
+	
 	public void spawnTurretShip(LogicEngine in_logicEngine,float in_x)
 	{
 		//turret
@@ -1021,7 +1076,8 @@ public class LevelManager
 		ship.collisionHandler = new HitpointShipCollision(ship, 100, 32);
 		
 		
-		in_logicEngine.objectsObstacles.add(ship);	
+		in_logicEngine.toAddObjectsObstacles.add(ship);	
+		
 	}
 	
 	public GameObject spawnCarrier(LogicEngine in_logicEngine, float in_x , CARRIER_TYPE in_type)
@@ -1154,7 +1210,7 @@ public class LevelManager
 		return ship;
 	}
 
-	GameObject spawnWaveRider(LogicEngine in_logicEngine,float in_x)
+	GameObject spawnWaveRider(LogicEngine in_logicEngine,float in_x, float in_speed)
 	{
 		GameObject go = new GameObject("data/"+GameRenderer.dpiFolder+"/redcube.png",in_x,in_logicEngine.SCREEN_HEIGHT+25,0);
 		
@@ -1168,14 +1224,19 @@ public class LevelManager
 		go.v.setMaxForce(2.5);
 		go.v.setMaxVel(100);
 
-		go.stepHandlers.add(new FlyStraightStep(new Vector2d(0,-2)));
+		go.stepHandlers.add(new FlyStraightStep(new Vector2d(0,-in_speed)));
 		
 		HitpointShipCollision collision = new HitpointShipCollision(go, 15, 25);
 		
-		if(Difficulty.isMedium() || Difficulty.isHard())
+		if(Difficulty.isMedium() )
 		{
-			collision.f_numberOfHitpoints = 20;
+			collision.f_numberOfHitpoints = 30;
 			go.v.setMaxVel(0.3);
+		}
+		
+		if( Difficulty.isHard())
+		{
+			collision.f_numberOfHitpoints = 40;
 		}
 		
 		collision.setExplosion(Utils.getMiniBossExplosion(go));
@@ -1231,7 +1292,71 @@ public class LevelManager
 		return go;
 	}
 	
+public GameObject spawnBomber(LogicEngine in_logicEngine){
+		
+		//spawn pyramid in center of screen
+		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/bomber.png",((float)LogicEngine.SCREEN_WIDTH)+50,LogicEngine.SCREEN_HEIGHT-50,0);
+		ship.i_animationFrameSizeHeight =  58;
+		ship.i_animationFrameSizeWidth = 58;
+		
+		//fly back and forth
+		LoopWaypointsStep s = new LoopWaypointsStep();
+		s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-50));
+		s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-50));
+		
+		ship.b_mirrorImageHorizontal = true;
+		
+		ship.stepHandlers.add(s);
+		ship.v.setMaxForce(5.0f);
+		ship.v.setMaxVel(5.0f);
+		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
+
+
+		//tadpole bullets
+		GameObject go_tadpole = this.spawnTadpole(in_logicEngine);
+		go_tadpole.stepHandlers.clear();
+		FlyStraightStep fly = new FlyStraightStep(new Vector2d(0,-0.5f));
+		fly.setIsAccelleration(true);
+		
+		
+		if(Difficulty.isHard())
+		{	go_tadpole.v.setMaxVel(5);
+			go_tadpole.v.setMaxForce(5);
+		}
+		else
+		{	go_tadpole.v.setMaxVel(10);
+			go_tadpole.v.setMaxForce(5);
+		}
+		go_tadpole.stepHandlers.add(fly);
+		go_tadpole.v.setVel(new Vector2d(-2.5f,0f));
+		
+		
+		//bounce on hard and medium
+		if(Difficulty.isHard() || Difficulty.isMedium())
+		{
+			BounceOfScreenEdgesStep bounce = new BounceOfScreenEdgesStep();
+			bounce.b_sidesOnly = true;
+			go_tadpole.stepHandlers.add(bounce);
+		}
+		
+		//drop bombs
+		LaunchShipsStep launch = new LaunchShipsStep(go_tadpole, 20, 5, 3, true);
+		launch.b_addToBullets = true;
+		launch.b_forceVelocityChangeBasedOnParentMirror = true;
+		
+		ship.stepHandlers.add(launch);
+		ship.rotateToV=true;
+		
+		//give it some hp
+		HitpointShipCollision c = new HitpointShipCollision(ship, 50, 50f);
+		c.setSimpleExplosion();
+		ship.collisionHandler = c;
+		
+		in_logicEngine.objectsEnemies.add(ship);
+		
+		return ship;
 	
+	}
 	public void pathFinderStraightDown(LogicEngine in_logicEngine , int in_x)
 	{
 		GameObject ship = new GameObject("data/"+GameRenderer.dpiFolder+"/triangle.png",in_x,LogicEngine.SCREEN_HEIGHT+10,0);
@@ -1261,7 +1386,6 @@ public class LevelManager
 			
 		ship.collisionHandler = new DestroyIfEnemyCollision(ship, 6, true);
 		
-		System.out.println("wp ="+ship.v.getPath().size());
 				 
 		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
 		
@@ -1319,8 +1443,6 @@ public class LevelManager
 		ship.stepHandlers.add(b);		
 		ship.collisionHandler = new DestroyIfEnemyCollision(ship, 6, true);
 		
-		System.out.println("wp ="+ship.v.getPath().size());
-				 
 		ship.allegiance = GameObject.ALLEGIANCES.ENEMIES;
 		
 		in_logicEngine.objectsEnemies.add(ship);

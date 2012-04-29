@@ -41,7 +41,7 @@ public class MyInput implements InputProcessor{
 			i_pointerToControlWithKeyboard = 1;
 		
 		
-		System.out.println(Targets[1].x + "," + Targets[1].y);
+		
 		if(b_leftDown)
 			Targets[i_pointerToControlWithKeyboard].x = Math.max(10f, Targets[i_pointerToControlWithKeyboard].x - 10f) ;
 		if(b_rightDown)

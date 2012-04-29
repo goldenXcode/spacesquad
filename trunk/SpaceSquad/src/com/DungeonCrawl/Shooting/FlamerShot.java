@@ -19,7 +19,7 @@ public class FlamerShot implements ShotHandler{
 	public FlamerShot(GameObject go_firing)
 	{
 		go_flame = new  GameObject("data/"+GameRenderer.dpiFolder+"/projectiles.png",0,0,0);
-		go_flame.collisionHandler = new HitpointShipCollision(go_flame,0.3f,10f,false);
+		go_flame.collisionHandler = new HitpointShipCollision(go_flame,0.5f,10f,false);
 		go_flame.i_animationFrame =0;
 		go_flame.i_animationFrameSizeWidth =8;
 		go_flame.i_animationFrameSizeHeight =8;

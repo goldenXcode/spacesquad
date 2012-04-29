@@ -36,6 +36,7 @@ public class HitpointShipCollision implements CollisionHandler{
 	float i_scrollBossBar = 0;
 	float i_scrollBossBarWindow = 0;
 	private double f_healthBarStartX;
+	private float f_newNumberOfHitpoints = Float.MIN_VALUE;
 	
 	public void addHitpointBossBar( LogicEngine toDisplayIn)
 	{		
@@ -133,15 +134,26 @@ public class HitpointShipCollision implements CollisionHandler{
 			//if colliding with another hp ship
 			if(collidingWith.collisionHandler instanceof HitpointShipCollision)
 			{
+				//only update number of hitpoints in step NOT HERE, here we use temporary value so that we dont get the wrong value when doing collision e.g. rock with hp5 collides with boss with hp100 rock gets set to 0 then boss gets set to 100-0 (oops)
+				if(thisObject.isBoss)
+					if(f_newNumberOfHitpoints == Float.MIN_VALUE)
+						f_newNumberOfHitpoints = f_numberOfHitpoints - (Math.max(0f,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints)/2f);
+					else
+						f_newNumberOfHitpoints -= (Math.max(0f,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints)/2f);
+				else
+					if(f_newNumberOfHitpoints == Float.MIN_VALUE)
+						f_newNumberOfHitpoints = f_numberOfHitpoints - Math.max(0f,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints);
+					else
+						f_newNumberOfHitpoints -= Math.max(0f,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints);
 				
-				f_numberOfHitpoints -= Math.max(0f,((HitpointShipCollision)collidingWith.collisionHandler).f_numberOfHitpoints);
-				updateBossHealth(toRunIn);
 			}
 			else
 			{
-				f_numberOfHitpoints--;
+				if(f_newNumberOfHitpoints == Float.MIN_VALUE)
+					f_newNumberOfHitpoints = f_numberOfHitpoints-1;
+				else
+					f_newNumberOfHitpoints--;
 				
-				updateBossHealth(toRunIn);
 				
 			}
 			
@@ -222,6 +234,13 @@ public class HitpointShipCollision implements CollisionHandler{
 	public boolean handleStep(LogicEngine in_theLogicEngine,
 			GameObject o_runningOn) {
 		
+		//if hp changed 
+		if(f_newNumberOfHitpoints  != Float.MIN_VALUE)
+		{
+			this.f_numberOfHitpoints = f_newNumberOfHitpoints;
+			f_newNumberOfHitpoints = Float.MIN_VALUE;
+			this.updateBossHealth(in_theLogicEngine);
+		}
 		
 			//remove flash if we are to support flashing AND the current frame is a flash frame AND at least 1 step has happened since the flash was set
 			if(b_flash &&  thisObject.i_animationFrame == i_flashFrame &&  in_theLogicEngine.i_stepCounter != i_flashStartedOnStep)

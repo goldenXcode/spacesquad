@@ -3,6 +3,7 @@ package com.DungeonCrawl.Levels;
 import com.DungeonCrawl.Difficulty;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameObject.ALLEGIANCES;
+import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
 import com.DungeonCrawl.SoundEffects;
@@ -16,6 +17,7 @@ import com.DungeonCrawl.Powerups.Powerup;
 import com.DungeonCrawl.Powerups.ShieldPowerup;
 import com.DungeonCrawl.Shooting.BeamShot;
 import com.DungeonCrawl.Shooting.ExplodeIfInRange;
+import com.DungeonCrawl.Shooting.TurretShot;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.LoopingAnimationStep;
@@ -73,6 +75,8 @@ public class Level2 implements Level{
 					if(Difficulty.isHard())
 						in_manager.mineWave(in_logicEngine, 8, i_stepCounter %2==0,false);
 					
+		if(i_stepCounter == 1000 || i_stepCounter == 2000)
+			in_manager.spawnBigBeamer(in_logicEngine);
 		
 		//pathfinders on thier own
 		if(i_stepCounter > 900 && i_stepCounter < 1400)
@@ -138,6 +142,7 @@ public class Level2 implements Level{
 		
 		return false;
 	}
+	
 	
 	int bossDirection=1;
 	GameObject boss = null;

@@ -3,6 +3,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.DungeonCrawl.AreaEffects.AreaEffect;
@@ -12,6 +13,7 @@ import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Collisions.PowerupCollision;
 import com.DungeonCrawl.Difficulty.DIFFICULTY;
 import com.DungeonCrawl.GameObject.ALLEGIANCES;
+import com.DungeonCrawl.KdTree.Entry;
 import com.DungeonCrawl.Levels.LevelManager;
 import com.DungeonCrawl.Powerups.DualFirePowerup;
 import com.DungeonCrawl.Powerups.Powerup;
@@ -46,30 +48,35 @@ public class LogicEngine implements Runnable
 	public MyInput MyInputProcessor;
 	
 	
-	KdTree<GameObject> objectsEnemiesTree;
 	
-	
-	
-	public ArrayList<GameObject> objectsUnderlay;
-	public ArrayList<GameObject> objectsPlayers;
-	public ArrayList<GameObject> objectsPlayerBullets;
-	public ArrayList<GameObject> objectsEnemyBullets;
 	
 	//PENDING - add/remove manage this properly
 	public ReentrantReadWriteLock objectsObstaclesLock = new ReentrantReadWriteLock();
 	
 	public ArrayList<GameObject> objectsObstacles;
-	
-	
+	public ArrayList<GameObject> objectsUnderlay;
+	public ArrayList<GameObject> objectsPlayers;
+	public ArrayList<GameObject> objectsPlayerBullets;
+	public ArrayList<GameObject> objectsEnemyBullets;
 	public ArrayList<GameObject> objectsEnemies;
 	public ArrayList<GameObject> toAddObjectsEnemies = new ArrayList<GameObject>();
+	public ArrayList<GameObject> toAddObjectsObstacles = new ArrayList<GameObject>();
+	
 	public ArrayList<GameObject> objectsPowerups;
 	public ArrayList<GameObject> objectsOverlay;
+	
+	public KdTree<GameObject> kd_obstacles = null;
+	public KdTree<GameObject> kd_enemies = null;
+	//public KdTree<GameObject> kd_players = null;
+	//public KdTree<GameObject> kd_playerBullets = null;
+	//public KdTree<GameObject> kd_enemyBullets = null;
+	
+	//public KdTree<GameObject> kd_powerups = null;
+	
+	
 	public ArrayList<AreaEffect> currentAreaEffects;
 	public ArrayList<AreaEffect> currentAreaEffectsPlayers;
-	
 	public ArrayList<TextDisplaying> currentTextBeingDisplayed;
-	
 	
 	public LifeCounter MyLifeCounter;
 	public LevelManager MyLevelManager;
@@ -117,6 +124,41 @@ public class LogicEngine implements Runnable
 			
 	}
 	
+
+	
+
+	
+
+	private void buildKdTrees(LogicEngine in_theLogicEngine)
+	{	
+		//build kd tree
+		kd_enemies = new KdTree.Manhattan<GameObject>(2,300);
+		kd_obstacles = new KdTree.Manhattan<GameObject>(2,300);
+	//	kd_players = new KdTree.Manhattan<GameObject>(2,300);
+		//kd_enemyBullets = new KdTree.Manhattan<GameObject>(2,300);
+		//kd_playerBullets = new KdTree.Manhattan<GameObject>(2,300);
+		//kd_powerups = new KdTree.Manhattan<GameObject>(2,300);
+
+				
+		fillKdTree(kd_enemies,objectsEnemies);
+		fillKdTree(kd_obstacles,objectsObstacles);
+		//fillKdTree(kd_players,objectsPlayers);
+		//fillKdTree(kd_enemyBullets,objectsEnemyBullets);
+		//fillKdTree(kd_playerBullets,objectsPlayerBullets);
+		//fillKdTree(kd_powerups,objectsPowerups);
+	}
+	
+	private void fillKdTree( KdTree<GameObject> in_tree,ArrayList<GameObject> in_list )
+	{
+		//build kd tree of enemies
+		for(int i=0;i<in_list.size();i++)
+		{
+			GameObject go_currentObject = in_list.get(i);
+			in_tree.addPoint(new double[]{go_currentObject.v.getX(),go_currentObject.v.getY()}, go_currentObject);
+		}
+		
+	}
+	
 	public void init(MyInput in_processor)
 	{
 		MyInputProcessor = in_processor;
@@ -124,8 +166,7 @@ public class LogicEngine implements Runnable
 	}
 	public LogicEngine(){
 		
-		objectsEnemiesTree = new KdTree.WeightedManhattan<GameObject>(2,new Integer(500));
-		
+				
 		//TODO: 
 		/*
 		 * 
@@ -204,7 +245,6 @@ public class LogicEngine implements Runnable
 		
 		currentTextBeingDisplayed = new ArrayList<TextDisplaying>();
 		
-		
 
 		
 		
@@ -215,6 +255,8 @@ public class LogicEngine implements Runnable
 	
 	public void processStep() throws Exception
 	{
+		long l_timestamp2;
+		l_timestamp2 = System.nanoTime();
 		
 		MyInputProcessor.stepInputProcessor();
 		
@@ -245,9 +287,17 @@ public class LogicEngine implements Runnable
 
 		//get previous time
 	
-		
+
+		long l_timestamp;
+		l_timestamp = System.nanoTime();
 		//do stuff
-    
+		buildKdTrees(this);
+		
+		if(UI.DEBUG)
+			System.out.println("kd trees:" + (System.nanoTime() - l_timestamp ));
+		
+		l_timestamp = System.nanoTime();
+		
 		background.stepBackground();
 		
 		i_stepCounter++;
@@ -257,11 +307,26 @@ public class LogicEngine implements Runnable
 		{
 			objectsEnemies.addAll(toAddObjectsEnemies);
 			toAddObjectsEnemies.clear();
-		}		
-		objectsObstaclesLock.writeLock().lock();
+		}
+		
+		if(toAddObjectsObstacles.size() >0)
+		{
+			objectsObstaclesLock.writeLock().lock();
+			objectsObstacles.addAll(toAddObjectsObstacles);
+			toAddObjectsObstacles.clear();
+			objectsObstaclesLock.writeLock().unlock();
+		}
+		
+		
+		
 		MyLevelManager.handleStep(this);
-		objectsObstaclesLock.writeLock().unlock();
 
+		if(UI.DEBUG)
+			System.out.println("step level:" + (System.nanoTime() - l_timestamp ));
+		
+		l_timestamp = System.nanoTime();
+		
+		
 		//call processStep on children to do shootng/collision detection etc
 		for(int i=0;i<objectsPlayers.size();i++)
 		{
@@ -316,19 +381,20 @@ public class LogicEngine implements Runnable
 			}
 		
 		
-
+		this.objectsObstaclesLock.writeLock().lock();
 		for(int i=0;i<objectsObstacles.size();i++)
 			if(objectsObstacles.get(i).processStep(this)) //we are to delete this object
 			{
-				objectsObstaclesLock.writeLock().lock();
 				//remove self if necessary
 				//move object returned true so delete object
 				GameObject toDelete = objectsObstacles.get(i);
 				objectsObstacles.remove(i);
 				toDelete.dispose();
 				i--;
-				objectsObstaclesLock.writeLock().unlock();
+				
 			}
+		
+		this.objectsObstaclesLock.writeLock().unlock();
 
 		
 		for(int i=0;i<objectsEnemyBullets.size();i++)
@@ -356,190 +422,165 @@ public class LogicEngine implements Runnable
 				i--;
 			}
 		
+		if(UI.DEBUG)
+			System.out.println("step rest:" + (System.nanoTime() - l_timestamp ));
+		
+		
 		for(int i=0;i<currentAreaEffects.size();i++)
 			currentAreaEffects.get(i).stepEffect(this);
 		
 		for(int i=0;i<currentAreaEffectsPlayers.size();i++)
 			currentAreaEffectsPlayers.get(i).stepEffect(this);
 		
-		l_collisionDurationLast = System.currentTimeMillis();
-		if(l_collisionDurationCounter > 20)
-		{
-			System.out.println("ms to collision detect:" + (l_collisionDurationCount/20));
-			l_collisionDurationCount=0;
-			l_collisionDurationCounter=0;
-		}
-	
-	
+		
+		l_timestamp = System.nanoTime();
 		runCollisions();
+		
+		if(UI.DEBUG)
+			System.out.println("collisions rest:" + (System.nanoTime() - l_timestamp ));
+		l_timestamp = System.nanoTime();
 		
 		l_collisionDurationCount+= System.currentTimeMillis() - l_collisionDurationLast;
 		l_collisionDurationCounter++;
+		
+		if(UI.DEBUG)
+			System.out.println("total processStep" + (System.nanoTime() - l_timestamp2)); 
 	}
 
-	private void collideArrays(ArrayList<GameObject> in_list1,ArrayList<GameObject> in_list2)
+	private void collideArrays(ArrayList<GameObject> in_list1,ArrayList<GameObject> in_list2,KdTree<GameObject> in_tree)
 	{
-		objectsObstaclesLock.writeLock().lock();
-		Collections.sort(in_list1);
-		Collections.sort(in_list2);
-		objectsObstaclesLock.writeLock().unlock();
-		
-		if(in_list1.size() == 0 || in_list2.size() ==0)
-			return;
-		
-		
-		Iterator<GameObject> iterator1 = in_list1.iterator();
-		Iterator<GameObject> iterator2 = in_list2.iterator();
-		
-		/*
-		 * while (setIterator.hasNext()) {
-    SomeClass currentElement = setIterator.next();
-    if (setOfElementsToRemove(currentElement).size() > 0) {
-        setIterator.remove();
-    }
-}
-		 * 
-		 */
-		
-		GameObject go1 = iterator1.next();
-		GameObject go2 = iterator2.next();
-		
-		while(iterator1.hasNext() || iterator2.hasNext())
+		//for each object in the list
+		for(int i=0 ; i<in_list1.size();i++)
 		{
-			if(go1.collisionHandler == null)
-				if(iterator1.hasNext())
-					go1 = iterator1.next();
-				else
-					break;
-			else
-			if(go2.collisionHandler == null )
-				if(iterator2.hasNext())
-					go2 = iterator2.next();
-				else
-					break;
-			else //if there is an intersection
-			if(go1.v.getX() + go1.collisionHandler.getCollisionRadius() >= go2.v.getX() - go2.collisionHandler.getCollisionRadius() 
-					&&
-					go1.v.getX() - go1.collisionHandler.getCollisionRadius() <= go2.v.getX() + go2.collisionHandler.getCollisionRadius()
-					&&
-					go1.v.getY() + go1.collisionHandler.getCollisionRadius() >= go2.v.getY() - go2.collisionHandler.getCollisionRadius()
-					&&
-					go1.v.getY() - go1.collisionHandler.getCollisionRadius() <= go2.v.getY() + go2.collisionHandler.getCollisionRadius())							
-					{
-						if(go1.collisionHandler.handleCollision(go2, this))
-						{
-						
-							objectsObstaclesLock.writeLock().lock();
-							go1.dispose();
-							iterator1.remove();
-							objectsObstaclesLock.writeLock().unlock();
-							
-							
-							if(iterator1.hasNext())
-								go1 = iterator1.next();
-							else
-								break;
-													
-						}
-						
-						if(go2.collisionHandler.handleCollision(go1, this))
-						{
-					
-							objectsObstaclesLock.writeLock().lock();
-							
-							go2.dispose();
-							iterator2.remove();
-							objectsObstaclesLock.writeLock().unlock();
-							
-							if(iterator2.hasNext())
-								go2 = iterator2.next();
-							else
-								break;
-						}
-					}
-					
+			GameObject go_testing = in_list1.get(i);
+			
+			//if this object has a collision handler
+			if(go_testing.collisionHandler !=null)
+			{
+				//get closest neighbour
+				List<Entry<GameObject>> go_closestObject = in_tree.nearestNeighbor(new double[]{go_testing.v.getX(),go_testing.v.getY()}, 1, true);
 				
-			if(go1.compareTo(go2) < 0 && iterator1.hasNext())
-				go1 = iterator1.next();
-			else
-			if(iterator2.hasNext())
-				go2 = iterator2.next();
-				else
-					if(iterator1.hasNext())
-					go1 = iterator1.next();
-				
-				
-		}
-	/*	
-		for(int i=0; i<in_list1.size();i++)
-				for(int j=0; j<in_list2.size();j++)
+				//see if it is within range of collision
+				if(go_closestObject.size()!= 0) //if at least one result was returned
 				{
-					GameObject object1 =in_list1.get(i);
-					GameObject object2 = in_list2.get(j);
-					
-					if(object1.collisionHandler != null && object2.collisionHandler != null )
-						if(object1 != object2)
+					Entry<GameObject> closest = go_closestObject.get(0); 
+					if(closest.value.collisionHandler != null) //if colliding with thing has a collision handler
+						if(closest.distance < Math.max(closest.value.collisionHandler.getCollisionRadius(),go_testing.collisionHandler.getCollisionRadius())) //if within range
 						{
+							//nearest neighbour is within collision radius
+							if(closest.value.collisionHandler.handleCollision(go_testing, this))
+								in_list2.remove(closest.value);
 							
-							double distance = object1.v.getPos().sub(object2.v.getPos()).length();
-							//if objects are within range
-							if( distance < object1.collisionHandler.getCollisionRadius() || distance < object2.collisionHandler.getCollisionRadius() )
-							{
-								//collision occurs
-								
-								boolean b_delete1 = false;
-								boolean b_delete2 = false;
-								
-								if(object1.collisionHandler !=null)
-									//collide 1 with 2
-									b_delete1 = object1.collisionHandler.handleCollision(object2,this);
-								
-								//collide 2 with 1
-								if(object2.collisionHandler !=null)
-									b_delete2 = object2.collisionHandler.handleCollision(object1,this);
-		
-								//if to destroy the j list thing
-								if(b_delete2)
-								{
-									GameObject toDelete = object2;
-									in_list2.remove(object2);
-									toDelete.dispose();
-									//set j back 1 to see if theres more things to collide with for i (incase its not destroyed)
-									
-								}
-								
-								if(b_delete1)
-								{
-									GameObject toDelete = object1;
-									in_list1.remove(object1);
-									toDelete.dispose();
-									//i has been destroyed so break out of j loop and get a new i
-									
-									break;
-								}
-							}
+							if(go_testing.collisionHandler.handleCollision(closest.value, this))
+								in_list1.remove(go_testing);
+							
 						}
 				}
-		*/
+			}
+		}
+	
+	}
+	
+	private void collideArrays(ArrayList<GameObject> in_list1,ArrayList<GameObject> in_list2)
+	{
+		int index1=0;
+		int index2=0;
+		
+		//while there are more nodes
+		while(index1 < in_list1.size() && index2 < in_list2.size())
+		{
+			GameObject go1 = in_list1.get(index1);
+			GameObject go2 = in_list2.get(index2);
+			
+			//if this object doesn't have a collision handler go to next go1
+			if(go1.collisionHandler != null)
+			{
+				if(go2.collisionHandler != null)
+					if(go1._ymin < go2._ymax && go1._ymax > go2._ymin) //y collision is overlapping
+					{
+						if(go1._xmin < go2._xmax && go1._xmax > go2._xmin)
+						{
+							//nearest neighbour is within collision radius
+							if(go1.collisionHandler.handleCollision(go2, this))
+								in_list1.remove(go1);
+							
+							if(go2.collisionHandler.handleCollision(go1, this))
+								in_list2.remove(go2);
+						}
+							
+						//see if x is overlapping
+					}
+			}
+			
+			//advance one of the indexes
+			if(go1._ymin < go2._ymin)
+				if(index1+1 != in_list1.size()) //as long as its not the last node in the list advance list 1
+					index1++;
+				else
+					index2++;
+			else
+				if(index2+1 != in_list2.size())
+					index2++; //as long as its not the last node in the list advance list 1
+				else 
+					index1++;
+			
+			
+			
+		}
+	
 	}
 	
 	private void runCollisions()
 	{
+		calculateMinMax(objectsPlayers);
+		calculateMinMax(objectsEnemies);
+		calculateMinMax(objectsObstacles);
+		calculateMinMax(objectsEnemyBullets);
+		calculateMinMax(objectsPlayerBullets);
+		calculateMinMax(objectsPowerups);
+		
+		Collections.sort(objectsPlayers);
+		Collections.sort(objectsEnemies);
+		
+		this.objectsObstaclesLock.writeLock().lock();
+		Collections.sort(objectsObstacles);
+		this.objectsObstaclesLock.writeLock().unlock();
+		
+		Collections.sort(objectsEnemyBullets);
+		Collections.sort(objectsPlayerBullets);
+		Collections.sort(objectsPowerups);
+		
+		
 		//collide player with enemies, obstacles and enemy bullets
 		collideArrays(objectsPlayers,objectsEnemies);
 		collideArrays(objectsPlayers,objectsEnemyBullets);
 		
-		
+		this.objectsObstaclesLock.writeLock().lock();
+		collideArrays(objectsPlayers,objectsObstacles);
 		collideArrays(objectsEnemies,objectsObstacles);
 		collideArrays(objectsPlayerBullets,objectsObstacles);
-		collideArrays(objectsPlayers,objectsObstacles);
+		this.objectsObstaclesLock.writeLock().unlock();
 	
-		
 		//collide powerups with players
 		collideArrays(objectsPowerups,objectsPlayers);
 		
 		//collide bullets with enemies & obstacles
 		collideArrays(objectsPlayerBullets,objectsEnemies);
+		
+	}
+
+	private void calculateMinMax(ArrayList<GameObject>in_list) {
+		for(int i=0;i<in_list.size();i++)
+		{
+			GameObject g = in_list.get(i);
+			if(g.collisionHandler!=null)
+			{
+				g._xmin = (int) (g.v.getX() - g.collisionHandler.getCollisionRadius());
+				g._xmax = (int) (g.v.getX() + g.collisionHandler.getCollisionRadius());
+				g._ymin = (int) (g.v.getY() - g.collisionHandler.getCollisionRadius());
+				g._ymax = (int) (g.v.getY() + g.collisionHandler.getCollisionRadius());
+			}
+		}
 		
 	}
 
@@ -549,8 +590,6 @@ public class LogicEngine implements Runnable
 		    try {
 		    	long start = System.currentTimeMillis();
 				//record time, 
-		    	
-		    	
 
 		    	//take one logical step (PENDING - should probably move background scroll into here)
 		    	try {

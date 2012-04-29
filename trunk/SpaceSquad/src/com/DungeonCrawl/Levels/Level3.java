@@ -15,8 +15,11 @@ import com.DungeonCrawl.Collisions.DestroyIfEnemyCollision;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Shooting.BeamShot;
 import com.DungeonCrawl.Shooting.StraightLineShot;
+import com.DungeonCrawl.Steps.BounceOfScreenEdgesStep;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;
+import com.DungeonCrawl.Steps.LaunchShipsStep;
+import com.DungeonCrawl.Steps.LoopWaypointsStep;
 import com.DungeonCrawl.Steps.LoopingAnimationStep;
 import com.DungeonCrawl.Steps.SeekNearestPlayerStep;
 import com.DungeonCrawl.Steps.StaticAnimationStep;
@@ -49,6 +52,9 @@ public class Level3 implements Level{
 		if(i_stepCounter%200==0&& i_stepCounter <= 1000)
 			in_manager.spawnSplitter(in_logicEngine);
 	
+		if(i_stepCounter == 300 || i_stepCounter == 800)
+			in_manager.spawnBomber(in_logicEngine);
+		
 		//spawn first double powerup
 		if(i_stepCounter == 500)
 		{
@@ -95,11 +101,27 @@ public class Level3 implements Level{
 		if(i_stepCounter > 1500 && i_stepCounter%5==0 && i_stepCounter < 2000 )
 		{
 			in_manager.spawnWanderingSeeker(in_logicEngine);
+			in_manager.spawnWanderingSeeker(in_logicEngine);
+			
+			if(Difficulty.isMedium())
+				in_manager.spawnWanderingSeeker(in_logicEngine);
+			
+			if(Difficulty.isHard())
+			{
+				in_manager.spawnWanderingSeeker(in_logicEngine);
+				in_manager.spawnWanderingSeeker(in_logicEngine);
+			}
 			
 			if(i_stepCounter%500 ==0)
 				in_manager.spawnRandomPowerup(in_logicEngine, (float)(Math.random()*320.0+1.0f));
 		
 		}
+		if(i_stepCounter == 2500 ||  i_stepCounter == 2600 )
+			in_manager.spawnBomber(in_logicEngine);
+		
+		
+		if(i_stepCounter == 2900 ||  i_stepCounter == 3000 )
+			in_manager.spawnBomber(in_logicEngine);
 		
 		if(i_stepCounter > 2000 && i_stepCounter%5==0 && i_stepCounter < 2500 )
 		{
@@ -311,6 +333,7 @@ public class Level3 implements Level{
 	SimpleAreaEffect ae_areaPartialRight;
 	
 	
+	
 	private void spawnBoss(LogicEngine in_logicEngine) {
 		
 		//spawn pyramid in center of screen
@@ -339,7 +362,7 @@ public class Level3 implements Level{
 		boss.allegiance = GameObject.ALLEGIANCES.ENEMIES;
 
 		boss.isBoss = true;
-		HitpointShipCollision c =  new HitpointShipCollision(boss, 150, 64, true,1);
+		HitpointShipCollision c =  new HitpointShipCollision(boss, 300, 64, true,1);
 		c.addHitpointBossBar(in_logicEngine);
 		c.setExplosion(Utils.getBossExplosion(boss));
 		

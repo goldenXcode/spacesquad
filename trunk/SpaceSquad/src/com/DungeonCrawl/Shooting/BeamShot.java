@@ -22,16 +22,18 @@ public class BeamShot  implements ShotHandler{
 	public boolean b_flare = true;
 	public Utils.Direction b_direction=Utils.Direction.SOUTH;
 	
+	public float f_offsetX;
+	public float f_offsetY;
 	
 	Drawable d_flare; 
 	int i_fireEvery;
 	public int i_flareDuration=15;
 	public int i_beamDuration=10;
-	int i_beamWidth=5;
+	public int i_beamWidth=5;
 	static Sound s_beam=null;
 	
 	
-	
+	public BeamShot nextBeam = null;
 	
 	
 	public BeamShot(int in_fireEvery)
@@ -70,51 +72,63 @@ public class BeamShot  implements ShotHandler{
 	
 	
 	int i_stepCounter;
+	public int i_delay;
 	@Override
 	public void shoot(LogicEngine in_toShootIn, GameObject in_objectFiring) {
 	
+		
+		//if there are more than one beam add the second one.
+		if(nextBeam != null)
+			nextBeam.shoot(in_toShootIn, in_objectFiring);
+		
 		if(in_toShootIn.currentAreaEffects.indexOf(ae_beamTracer) == -1)
 			in_toShootIn.currentAreaEffects.add(ae_beamTracer);
 		
-		
 		ae_beamTracer.setDuration(5);
+		
 		//move tracer beam
 		if(b_direction == Utils.Direction.SOUTH)
 		{
-			ae_beamTracer.area.setp1(new Point2d(in_objectFiring.v.getX() - i_beamWidth,-100));
-			ae_beamTracer.area.setp2(new Point2d(in_objectFiring.v.getX() + i_beamWidth,in_objectFiring.v.getY()-10));
+			ae_beamTracer.area.setp1(new Point2d(in_objectFiring.v.getX() +f_offsetX - i_beamWidth,-100));
+			ae_beamTracer.area.setp2(new Point2d(in_objectFiring.v.getX() +f_offsetX + i_beamWidth,in_objectFiring.v.getY()-10+f_offsetY));
 		}
 		else
 		if(b_direction == Utils.Direction.EAST)
 		{
-			ae_beamTracer.area.setp1(new Point2d(in_objectFiring.v.getX() -15 + (in_objectFiring.i_animationFrameSizeWidth/2) ,in_objectFiring.v.getY() - i_beamWidth));
-			ae_beamTracer.area.setp2(new Point2d(LogicEngine.SCREEN_WIDTH+50 ,in_objectFiring.v.getY()+i_beamWidth));
+			ae_beamTracer.area.setp1(new Point2d(in_objectFiring.v.getX() -15 +f_offsetX + (in_objectFiring.i_animationFrameSizeWidth/2) ,in_objectFiring.v.getY() +f_offsetY - i_beamWidth));
+			ae_beamTracer.area.setp2(new Point2d(LogicEngine.SCREEN_WIDTH+50 +f_offsetX ,in_objectFiring.v.getY()+f_offsetY+i_beamWidth));
 		}
 		if(b_direction == Utils.Direction.NORTH)
 		{
-			ae_beamTracer.area.setp1(new Point2d(in_objectFiring.v.getX()  - (i_beamWidth/2) ,in_objectFiring.v.getY() + i_beamWidth));
-			ae_beamTracer.area.setp2(new Point2d(in_objectFiring.v.getX()  + (i_beamWidth/2) ,LogicEngine.f_worldCoordTop+100));
+			ae_beamTracer.area.setp1(new Point2d(in_objectFiring.v.getX() +f_offsetX  - (i_beamWidth/2) ,in_objectFiring.v.getY() +f_offsetY + i_beamWidth));
+			ae_beamTracer.area.setp2(new Point2d(in_objectFiring.v.getX() +f_offsetX  + (i_beamWidth/2) ,LogicEngine.f_worldCoordTop +f_offsetY+100));
 		}
 		
-		
+		//if delay reduce that to 0 before firing
+		if(i_delay>0)
+		{
+			i_delay--;
+			return;
+		}
+		//fire beam
 		//move beam with ship
 		if(i_stepCounter >= i_fireEvery -(i_beamDuration ))
 		{
 			if(b_direction == Utils.Direction.SOUTH)
 			{
-				ae_beam.area.setp1(new Point2d(in_objectFiring.v.getX() - i_beamWidth,-100));
-				ae_beam.area.setp2(new Point2d(in_objectFiring.v.getX() + i_beamWidth,in_objectFiring.v.getY()-10));
+				ae_beam.area.setp1(new Point2d(in_objectFiring.v.getX() +f_offsetX - i_beamWidth,-100));
+				ae_beam.area.setp2(new Point2d(in_objectFiring.v.getX() +f_offsetX + i_beamWidth,in_objectFiring.v.getY()+f_offsetY-10));
 			}
 			else
 			if(b_direction == Utils.Direction.EAST)
 			{
-				ae_beam.area.setp1(new Point2d(in_objectFiring.v.getX() -15 + (in_objectFiring.i_animationFrameSizeWidth/2) ,in_objectFiring.v.getY() - i_beamWidth));
-				ae_beam.area.setp2(new Point2d(LogicEngine.SCREEN_WIDTH+50 ,in_objectFiring.v.getY()+i_beamWidth));
+				ae_beam.area.setp1(new Point2d(in_objectFiring.v.getX()+f_offsetX -15 + (in_objectFiring.i_animationFrameSizeWidth/2) ,in_objectFiring.v.getY() - i_beamWidth+f_offsetY));
+				ae_beam.area.setp2(new Point2d(LogicEngine.SCREEN_WIDTH+50+f_offsetX ,in_objectFiring.v.getY()+i_beamWidth+f_offsetY));
 			}
 			if(b_direction == Utils.Direction.NORTH)
 			{
-				ae_beam.area.setp1(new Point2d(in_objectFiring.v.getX()  - (i_beamWidth/2) ,in_objectFiring.v.getY() + i_beamWidth));
-				ae_beam.area.setp2(new Point2d(in_objectFiring.v.getX()  + (i_beamWidth/2) ,LogicEngine.f_worldCoordTop+100));
+				ae_beam.area.setp1(new Point2d(in_objectFiring.v.getX() +f_offsetX - (i_beamWidth/2) ,in_objectFiring.v.getY() + i_beamWidth+f_offsetY));
+				ae_beam.area.setp2(new Point2d(in_objectFiring.v.getX() +f_offsetX + (i_beamWidth/2) ,LogicEngine.f_worldCoordTop+100+f_offsetY));
 			}
 		}
 		

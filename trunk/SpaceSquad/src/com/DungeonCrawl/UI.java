@@ -21,8 +21,8 @@ import de.steeringbehaviors.simulation.renderer.Vector2d;
 
 public class UI 
 {
-	boolean DEBUG=false;
-	int DEBUGLevelLoad=8;
+	static boolean DEBUG=true;
+	int DEBUGLevelLoad=4;
 	Difficulty.DIFFICULTY DEBUGDifficulty = Difficulty.DIFFICULTY.EASY;
 	
 	Texture tex_interface;
@@ -147,8 +147,8 @@ public class UI
 			case 5 : return "Side Cannons\nThis advantage is currently locked, to unlock it:\n\n Complete Level 1 on Hard (you can set difficulties on the launch page)";
 			case 6 : return "Beam Laser\nThis advantage is currently locked, to unlock it:\n\n Complete Level 5";
 			case 7 : return "Homing\nThis advantage is currently locked, to unlock it:\n\n Complete Level 3 on Hard";
-			case 8 : return "Got an idea for an advantage? email me it at: \n\ntnind@computing.dundee.ac.uk";
-			case 9 : return "Got an idea for an advantage? email me it at tnind@computing.dundee.ac.uk";
+			case 8 : return "Flame\nThis advantage is currently locked, to unlock it:\n\nSurvive more than 2 minutes on survival";
+			case 9 : return "Railgun (double damage)\nThis advantage is currently locked, to unlock it:\n\nSurvive more than 3 minutes on survival";
 		}
 		
 		return "";	
@@ -161,8 +161,20 @@ public class UI
 			case 5 : return Difficulty.ia_completedLevels.get(1)== Difficulty.DIFFICULTY.HARD;
 			case 6 : return Difficulty.ia_completedLevels.get(5)!= Difficulty.DIFFICULTY.NONE;
 			case 7 : return Difficulty.ia_completedLevels.get(3)== Difficulty.DIFFICULTY.MEDIUM || Difficulty.ia_completedLevels.get(3)== Difficulty.DIFFICULTY.HARD;
-			case 8 : return Difficulty.ia_completedLevels.get(4)!= Difficulty.DIFFICULTY.NONE;
-			case 9 : return Difficulty.ia_completedLevels.get(7)!= Difficulty.DIFFICULTY.NONE;
+			
+			
+			case 8 : 
+				
+				if(Difficulty.progressArray.containsKey("SURVIVAL_BEST_EASY"))
+					if( Integer.parseInt(Difficulty.progressArray.get("SURVIVAL_BEST_EASY"))> 120)
+						return true;
+				return false;
+				
+			case 9 : 
+				if(Difficulty.progressArray.containsKey("SURVIVAL_BEST_EASY"))
+					if( Integer.parseInt(Difficulty.progressArray.get("SURVIVAL_BEST_EASY"))> 180)
+						return true;
+			return false;
 		}
 		return false;
 	}
@@ -520,7 +532,7 @@ public class UI
 			
 		
 		//draw padlocks
-		for(int i=0;i<3;i++)
+		for(int i=0;i<5;i++)
 			if(!isAdvantageUnlocked(5+i))
 				Utils.drawRect(textr_padlock, rects_advantages2.get(i), batch);
 		

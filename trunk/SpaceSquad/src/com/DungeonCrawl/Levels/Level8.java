@@ -183,10 +183,10 @@ public class Level8 extends BasicLevel{
 		}
 		//////////////// WAVE RIDERS //////////////////////////////////
 		if(i_stepCounter == 800)
-			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
+			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3,3.5f);
 		
 		if(i_stepCounter == 1000)
-			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
+			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3,3.5f);
 		
 		
 		//waves of pathfinders 0-500
@@ -230,15 +230,15 @@ public class Level8 extends BasicLevel{
 		
 		if(i_stepCounter == 1200)
 		{
-			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
-			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
+			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3,3f);
+			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3,3f);
 		}
 		
 		
 		if(i_stepCounter == 1400)
 		{
-			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3);
-			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3);
+			in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/3,3f);
+			in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/3,3f);
 		}
 
 		///////////////////////// TUNNEL 2////////////////////////////////////////
@@ -295,9 +295,9 @@ public class Level8 extends BasicLevel{
 		
 		if(i_stepCounter == 2650)
 			{
-				in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/5);
-				in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/4);
-				in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*3)/4);
+				in_manager.spawnWaveRider(in_logicEngine, LogicEngine.SCREEN_WIDTH/5,3.5f);
+				in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*2)/4,4f);
+				in_manager.spawnWaveRider(in_logicEngine, (LogicEngine.SCREEN_WIDTH*3)/4,4.5f);
 			}
 		
 		
