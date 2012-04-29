@@ -43,6 +43,11 @@ public class GameObject extends Drawable implements Cloneable, Comparable<GameOb
 	public boolean rotateToV=false;
 	public boolean isBoss=false;
 	
+	//for use in collision detection, so we dont have to keep subtracting collision radii
+	int _xmax;
+	int _ymax;
+	int _xmin;
+	int _ymin;
 	
 	
 	public GameObject()
@@ -163,6 +168,8 @@ public class GameObject extends Drawable implements Cloneable, Comparable<GameOb
 	
 	public ALLEGIANCES allegiance = ALLEGIANCES.NONE;
 	public Color c_Color = Color.WHITE;
+	
+	public boolean b_mirrorImageHorizontal = false;
 
 	
 	
@@ -204,22 +211,12 @@ public class GameObject extends Drawable implements Cloneable, Comparable<GameOb
 	//Sorts by X location (for sweep in collision detection).
 	@Override
 	public int compareTo(GameObject arg0) {
-		double cr1 = 0;
-		double cr2 = 0;
-		
-		if(this.collisionHandler!= null)
-			cr1 = this.collisionHandler.getCollisionRadius();
-		
-		if(arg0.collisionHandler!= null)
-			cr2 = arg0.collisionHandler.getCollisionRadius();
-		
-		if(this.v.getX() - cr1 > arg0.v.getX() - cr2)
-			return 1;
-		else 
-			if(this.v.getX() - cr1 == arg0.v.getX() - cr2)
-				return 0;
-		else
+		if(_ymin < arg0._ymin)
 			return -1;
+		if(_ymin > arg0._ymin)
+			return 1;
+		else
+			return 0;
 	}
 
 }

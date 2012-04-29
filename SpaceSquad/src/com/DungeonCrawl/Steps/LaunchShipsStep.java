@@ -19,6 +19,7 @@ public class LaunchShipsStep implements StepHandler
 	int i_waveSpacing;
 	GameObject go_toLaunch;
 	boolean b_east = false;
+	public boolean b_forceVelocityChangeBasedOnParentMirror = false; 
 	
 	public LaunchShipsStep(GameObject in_toLaunch, int in_launchEvery, int in_numberToLaunch, int in_waveSpacing, boolean in_isEastLaunch)
 	{
@@ -84,7 +85,10 @@ public class LaunchShipsStep implements StepHandler
 					if(go_clone.v.getPath().size()>0)
 						((Point2d)(go_clone.v.getPath().get(0))).setY(o_runningOn.v.getY());
 					
-					
+					//if parent is mirrored, mirror
+					if(b_forceVelocityChangeBasedOnParentMirror)
+						if(o_runningOn.b_mirrorImageHorizontal)
+							go_clone.v.getVel().setX(-go_clone.v.getVel().getX());
 
 					if(b_addToBullets)
 						if(go_clone.allegiance == GameObject.ALLEGIANCES.PLAYER)

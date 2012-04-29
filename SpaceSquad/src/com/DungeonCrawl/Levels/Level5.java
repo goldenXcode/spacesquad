@@ -49,6 +49,14 @@ public class Level5 extends BasicLevel{
 		if(i_stepCounter==BOSS_STEP-100)
 			SoundEffects.getInstance().warningThreatApproaching.play(SoundEffects.SPEECH_VOLUME);
 		
+		if(i_stepCounter == 500 || i_stepCounter == 600)
+		{
+				GameObject go = in_manager.spawnBomber(in_logicEngine);
+				
+				//reduce asteroid damage and laser damage
+				go.isBoss=true;
+		}
+		
 		//batterangs
 		if(i_stepCounter >250 && i_stepCounter <750)
 		{
@@ -80,7 +88,7 @@ public class Level5 extends BasicLevel{
 			in_manager.spawnAsteroid(in_logicEngine, (int)(Math.random()*10.0f),(float)(Math.random()*320.0+1.0f),false);
 
 		//Phase 2 (1250-2500)///////////////// black holes and seekers////////////////
-		if( i_stepCounter > 1250 && i_stepCounter < 2250 )
+		if( i_stepCounter > 1250 && i_stepCounter < 2000 )
 		{
 			if(i_stepCounter%100==0)
 				in_manager.spawnBlackHole(in_logicEngine, (float) (LogicEngine.SCREEN_WIDTH/4 + (Math.random()* LogicEngine.SCREEN_WIDTH/2)));
@@ -94,6 +102,13 @@ public class Level5 extends BasicLevel{
 				in_manager.spawnSeeker(in_logicEngine, (float) (LogicEngine.SCREEN_WIDTH/4 + (Math.random()* LogicEngine.SCREEN_WIDTH/2)));*/
 		}
 		
+		if(i_stepCounter == 2100 || i_stepCounter == 2200 || i_stepCounter == 2400)
+		{
+				GameObject go = in_manager.spawnBomber(in_logicEngine);
+				
+				//reduce asteroid damage and laser damage
+				go.isBoss=true;
+		}
 		
 		//Phase 3 (2500- BOSS_STEP) ////////////// dense mine field and satelites
 		if( i_stepCounter > 2250 && i_stepCounter < BOSS_STEP -150 )
@@ -207,8 +222,6 @@ public class Level5 extends BasicLevel{
 			
 			ship.v.setMaxForce(2.0f);
 			ship.v.setMaxVel(5.0f);
-			
-			
 			
 			ship.stepHandlers.add( new FlyStraightStep(new Vector2d(0,-1f)));
 			

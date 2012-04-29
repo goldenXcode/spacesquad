@@ -53,8 +53,10 @@ public class Walls {
 	{
 		GameObject block =  wallSections.get(i_nextBlockToUse);
 		
+		in_logicEngine.objectsObstaclesLock.writeLock().lock();
 		in_logicEngine.objectsObstacles.remove(block);
-			
+		in_logicEngine.objectsObstaclesLock.writeLock().unlock();	
+		
 		//set x
 		block.v.setX(in_x);
 		
@@ -85,11 +87,9 @@ public class Walls {
 		
 		
 
-		in_logicEngine.objectsObstaclesLock.writeLock().lock();
 		
-		in_logicEngine.objectsObstacles.add(block);
+		in_logicEngine.toAddObjectsObstacles.add(block);
 		
-		in_logicEngine.objectsObstaclesLock.writeLock().unlock();
 		
 		i_nextBlockToUse = (i_nextBlockToUse+1)%i_maxBlocks;
 		
@@ -412,7 +412,8 @@ public class Walls {
 		
 		ship.v.setMaxVel(1000);
 		
-		in_logicEngine.objectsObstacles.add(ship);
+		in_logicEngine.toAddObjectsObstacles.add(ship);
+		
 		b_skipSpawningWallLeft = true;
 		
 		return ship;
@@ -457,7 +458,8 @@ public class Walls {
 		ship.v.setMaxVel(1000);
 		
 		
-		in_logicEngine.objectsObstacles.add(ship);
+		in_logicEngine.toAddObjectsObstacles.add(ship);
+		
 		b_skipSpawningWallRight = true;
 		
 		return ship;

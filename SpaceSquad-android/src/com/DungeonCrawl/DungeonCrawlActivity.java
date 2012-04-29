@@ -19,8 +19,10 @@ public class DungeonCrawlActivity extends AndroidApplication {
     	//AndroidApplicationConfig config = new AndroidApplicationConfig();
     	
     //	config.numSamples = 2; 
+    	DungeonCrawlMain.b_isAndroid=true;
     	
         initialize(new DungeonCrawlMain(),true);
+        
     }
     
     @Override

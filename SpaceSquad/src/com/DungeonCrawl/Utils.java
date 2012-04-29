@@ -22,10 +22,6 @@ import de.steeringbehaviors.simulation.simulationobjects.Vehicle;
 public class Utils {
 
 	
-	static int i_LastUpdatedKd = -1;
-	static KdTree<GameObject> kd_enemies = null;
-	static KdTree<GameObject> kd_obstacles = null;
-	
 	
 	public enum Direction
 	{
@@ -37,9 +33,7 @@ public class Utils {
 		
 	public static double getDistanceToClosestPlayerShip(LogicEngine in_theLogicEngine, Point2d in_position)
 	{
-		
-		
-		
+				
 		//find closest player to the past in vehicle/Geometrie
 		
 		double d_closestPlayerDistance=Double.MAX_VALUE;
@@ -88,39 +82,17 @@ public class Utils {
 		return i_closestPlayer;
 	}
 	
-	private static void buildKdTrees(LogicEngine in_theLogicEngine)
-	{
-		//build kd tree
-		if(in_theLogicEngine.i_stepCounter != i_LastUpdatedKd)
-		{
-			i_LastUpdatedKd = in_theLogicEngine.i_stepCounter;
-			kd_enemies = new KdTree.Manhattan<GameObject>(2,1000);
-			kd_obstacles = new KdTree.Manhattan<GameObject>(2,1000);
-			
-			//build kd tree of enemies
-			for(int i=0;i<in_theLogicEngine.objectsEnemies.size();i++)
-			{
-				GameObject go_currentEnemy = in_theLogicEngine.objectsEnemies.get(i);
-					kd_enemies.addPoint(new double[]{go_currentEnemy.v.getX(),go_currentEnemy.v.getY()}, go_currentEnemy);
-			}
-			
-			//build kd tree of obstacles
-			for(int i=0;i<in_theLogicEngine.objectsObstacles.size();i++)
-			{
-				GameObject go_currentObstacle = in_theLogicEngine.objectsObstacles.get(i);
-				kd_obstacles.addPoint(new double[]{go_currentObstacle.v.getX(),go_currentObstacle.v.getY()}, go_currentObstacle);
-			}
-		}
-	}
 	
 	public static double getDistanceToClosestEnemyShip(LogicEngine in_theLogicEngine, Point2d in_point)
 	{
 		
-		buildKdTrees(in_theLogicEngine);
 		
-		List<Entry<GameObject>> go_closestEnemy = kd_enemies.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
-		List<Entry<GameObject>> go_closestObstacle = kd_obstacles.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+		long l_elapsedTime = System.currentTimeMillis();
+		
+		List<Entry<GameObject>> go_closestEnemy = in_theLogicEngine.kd_enemies.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+		List<Entry<GameObject>> go_closestObstacle = in_theLogicEngine.kd_obstacles.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
 
+		
 		//find closest enemy/obstacle to point
 		if(go_closestEnemy.size() > 0 && go_closestObstacle.size()>0)
 			return Math.min(go_closestEnemy.get(0).distance, go_closestObstacle.get(0).distance);
@@ -131,6 +103,8 @@ public class Utils {
 			return go_closestObstacle.get(0).distance;
 		else
 			return Double.MAX_VALUE; //nothing exists
+		
+		
 				
 	}
 	
@@ -333,11 +307,8 @@ public class Utils {
 	public static GameObject getClosestEnemy(LogicEngine in_theLogicEngine,
 			Vehicle in_point) {
 	
-			buildKdTrees(in_theLogicEngine);
-			
-			
-			List<Entry<GameObject>> go_closestEnemy = kd_enemies.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
-			List<Entry<GameObject>> go_closestObstacle = kd_obstacles.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+			List<Entry<GameObject>> go_closestEnemy = in_theLogicEngine.kd_enemies.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
+			List<Entry<GameObject>> go_closestObstacle = in_theLogicEngine.kd_obstacles.nearestNeighbor(new double[]{in_point.getX(),in_point.getY()}, 1, true);
 
 			//find closest enemy/obstacle to point
 			if(go_closestEnemy.size() > 0 && go_closestObstacle.size()>0)

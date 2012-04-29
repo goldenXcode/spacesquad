@@ -12,6 +12,7 @@ import com.DungeonCrawl.AreaEffects.SimpleAreaEffect;
 import com.DungeonCrawl.Collisions.HitpointShipCollision;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;
+import com.DungeonCrawl.Steps.LoopWaypointsStep;
 import com.DungeonCrawl.Steps.LoopingAnimationStep;
 import com.DungeonCrawl.Steps.PullShipsStep;
 import com.DungeonCrawl.Steps.SeekNearestPlayerStep;
@@ -47,6 +48,26 @@ public class Level4 extends BasicLevel{
 		if(i_stepCounter==BOSS_STEP-100)
 			SoundEffects.getInstance().warningThreatApproaching.play(SoundEffects.SPEECH_VOLUME);
 		
+		if(i_stepCounter == 500)
+		{
+			GameObject go = in_manager.spawnBigBeamer(in_logicEngine);
+			//dont fly down
+			go.stepHandlers.clear();
+			
+			//fly back and forth
+			LoopWaypointsStep s = new LoopWaypointsStep();
+			s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-50));
+			s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-50));
+			s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-100));
+			s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-150));
+			s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-200));
+			s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-250));
+			s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-300));
+			s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-350));
+			s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-50000));
+			
+			go.stepHandlers.add(s);
+		}
 		//turret ships
 		if(i_stepCounter >=100 && i_stepCounter < 1000 && i_stepCounter%200==0)
 		{
@@ -161,7 +182,7 @@ private void spawnBoss(LogicEngine in_logicEngine) {
 		boss.allegiance = GameObject.ALLEGIANCES.ENEMIES;
 
 		
-		HitpointShipCollision c =  new HitpointShipCollision(boss, 150, 64, true,1);
+		HitpointShipCollision c =  new HitpointShipCollision(boss, 250, 64, true,1);
 		c.setExplosion(Utils.getBossExplosion(boss));
 		c.addHitpointBossBar(in_logicEngine);
 		

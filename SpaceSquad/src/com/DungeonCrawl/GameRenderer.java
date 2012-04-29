@@ -45,12 +45,6 @@ public class GameRenderer {
        
        public GameRenderer(LogicEngine in_LogicEngine )
        {
-     /*	   f_pixelAdjustX = (float)Gdx.graphics.getWidth()/320f;
-    	   f_pixelAdjustY = f_pixelAdjustX;//(float)Gdx.graphics.getHeight()/480f;
-    	   System.out.println("f_pixelAdjustX:" + f_pixelAdjustX);
-    	   System.out.println("f_pixelAdjustY:" + f_pixelAdjustY);
-    	*/   
-    	   
     	   
     	   theLogicEngine = in_LogicEngine;
     	   	
@@ -138,6 +132,8 @@ public class GameRenderer {
 		   if(toDraw.c_Color != null)	
 			   s.setColor(toDraw.c_Color);
 		   
+		   if(toDraw.b_mirrorImageHorizontal)
+			   s.flip(true, false);
 		   
 		   s.draw(batch);
     	   
@@ -173,7 +169,6 @@ public class GameRenderer {
 
     	   
 		   s.draw(batch);
-    	   
     	    	   
        }
        
@@ -257,13 +252,22 @@ public class GameRenderer {
         	   theLogicEngine.background.drawBackground(batch);
 	           
 	           //draw obstacles
-	           theLogicEngine.objectsObstaclesLock.writeLock().lock();
+
+        	   theLogicEngine.objectsObstaclesLock.writeLock().lock();
+        	   
 	           Iterator<GameObject> iterator = theLogicEngine.objectsObstacles.iterator();
+	           
+	           
 	           while(iterator.hasNext())
 	           {
-	        	   drawObject(iterator.next());
+	        	   GameObject toDraw = iterator.next();
+	        	   drawObject(toDraw);
+	        		   
 	           }
+	           
 	           theLogicEngine.objectsObstaclesLock.writeLock().unlock();
+	           
+	           
 	           
 	           
 	           //draw underlay
@@ -358,8 +362,6 @@ public class GameRenderer {
 	}
 	
 	private void drawArea(AreaEffect areaEffect) {
-
-		
 		
 		Texture toDrawTex = loadTexture(areaEffect.str_spritename);
 		//see if it is in dictionary

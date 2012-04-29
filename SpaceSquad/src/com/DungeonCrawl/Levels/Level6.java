@@ -379,7 +379,10 @@ public class Level6 extends BasicLevel{
 		CustomBehaviourStep cb = new CustomBehaviourStep(new Wander(-2.5,2.5,20,0.1));
 		boss.stepHandlers.add( cb);
 		
-		in_logicEngine.objectsObstacles.add(boss);
+		
+		in_logicEngine.toAddObjectsObstacles.add(boss);
+		
+		
 		b_bossSpawned = true;
 		
 		/*

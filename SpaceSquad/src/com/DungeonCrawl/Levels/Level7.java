@@ -19,6 +19,7 @@ import com.DungeonCrawl.Shooting.TurretShot;
 import com.DungeonCrawl.Steps.CustomBehaviourStep;
 import com.DungeonCrawl.Steps.FlyStraightStep;
 import com.DungeonCrawl.Steps.LaunchShipsStep;
+import com.DungeonCrawl.Steps.LoopWaypointsStep;
 import com.DungeonCrawl.Steps.SeekNearestPlayerStep;
 
 import com.badlogic.gdx.graphics.Color;
@@ -121,6 +122,29 @@ public class Level7 implements Level{
 			if(i_stepCounter==350)
 				in_manager.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH /2,CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
 			
+			//spawn beamer
+			if(i_stepCounter==800)
+			{
+				GameObject go = in_manager.spawnBigBeamer(in_logicEngine);
+				//dont fly down
+				go.stepHandlers.clear();
+				
+				//fly back and forth
+				LoopWaypointsStep s = new LoopWaypointsStep();
+				s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-50));
+				s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-50));
+				s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-100));
+				s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-150));
+				s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-200));
+				s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-250));
+				s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-300));
+				s.waypoints.add(new Point2d(LogicEngine.SCREEN_WIDTH+50,LogicEngine.SCREEN_HEIGHT-350));
+				s.waypoints.add(new Point2d(-30,LogicEngine.SCREEN_HEIGHT-50000));
+				
+				go.stepHandlers.add(s);
+			}
+				
+			
 			if(i_stepCounter %200 == 0 )
 			{
 				if(Math.random()<0.5f)
@@ -131,26 +155,30 @@ public class Level7 implements Level{
 			
 			if(i_stepCounter==1300)
 				in_manager.spawnCarrier(in_logicEngine, LogicEngine.SCREEN_WIDTH /3,CARRIER_TYPE.PATHFINDERS_BOTH_SIDES);
+			
+			
 		}
 		
+		if(i_stepCounter==1400 || i_stepCounter==1450)
+			in_manager.spawnBomber(in_logicEngine);
 		
 		////////////////////////////////////1000-2000 WALLS AND LAZORS////////////////////////////
-		if(i_stepCounter>=1400 && i_stepCounter<2500)
+		if(i_stepCounter>=1800 && i_stepCounter<2500)
 		{
 			if(i_stepCounter%4 ==0)
 				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
 			
 			//narrow the steps
-			if(i_stepCounter>=1400 && i_stepCounter%32==0 && i_stepCounter < 1700)
+			if(i_stepCounter>=1800 && i_stepCounter%32==0 && i_stepCounter < 2000)
 				myWalls.narrowTunnel();
 			
-			if(i_stepCounter == 1400)
+			if(i_stepCounter == 1800)
 			{
 				myWalls.setBlockSpeed(in_logicEngine, 8,i_stepCounter);
 				myWalls.setColour(Color.RED);
 			}
 			
-			if(i_stepCounter > 1600 && i_stepCounter%50 == 0)
+			if(i_stepCounter > 1900 && i_stepCounter%50 == 0)
 			{
 				in_manager.spawnSeeker(in_logicEngine, (float) (myWalls.getMiddleOfTunnel() - 40f));
 				in_manager.spawnSeeker(in_logicEngine, (float) ( myWalls.getMiddleOfTunnel() - 20f));
@@ -184,7 +212,7 @@ public class Level7 implements Level{
 				myWalls.openTunnel();
 			
 			
-			if(i_stepCounter%100 == 0 && i_stepCounter>=1600 && i_stepCounter < 2300)
+			if(i_stepCounter%100 == 0 && i_stepCounter>=1900 && i_stepCounter < 2300)
 			{ 
 				GameObject shooter = myWalls.spawnShooterBlock(in_logicEngine);
 				shooter.c_Color = Color.RED;
