@@ -998,6 +998,12 @@ public class LevelManager
 		ship.shotHandler = b;
 		
 		HitpointShipCollision c = new HitpointShipCollision(ship, 100, 50f);
+		
+		if(!Difficulty.isHard())
+			c.f_numberOfHitpoints = 200;
+		if(!Difficulty.isMedium())
+			c.f_numberOfHitpoints = 160;
+		
 		c.setExplosion(Utils.getBossExplosion(ship));
 		ship.collisionHandler = c;
 		
@@ -1126,9 +1132,9 @@ public class LevelManager
 		
 		HitpointShipCollision s;
 		if(!Difficulty.isHard())
-			 s = new HitpointShipCollision(ship, 50, 32);
+			 s = new HitpointShipCollision(ship, 160, 32);
 		else
-			 s = new HitpointShipCollision(ship, 50, 32);
+			 s = new HitpointShipCollision(ship, 125, 32);
 			
 		s.setExplosion(Utils.getBossExplosion(ship));
 		ship.collisionHandler = s; 

@@ -21,8 +21,8 @@ import de.steeringbehaviors.simulation.renderer.Vector2d;
 
 public class UI 
 {
-	static boolean DEBUG=true;
-	int DEBUGLevelLoad=4;
+	static boolean DEBUG=false;
+	int DEBUGLevelLoad=9;
 	Difficulty.DIFFICULTY DEBUGDifficulty = Difficulty.DIFFICULTY.EASY;
 	
 	Texture tex_interface;

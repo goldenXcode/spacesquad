@@ -122,7 +122,7 @@ public class Level6 extends BasicLevel{
 		
 		/////////////////////400 - 800 fast tunnel//////////////////////////
 		//increase speed
-		if(i_stepCounter == 512)
+		if(i_stepCounter == 516)
 		{
 			if(Difficulty.isHard())
 				myWalls.setBlockSpeed(in_logicEngine, 16,i_stepCounter);
@@ -365,6 +365,12 @@ public class Level6 extends BasicLevel{
 		boss.isBoss=true;
 		
 		HitpointShipCollision c =  new HitpointShipCollision(boss, 150, 64, true,1);
+		
+		if(Difficulty.isHard())
+			c.f_numberOfHitpoints = 250;
+		if(Difficulty.isMedium())
+			c.f_numberOfHitpoints = 200;
+		
 		c.setExplosion(Utils.getBossExplosion(boss));
 		c.addHitpointBossBar(in_logicEngine);
 		

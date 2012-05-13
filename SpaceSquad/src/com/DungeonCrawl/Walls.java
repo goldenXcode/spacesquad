@@ -273,8 +273,8 @@ public class Walls {
 		{
 			if(b_skipSpawningWallRight)
 				b_skipSpawningWallRight = false;
-			
-			spawnBlock(in_logicEngine, 3, 4+r.nextInt(4),LogicEngine.SCREEN_WIDTH - (i_blockSize*(in_rightWallWidth-1)), i_tunnelSpeed2);
+			else
+				spawnBlock(in_logicEngine, 3, 4+r.nextInt(4),LogicEngine.SCREEN_WIDTH - (i_blockSize*(in_rightWallWidth-1)), i_tunnelSpeed2);
 		}
 		else if(in_rightWallWidth < i_previousTunnelWidthRight)
 		{

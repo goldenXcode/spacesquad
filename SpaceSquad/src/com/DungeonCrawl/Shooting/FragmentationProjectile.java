@@ -1,5 +1,6 @@
 package com.DungeonCrawl.Shooting;
 
+import com.DungeonCrawl.Drawable;
 import com.DungeonCrawl.GameObject;
 import com.DungeonCrawl.GameRenderer;
 import com.DungeonCrawl.LogicEngine;
@@ -54,6 +55,9 @@ public class FragmentationProjectile implements ShotHandler{
 			//face player
 			Vector2d vtoPlayer = Utils.getVectorToClosestPlayer(in_toShootIn, in_objectFiring.v.getPos());
 			
+			if(d_turret!= null)
+				d_turret.f_forceRotation = Utils.getAngleOfRotation(vtoPlayer);
+			
 			if(vtoPlayer ==null)
 				return;
 			
@@ -70,10 +74,12 @@ public class FragmentationProjectile implements ShotHandler{
 		bullet.stepHandlers.add(new FlyStraightStep(direction));
 		bullet.collisionHandler = new DestroyIfEnemyCollision(bullet,f_collisionRadius,false);
 		bullet.shootEverySteps=2;
+		
 		if(in_objectFiring.allegiance == GameObject.ALLEGIANCES.PLAYER)
 			bullet.shotHandler = new ExplodeIfInRange("data/"+GameRenderer.dpiFolder+"/fragbullet.png",60,true,3);
 		else
 			bullet.shotHandler = new ExplodeIfInRange("data/"+GameRenderer.dpiFolder+"/redbullets.png",60,true,3);
+		
 		//bullet inherits the allegiance of whoever fired it
 		bullet.allegiance = in_objectFiring.allegiance;
 	
@@ -90,6 +96,12 @@ public class FragmentationProjectile implements ShotHandler{
 	public String getImagePath() {
 		
 		return str_bulletImage;
+	}
+	
+	Drawable d_turret=null;
+	public void setTurret(Drawable in_turret) {
+		d_turret = in_turret;
+		
 	}
 	
 

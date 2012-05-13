@@ -9,5 +9,8 @@ public class Drawable {
 	public float f_forceRotation=0;
 	public float f_forceScaleX=0;
 	public float f_forceScaleY=0;
+	
+	public float f_offsetX=0;
+	public float f_offsetY=0;
 
 }

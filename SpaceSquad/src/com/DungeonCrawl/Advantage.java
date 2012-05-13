@@ -134,7 +134,7 @@ public class Advantage {
 			if(in_ship.shotHandler instanceof StraightLineShot)
 			{			
 					((StraightLineShot)in_ship.shotHandler).b_homing=true;
-					((StraightLineShot)in_ship.shotHandler).f_damage=0.6f *((StraightLineShot)in_ship.shotHandler).f_damage;
+					
 			}
 			break;
 		case 8:
@@ -151,7 +151,7 @@ public class Advantage {
 			{	
 				//railgun shot
 				StraightLineShot s = new StraightLineShot("data/"+GameRenderer.dpiFolder+"/railshot.png",7.0f,new Vector2d(0,12f));
-				s.f_damage = 2.5f;
+				s.f_damage = 2.0f;
 				in_ship.shotHandler=s;
 			}
 			break;
