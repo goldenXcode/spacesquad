@@ -165,8 +165,6 @@ public class Level7 implements Level{
 		////////////////////////////////////1000-2000 WALLS AND LAZORS////////////////////////////
 		if(i_stepCounter>=1800 && i_stepCounter<2500)
 		{
-			if(i_stepCounter%4 ==0)
-				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
 			
 			//narrow the steps
 			if(i_stepCounter>=1800 && i_stepCounter%32==0 && i_stepCounter < 2000)
@@ -217,6 +215,9 @@ public class Level7 implements Level{
 				GameObject shooter = myWalls.spawnShooterBlock(in_logicEngine);
 				shooter.c_Color = Color.RED;
 			}
+			
+			if(i_stepCounter%4 ==0)
+				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
 			
 		}
 		////////////////////////////////////2000-3000 Carrier pairs and asteroids////////////////////////////

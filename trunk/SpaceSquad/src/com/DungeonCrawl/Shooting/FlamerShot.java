@@ -19,7 +19,7 @@ public class FlamerShot implements ShotHandler{
 	public FlamerShot(GameObject go_firing)
 	{
 		go_flame = new  GameObject("data/"+GameRenderer.dpiFolder+"/projectiles.png",0,0,0);
-		go_flame.collisionHandler = new HitpointShipCollision(go_flame,0.5f,10f,false);
+		go_flame.collisionHandler = new HitpointShipCollision(go_flame,0.80f,10f,false);
 		go_flame.i_animationFrame =0;
 		go_flame.i_animationFrameSizeWidth =8;
 		go_flame.i_animationFrameSizeHeight =8;
@@ -28,6 +28,8 @@ public class FlamerShot implements ShotHandler{
 		//TODO : b_advantages - dual fire, give dual fire effect
 		if( go_firing.allegiance == GameObject.ALLEGIANCES.PLAYER)
 			a_flameVectors.add(new Vector2d(0,5f));
+		else
+			a_flameVectors.add(new Vector2d(0,-5f));
 	}
 	
 	public ArrayList<Vector2d> a_flameVectors = new ArrayList<Vector2d>();
@@ -56,7 +58,14 @@ public class FlamerShot implements ShotHandler{
 				in_toShootIn.objectsPlayerBullets.add(go_clone);
 			}
 			else
-				in_toShootIn.objectsEnemies.add(go_clone);
+			{
+				//enemy flame so go straight down
+				go_clone.v.setX(in_objectFiring.v.getX() );
+				go_clone.v.setY(in_objectFiring.v.getY() + (in_objectFiring.i_animationFrameSizeHeight/2));
+				go_clone.stepHandlers.add(new FlyStraightStep(currentVector));
+				
+				in_toShootIn.objectsEnemyBullets.add(go_clone);
+			}
 		}
 		
 	}

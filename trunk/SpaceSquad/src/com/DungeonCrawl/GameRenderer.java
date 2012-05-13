@@ -152,7 +152,9 @@ public class GameRenderer {
     	   TextureRegion tr = loadTextureRegion(toDraw.str_spritename, toDrawTex, toDraw.i_animationFrameRow, toDraw.i_animationFrame, toDraw.i_animationFrameSizeWidth, toDraw.i_animationFrameSizeHeight);
     	   
     	   Sprite s = new Sprite(tr);
-    	       	   
+    	   
+    	   
+    	   
     	   if(toDraw.i_animationFrameSizeWidth !=0)   
 			   s = new Sprite(tr);
 		   else
@@ -160,6 +162,9 @@ public class GameRenderer {
 		   
     	   
 		   s.setPosition(((float)in_x-toDraw.i_animationFrameSizeWidth/2)*f_pixelAdjustX, ((float)in_y-toDraw.i_animationFrameSizeHeight/2)*f_pixelAdjustY);
+		   
+		 //translate any offset
+    	   s.translate(toDraw.f_offsetX, toDraw.f_offsetY);
 		   
 		   if(toDraw.f_forceRotation != 0 )
 			   s.setRotation(85+toDraw.f_forceRotation); //TODO this is a hack hmn

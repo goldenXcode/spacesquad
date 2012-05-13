@@ -154,7 +154,8 @@ public class LogicEngine implements Runnable
 		for(int i=0;i<in_list.size();i++)
 		{
 			GameObject go_currentObject = in_list.get(i);
-			in_tree.addPoint(new double[]{go_currentObject.v.getX(),go_currentObject.v.getY()}, go_currentObject);
+			if(!go_currentObject.str_name.equals("wall"))
+				in_tree.addPoint(new double[]{go_currentObject.v.getX(),go_currentObject.v.getY()}, go_currentObject);
 		}
 		
 	}

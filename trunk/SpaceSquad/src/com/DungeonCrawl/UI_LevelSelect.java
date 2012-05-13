@@ -148,7 +148,7 @@ public class UI_LevelSelect {
 			}
 	}
 	
-	public static int i_maxLevel = 9;
+	public static int i_maxLevel = 10;
 
 	long l_lastAnimatedText=0;
 

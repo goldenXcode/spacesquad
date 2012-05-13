@@ -73,16 +73,18 @@ public class SlowAreaEffect extends AreaEffect {
 		{
 			GameObject enemy = listToSlow.get(i);
 			
-			//if in area
-			if(area.inRect(enemy.v.getPos()))
-				if(!b_shipIsAlreadySlowed(enemy))
-				{
-					MovementPowerup debuffcopy = (MovementPowerup) debuff.clone();
-					
-					//if it doesnt already have a slow debuff, give it one
-					debuffcopy.applyPowerup(enemy, in_logicEngine);
-					enemy.stepHandlers.add(new TimedLifePowerupStep(10,debuffcopy));
-				}
+			//dont slow bosses
+			if(!enemy.isBoss)
+				//if in area
+				if(area.inRect(enemy.v.getPos()))
+					if(!b_shipIsAlreadySlowed(enemy))
+					{
+						MovementPowerup debuffcopy = (MovementPowerup) debuff.clone();
+						
+						//if it doesnt already have a slow debuff, give it one
+						debuffcopy.applyPowerup(enemy, in_logicEngine);
+						enemy.stepHandlers.add(new TimedLifePowerupStep(10,debuffcopy));
+					}
 		}
 		
 	}

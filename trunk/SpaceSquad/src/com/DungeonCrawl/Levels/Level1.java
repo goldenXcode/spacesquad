@@ -157,7 +157,7 @@ public class Level1 extends BasicLevel {
 		
 		if(i_stepCounter > 800 && i_stepCounter < 1100)
 		{
-			myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
+		
 			
 			if(i_stepCounter == 832)
 			{
@@ -207,7 +207,7 @@ public class Level1 extends BasicLevel {
 			{
 				myWalls.openTunnel();
 			}
-			
+			myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
 			
 		}
 		
@@ -255,9 +255,6 @@ public class Level1 extends BasicLevel {
 			
 			if(i_stepCounter > 1500 && i_stepCounter < 1700 )
 			{
-				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
-				
-				
 				if(i_stepCounter == 1504)
 				{
 					myWalls.narrowTunnel();
@@ -288,6 +285,8 @@ public class Level1 extends BasicLevel {
 				{
 					myWalls.openTunnel();
 				}
+				
+				myWalls.spawnBlockIfNeeded(in_logicEngine, i_stepCounter);
 				
 				
 			}
